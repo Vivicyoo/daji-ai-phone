@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>大集全链路AI矩阵 · 创作中心</title>
+<style>
+  :root{
+    --bg:#f2f3f7;
+    --surface:#ffffff;
+    --line:#e6e8ee;
+    --line-strong:#d8dbe3;
+    --text:#1a1d24;
+    --text-2:#6b7280;
+    --text-3:#9aa1ad;
+    --accent:#2f6bff;
+    --accent-soft:#eaf0ff;
+    --danger:#e5484d;
+    --ok:#2f9e6e;
+    --radius:14px;
+    --shadow-card:0 1px 2px rgba(16,24,40,.04),0 4px 14px rgba(16,24,40,.05);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #e7ecfb 0%, transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, #eef1f8 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    min-height:100dvh;padding:24px 12px;
+  }
+
+  /* ============ 手机机身 ============ */
+  .phone{
+    width:100%;max-width:400px;height:min(844px,calc(100dvh - 32px));
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:28px;
+    box-shadow:0 24px 60px rgba(16,24,40,.10),0 2px 8px rgba(16,24,40,.05);
+    display:flex;flex-direction:column;overflow:hidden;position:relative;
+  }
+  @media (max-width:430px){
+    body{padding:0}
+    .phone{max-width:none;height:100dvh;border-radius:0;border:none}
+  }
+
+  /* ============ 屏幕切换 ============ */
+  .screen{
+    position:absolute;inset:0;display:flex;flex-direction:column;background:var(--surface);
+    opacity:0;pointer-events:none;transform:translateX(24px);
+    transition:opacity .26s ease,transform .26s cubic-bezier(.16,1,.3,1);
+  }
+  .screen.active{opacity:1;pointer-events:auto;transform:none;z-index:2}
+
+  /* ============ 顶栏 ============ */
+  .topbar{
+    display:flex;align-items:center;gap:8px;
+    padding:14px 14px 10px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface);
+    position:sticky;top:0;z-index:5;flex:none;
+  }
+  .icon-btn{
+    width:34px;height:34px;border-radius:10px;border:1px solid var(--line);
+    background:#fff;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--text);flex:none;transition:transform .12s ease,background .12s ease;
+  }
+  .icon-btn:active{transform:scale(.94);background:#f5f6fa}
+  .topbar .title{
+    flex:1;text-align:center;font-size:17px;font-weight:600;letter-spacing:.5px;
+  }
+  .topbar .spacer{width:34px;flex:none}
+  .history-btn{
+    flex:none;height:30px;padding:0 12px;border-radius:8px;
+    border:1px solid var(--line-strong);background:#fff;
+    font-size:12.5px;color:var(--text);cursor:pointer;
+    transition:transform .12s ease,background .12s ease;
+  }
+  .history-btn:active{transform:scale(.95);background:#f5f6fa}
+
+  /* ============ 首页：分类入口（选中即切换下方卡片） ============ */
+  .home-head{flex:none;padding:14px 14px 0;background:var(--surface)}
+
+  .tile-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  }
+  .tile{
+    border:1px solid var(--line-strong);border-radius:12px;background:#fff;
+    padding:14px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;
+    cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease;
+  }
+  .tile:active{transform:scale(.96)}
+  .tile.on{
+    border-color:var(--accent);background:linear-gradient(180deg,#f4f8ff,#fff);
+    box-shadow:0 0 0 1.5px var(--accent),0 4px 14px rgba(47,107,255,.14);
+  }
+  .tile .t-ico{
+    width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    color:#fff;
+  }
+  .tile .t-name{font-size:12.5px;font-weight:600;text-align:center;letter-spacing:.2px}
+
+  /* ============ 集宝悬浮入口（右下角圆圈） ============ */
+  .jibao-fab{
+    position:absolute;right:16px;bottom:22px;z-index:20;
+    width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#b18cf5 0%,#7c6bf0 55%,#5b8def 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    box-shadow:0 8px 22px rgba(124,107,240,.42),0 2px 6px rgba(16,24,40,.12);
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1),opacity .2s ease,box-shadow .2s ease;
+    animation:fabIn .5s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes fabIn{from{opacity:0;transform:scale(.6) translateY(10px)}to{opacity:1;transform:none}}
+  .jibao-fab:active{transform:scale(.92)}
+  .jibao-fab::before{
+    content:"";position:absolute;inset:-7px;border-radius:50%;
+    border:1.5px solid rgba(139,92,246,.20);
+    animation:fabPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes fabPulse{
+    0%,100%{transform:scale(1);opacity:.55}
+    50%{transform:scale(1.06);opacity:.15}
+  }
+  .jibao-fab.hide{opacity:0;pointer-events:none;transform:scale(.7)}
+
+  /* ============ 集宝AI助手 · 聊天页 ============ */
+  #chatScreen{background:#f7f4ff}
+  .chat-top{
+    flex:none;position:relative;padding:12px 16px 0;
+    background:
+      radial-gradient(520px 260px at 88% -30%, #dcd2ff 0%, transparent 62%),
+      radial-gradient(420px 240px at 0% 0%, #dceaff 0%, transparent 58%),
+      linear-gradient(180deg,#f1eaff 0%,#f7f4ff 100%);
+  }
+  .chat-bar{display:flex;align-items:center;gap:9px;padding-top:2px}
+  .chat-ava{
+    width:32px;height:32px;border-radius:50%;flex:none;overflow:hidden;
+    background:linear-gradient(135deg,#ffd9c4,#ffb0a0);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 8px rgba(255,150,120,.35);
+  }
+  .chat-bar .cb-name{flex:1;font-size:14.5px;font-weight:600;letter-spacing:.2px}
+  .chat-icon{
+    width:30px;height:30px;border-radius:9px;border:none;background:transparent;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:#2c2f36;
+    transition:background .14s ease;
+  }
+  .chat-icon:active{background:rgba(124,107,240,.12)}
+
+  .chat-hero{padding:18px 2px 0;text-align:center}
+  .chat-hero h1{
+    font-size:21px;font-weight:700;letter-spacing:.3px;line-height:1.35;color:#171a21;
+  }
+  .chat-hero h1 em{
+    font-style:normal;
+    background:linear-gradient(96deg,#8b5cf6 0%,#6366f1 52%,#3b82f6 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .chat-hero p{font-size:12px;color:#7b839a;margin-top:7px;line-height:1.5}
+
+  /* 卡片区：左大卡 + 右三小卡 */
+  .chat-cards{display:grid;grid-template-columns:1.06fr .94fr;gap:9px;margin-top:14px}
+  .cc-main{
+    border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e8e3f8;
+    box-shadow:0 4px 16px rgba(124,107,240,.10);cursor:pointer;
+    display:flex;flex-direction:column;
+  }
+  .cc-main:active{transform:scale(.985)}
+  .cc-main .cc-img{
+    flex:1;min-height:80px;background:
+      radial-gradient(120px 80px at 50% 40%, #dfe9ff 0%, #eef4ff 70%, #f6f9ff 100%);
+    display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  }
+  .cc-main .cc-img svg{opacity:.95}
+  .cc-main .cc-txt{padding:9px 11px 11px}
+  .cc-main .cc-t1{font-size:12.5px;font-weight:600;line-height:1.35}
+  .cc-main .cc-t2{font-size:10.5px;color:var(--text-3);margin-top:4px;line-height:1.4}
+
+  .cc-side{display:flex;flex-direction:column;gap:9px}
+  .cc-mini{
+    flex:1;display:flex;align-items:center;gap:8px;
+    background:#fff;border:1px solid #e8e3f8;border-radius:12px;padding:0 11px;
+    font-size:12.5px;font-weight:600;cursor:pointer;
+    box-shadow:0 2px 10px rgba(124,107,240,.07);
+    transition:transform .14s ease,border-color .14s ease;
+  }
+  .cc-mini:active{transform:scale(.96);border-color:#c9b8f5}
+  .cc-mini .m-ico{
+    width:22px;height:22px;border-radius:7px;flex:none;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .chat-dots{display:flex;justify-content:center;gap:5px;padding:12px 0 12px}
+  .chat-dots i{
+    width:5px;height:5px;border-radius:3px;background:#d6cdf0;transition:all .2s ease;
+  }
+  .chat-dots i.on{width:16px;background:#8b5cf6}
+
+  /* 进入对话后，欢迎区让位给消息 */
+  .chat-hero,.chat-cards,.chat-dots{transition:opacity .22s ease,padding .22s ease}
+  #chatScreen.talking .chat-hero{padding-top:10px;text-align:left;padding-left:2px}
+  #chatScreen.talking .chat-hero h1{font-size:17px}
+  #chatScreen.talking .chat-hero p,
+  #chatScreen.talking .chat-cards,
+  #chatScreen.talking .chat-dots{display:none}
+
+  /* 消息区 */
+  .chat-scroll{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:4px 16px 14px;display:flex;flex-direction:column;gap:10px;
+  }
+  .chat-scroll::-webkit-scrollbar{display:none}
+  .q-list{display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+  .q-chip{
+    display:flex;align-items:center;gap:8px;max-width:100%;
+    background:#fff;border:1px solid #ece7fb;border-radius:12px;
+    padding:10px 13px;font-size:13px;color:#2c2f36;line-height:1.4;
+    cursor:pointer;box-shadow:0 2px 10px rgba(124,107,240,.07);
+    transition:transform .14s ease,border-color .14s ease;
+    text-align:left;
+  }
+  .q-chip:active{transform:scale(.975);border-color:#c9b8f5}
+  .q-chip .q-spark{flex:none;color:#8b5cf6;display:flex}
+
+  .msg{display:flex;gap:8px;max-width:100%}
+  .msg .m-ava{
+    width:26px;height:26px;border-radius:50%;flex:none;
+    display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;
+  }
+  .msg.bot .m-ava{background:linear-gradient(135deg,#b18cf5,#5b8def)}
+  .msg .bubble{
+    padding:10px 13px;font-size:13px;line-height:1.6;border-radius:12px;
+    max-width:calc(100% - 40px);word-break:break-word;white-space:pre-line;
+  }
+  .msg.bot .bubble{background:#fff;border:1px solid #ece7fb;border-top-left-radius:4px;color:#2c2f36}
+  .msg.me{flex-direction:row-reverse}
+  .msg.me .bubble{
+    background:linear-gradient(135deg,#a78bfa,#7c6bf0);color:#fff;
+    border-top-right-radius:4px;
+  }
+  .typing{display:flex;gap:4px;align-items:center;height:12px}
+  .typing i{width:5px;height:5px;border-radius:50%;background:#b9a8e8;animation:blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}
+  .typing i:nth-child(3){animation-delay:.36s}
+  @keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+
+  /* 底部输入区 */
+  .chat-bottom{
+    flex:none;background:#fff;border-top:1px solid #eee9fa;
+    padding:8px 12px 10px;
+  }
+  .fn-bar{
+    display:flex;gap:7px;overflow-x:auto;padding:2px 0 9px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .fn-bar::-webkit-scrollbar{display:none}
+  .fn-chip{
+    flex:none;display:flex;align-items:center;gap:5px;
+    height:28px;padding:0 10px;border-radius:14px;
+    border:1px solid #ece7fb;background:#faf8ff;
+    font-size:11.5px;color:#4b4f5b;cursor:pointer;
+  }
+  .fn-chip .f-ico{display:flex;align-items:center;color:#8b5cf6}
+  .fn-chip:active{background:#f1ecfe}
+  .input-row{display:flex;align-items:center;gap:8px}
+  .input-box{
+    flex:1;display:flex;align-items:center;gap:8px;
+    height:42px;border-radius:21px;border:1px solid #e6e2f2;background:#faf9fd;
+    padding:0 6px 0 14px;
+  }
+  .input-box input{
+    flex:1;border:none;outline:none;background:transparent;
+    font-size:13px;color:var(--text);font-family:inherit;
+  }
+  .input-box input::placeholder{color:#a8adba}
+  .plus-btn{
+    width:30px;height:30px;border-radius:50%;border:1px solid #e6e2f2;background:#fff;
+    display:flex;align-items:center;justify-content:center;color:#5b6172;cursor:pointer;flex:none;
+  }
+  .send-btn{
+    width:42px;height:42px;border-radius:50%;border:none;flex:none;cursor:pointer;
+    background:linear-gradient(135deg,#a78bfa,#6d63f0);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 12px rgba(124,107,240,.32);
+    transition:transform .14s ease;
+  }
+  .send-btn:active{transform:scale(.92)}
+  .chat-note{
+    text-align:center;font-size:10px;color:#a8adba;margin-top:7px;line-height:1.4;
+  }
+
+  /* ============ 创作宫格 ============ */
+  .grid{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:14px 14px 88px;
+    display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:max-content;gap:12px;align-content:start;
+  }
+  .grid::-webkit-scrollbar{display:none}
+
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;cursor:pointer;position:relative;
+    box-shadow:var(--shadow-card);
+    transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+    animation:cardIn .4s cubic-bezier(.16,1,.3,1) both;
+    animation-delay:calc(var(--i) * 45ms);
+  }
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .card:active{transform:scale(.97)}
+  .card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(47,107,255,.10)}
+
+  .cover{
+    aspect-ratio:1/1;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cover svg{width:100%;height:100%;display:block}
+  .cover .tag{
+    position:absolute;top:8px;left:8px;
+    font-size:10px;line-height:1;padding:4px 7px;border-radius:6px;
+    background:rgba(255,255,255,.88);color:var(--text-2);font-weight:500;
+    backdrop-filter:blur(4px);letter-spacing:.3px;
+  }
+  .cover .play{
+    position:absolute;right:8px;bottom:8px;width:24px;height:24px;border-radius:50%;
+    background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;
+    color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  .card .foot{padding:9px 10px 10px}
+  .card .btn-label{
+    display:block;width:100%;height:32px;border-radius:8px;
+    border:1px solid var(--line-strong);background:#fff;
+    font-size:12.5px;color:var(--text);text-align:center;line-height:30px;
+    transition:background .15s ease,color .15s ease,border-color .15s ease;
+  }
+  .card:hover .btn-label{
+    background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;
+  }
+  .card .desc{
+    font-size:10.5px;color:var(--text-3);line-height:1.45;margin-top:6px;
+    text-align:center;min-height:15px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+
+  /* 分组简介 */
+  .hint{
+    flex:none;padding:10px 16px 0;font-size:11.5px;color:var(--text-3);line-height:1.5;
+  }
+
+  /* ============ 底部 CTA ============ */
+  .cta-bar{
+    position:absolute;left:0;right:0;bottom:0;z-index:6;
+    padding:10px 14px calc(12px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top,#fff 72%,rgba(255,255,255,0));
+    display:flex;justify-content:center;
+  }
+  .cta{
+    width:100%;height:46px;border-radius:12px;border:none;cursor:pointer;
+    font-size:15.5px;font-weight:600;letter-spacing:1px;color:#fff;
+    background:var(--accent);
+    box-shadow:0 6px 16px rgba(47,107,255,.32);
+    transition:transform .12s ease,filter .15s ease,box-shadow .2s ease;
+  }
+  .cta:disabled{
+    background:#c3c9d6;box-shadow:none;cursor:not-allowed;color:#fff;
+  }
+  .cta:not(:disabled):active{transform:scale(.98);filter:brightness(.95)}
+
+  /* 带计费信息的表单页脚（处理内容 · 积分 · 开始处理） */
+  .cta-bar.has-info{
+    background:#fff;border-top:1px solid var(--line);
+    justify-content:space-between;align-items:center;gap:12px;
+    padding-top:12px;
+  }
+  .ff-info{display:none;font-size:11px;color:var(--text-3);line-height:1.45;min-width:0}
+  .ff-info b{display:block;font-size:13.5px;color:var(--text);font-weight:600}
+  .cta-bar.has-info .ff-info{display:block}
+  .cta-bar.has-info .cta{
+    width:auto;flex:none;padding:0 20px;height:44px;
+    display:inline-flex;align-items:center;gap:8px;
+    background:linear-gradient(135deg,#a855f7,#d946ef);
+    box-shadow:0 6px 16px rgba(168,85,247,.32);
+  }
+  .ff-badge{
+    background:rgba(255,255,255,.25);border-radius:12px;padding:2px 9px;
+    font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:2px;
+  }
+
+  /* ============ 通用工具页（多语言翻译/商机选品/出海贸易/店铺经营） ============ */
+  .flow-scroll{
+    flex:1;overflow-y:auto;padding:12px 16px 96px;-webkit-overflow-scrolling:touch;
+  }
+  .flow-scroll::-webkit-scrollbar{display:none}
+  .flow-desc{
+    font-size:12px;color:var(--text-2);line-height:1.6;margin:2px 2px 8px;
+  }
+  .flow-out{
+    font-size:11.5px;color:#8b5cf6;background:#f6f2ff;border-radius:8px;
+    padding:7px 10px;margin:0 2px 16px;line-height:1.5;
+  }
+  .f-group{margin-bottom:18px;animation:cardIn .35s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 40ms)}
+  .f-group > label{
+    display:block;font-size:13.5px;font-weight:600;margin-bottom:8px;
+  }
+  .f-group .req{color:var(--danger);margin-left:2px}
+  .upload-box{
+    border:1.5px dashed var(--line-strong);border-radius:12px;background:#fafbfd;
+    min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:6px;color:var(--text-3);font-size:12px;cursor:pointer;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .upload-box:active{border-color:var(--accent);background:var(--accent-soft)}
+  .upload-box .u-ico{
+    width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--text-2);
+  }
+  .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .textarea{
+    width:100%;min-height:88px;resize:none;border:1px solid var(--line-strong);border-radius:10px;
+    padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.55;color:var(--text);
+    outline:none;transition:border-color .15s ease;box-sizing:border-box;
+  }
+  .textarea:focus{border-color:var(--accent)}
+  .textarea::placeholder{color:var(--text-3)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    height:32px;padding:0 14px;border-radius:8px;border:1px solid var(--line-strong);
+    background:#fff;font-size:12.5px;color:var(--text-2);cursor:pointer;
+    display:flex;align-items:center;transition:all .15s ease;
+  }
+  .chip.on{
+    border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:600;
+  }
+  .f-note{font-size:11px;color:var(--text-3);margin-top:6px}
+
+  /* ============ 历史创作抽屉 ============ */
+  .mask{
+    position:absolute;inset:0;background:rgba(17,20,28,.42);z-index:10;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .mask.open{opacity:1;pointer-events:auto}
+  .drawer{
+    position:absolute;top:0;right:0;bottom:0;width:84%;max-width:330px;z-index:11;
+    background:var(--surface);border-radius:20px 0 0 20px;
+    transform:translateX(105%);transition:transform .32s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(16,24,40,.14);
+  }
+  .drawer.open{transform:none}
+  .drawer-head{
+    display:flex;align-items:center;gap:8px;
+    padding:16px 16px 12px;border-bottom:1px solid var(--line);
+  }
+  .drawer-head .t{flex:1;font-size:16px;font-weight:600}
+  .drawer-head .clear{
+    font-size:12px;color:var(--text-3);background:none;border:none;cursor:pointer;
+  }
+  .drawer-list{flex:1;overflow-y:auto;padding:12px 14px 20px;display:flex;flex-direction:column;gap:10px}
+  .h-item{
+    display:flex;gap:10px;align-items:center;
+    border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;
+  }
+  .h-thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;flex:none}
+  .h-thumb svg{width:100%;height:100%;display:block}
+  .h-info{flex:1;min-width:0}
+  .h-info .n{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .h-info .m{font-size:11px;color:var(--text-3);margin-top:3px}
+  .h-status{flex:none;font-size:11px;padding:4px 8px;border-radius:20px;font-weight:500}
+  .h-status.ok{background:#e8f6ef;color:var(--ok)}
+  .h-status.doing{background:var(--accent-soft);color:var(--accent)}
+  .h-status.fail{background:#fdeced;color:var(--danger)}
+  .drawer-empty{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--text-3);font-size:13px;gap:10px;
+  }
+  .drawer-empty .ring{
+    width:52px;height:52px;border-radius:50%;border:1.5px dashed var(--line-strong);
+    display:flex;align-items:center;justify-content:center;color:var(--text-3);
+  }
+
+  /* ============ 积分卡（底部弹层） ============ */
+  .points-pill{
+    flex:none;display:flex;align-items:center;gap:4px;height:30px;padding:0 10px;
+    border-radius:8px;border:1px solid var(--line-strong);background:#fff;
+    font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;
+    transition:transform .12s ease,background .12s ease;
+  }
+  .points-pill:active{transform:scale(.95);background:#f5f6fa}
+  .points-pill svg{color:#a855f7}
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;z-index:11;
+    background:var(--surface);border-radius:20px 20px 0 0;
+    transform:translateY(105%);transition:transform .32s cubic-bezier(.16,1,.3,1);
+    padding:16px 18px calc(22px + env(safe-area-inset-bottom));
+    box-shadow:0 -8px 30px rgba(16,24,40,.14);
+  }
+  .sheet.open{transform:none}
+  .sheet-head{display:flex;align-items:center;gap:10px}
+  .sheet-head .sh-title{display:flex;align-items:center;gap:6px;font-size:15.5px;font-weight:600}
+  .sheet-head .sh-title svg{color:#a855f7}
+  .sheet-head .sh-link{
+    font-size:12.5px;color:#8b5cf6;cursor:pointer;display:flex;align-items:center;gap:1px;
+  }
+  .sheet-head .sh-links{flex:1;display:flex;gap:14px;justify-content:flex-end}
+  .sheet-balance{display:flex;align-items:baseline;gap:8px;margin:18px 2px 16px}
+  .sheet-balance .num{font-size:38px;font-weight:700;letter-spacing:-1px}
+  .sheet-balance .lbl{font-size:13px;color:var(--text-3)}
+  .signin{
+    display:flex;align-items:center;gap:10px;
+    background:#f6f2ff;border-radius:14px;padding:14px 14px;
+  }
+  .signin .s-info{flex:1}
+  .signin .s-t{font-size:14.5px;font-weight:600}
+  .signin .s-d{font-size:12px;color:var(--text-2);margin-top:4px}
+  .signin-btn{
+    flex:none;display:flex;align-items:center;gap:6px;
+    height:38px;padding:0 16px;border-radius:19px;border:1px solid #d9c9f5;background:#fff;
+    font-size:13px;font-weight:600;color:#8b5cf6;cursor:pointer;
+    transition:transform .12s ease,opacity .15s ease;
+  }
+  .signin-btn:active{transform:scale(.95)}
+  .signin-btn.done{opacity:.45;pointer-events:none}
+
+  /* 积分卡内：充值按钮（单个按钮，无说明行） */
+  .recharge-btn{
+    display:block;width:100%;height:44px;margin-bottom:10px;border:none;border-radius:12px;cursor:pointer;
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;
+    font-size:14.5px;font-weight:600;letter-spacing:.3px;
+    transition:transform .12s ease,filter .15s ease;
+  }
+  .recharge-btn:active{transform:scale(.98);filter:brightness(.96)}
+
+  /* ============ 充值中心页 ============ */
+  .charge-scroll{flex:1;overflow-y:auto;padding:12px 14px 30px;-webkit-overflow-scrolling:touch}
+  .charge-scroll::-webkit-scrollbar{display:none}
+  .charge-balance{
+    background:linear-gradient(135deg,#f3efff,#ece4ff);border:1px solid #e0d4fb;
+    border-radius:16px;padding:14px 16px;
+  }
+  .charge-balance .cb-row{display:flex;align-items:baseline;gap:8px}
+  .charge-balance .num{font-size:34px;font-weight:700;letter-spacing:-.5px;color:#5b21b6}
+  .charge-balance .lbl{font-size:12.5px;color:var(--text-3)}
+  .charge-balance .cb-links{display:flex;align-items:center;gap:14px;margin-top:8px;font-size:12px;color:#8b5cf6}
+  .charge-balance .cb-links span{cursor:pointer}
+  .charge-balance .cb-total{margin-left:auto;font-size:11.5px;color:var(--text-3)}
+  .pack-title{font-size:15px;font-weight:600;margin:18px 2px 3px}
+  .pack-sub{font-size:11.5px;color:var(--text-3);margin:0 2px 12px}
+  .pack{
+    position:relative;border:1px solid var(--line);border-radius:16px;background:#fff;
+    padding:13px 14px;margin-bottom:11px;box-shadow:var(--shadow-card);
+  }
+  .pack.featured{border:1.5px solid #8b5cf6;background:linear-gradient(135deg,#faf8ff,#f6f2ff)}
+  .pack .p-badge{
+    position:absolute;top:-8px;right:12px;background:linear-gradient(135deg,#a78bfa,#7c3aed);
+    color:#fff;font-size:10.5px;font-weight:600;border-radius:8px;padding:2px 8px;
+  }
+  .pack .p-head{display:flex;align-items:center;gap:10px}
+  .pack .p-main{flex:1;min-width:0}
+  .pack .p-name{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .pack.featured .p-name{color:#5b21b6}
+  .pack .p-gift{font-size:10.5px;font-weight:600;color:#7c3aed;background:#ede9fe;border-radius:6px;padding:1px 6px}
+  .pack .p-gift.none{color:var(--text-3);background:var(--bg)}
+  .pack .p-points{font-size:16px;font-weight:700;margin-top:3px}
+  .pack .p-points small{font-size:11.5px;font-weight:400;color:var(--text-3)}
+  .pack .p-buy{
+    flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;
+  }
+  .pack .p-buy-btn{
+    height:34px;padding:0 16px;border-radius:17px;border:1px solid #c4b5fd;background:#fff;
+    color:#7c3aed;font-size:13px;font-weight:600;cursor:pointer;transition:transform .12s ease;
+  }
+  .pack.featured .p-buy-btn{
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);border-color:transparent;color:#fff;
+  }
+  .pack .p-buy-btn:active{transform:scale(.94)}
+  .pack .p-unit{font-size:10.5px;color:var(--text-3)}
+  .pack .p-perks{
+    margin-top:9px;padding-top:9px;border-top:1px dashed var(--line-strong);
+    font-size:11.5px;color:var(--text-2);line-height:1.7;
+    display:flex;flex-wrap:wrap;gap:2px 14px;
+  }
+  .pack .p-perks span{display:flex;align-items:center;gap:4px}
+  .pack .p-perks svg{color:var(--ok);flex:none}
+  .pack.featured .p-perks{color:#5b21b6}
+  .pack-agree{
+    display:flex;align-items:center;gap:6px;margin:4px 2px 0;
+    font-size:11.5px;color:var(--text-3);cursor:pointer;user-select:none;
+  }
+  .pack-agree .ck{
+    width:15px;height:15px;border-radius:50%;border:1.5px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;color:#fff;flex:none;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .pack-agree.on .ck{background:#8b5cf6;border-color:#8b5cf6}
+  .pack-agree a{color:#8b5cf6;text-decoration:none}
+
+  /* 支付方式弹层 */
+  .pay-title{font-size:15.5px;font-weight:600;text-align:center}
+  .pay-pack{
+    margin:14px 0 4px;background:var(--bg);border-radius:12px;padding:12px 14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .pay-pack .pp-main{flex:1}
+  .pay-pack .pp-name{font-size:14px;font-weight:600}
+  .pay-pack .pp-sub{font-size:11.5px;color:var(--text-3);margin-top:3px}
+  .pay-pack .pp-price{font-size:17px;font-weight:700;color:#5b21b6}
+  .pay-method{
+    display:flex;align-items:center;gap:12px;padding:13px 6px;cursor:pointer;
+    border-bottom:1px solid var(--line);
+  }
+  .pay-method .pm-ico{
+    width:34px;height:34px;border-radius:9px;flex:none;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+  }
+  .pay-method .pm-ico.wx{background:#09bb07}
+  .pay-method .pm-ico.zfb{background:#1677ff}
+  .pay-method .pm-name{flex:1;font-size:14.5px;font-weight:500}
+  .pay-method .pm-radio{
+    width:19px;height:19px;border-radius:50%;border:1.5px solid var(--line-strong);flex:none;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .pay-method.on .pm-radio{background:#8b5cf6;border-color:#8b5cf6}
+  .pay-submit{
+    width:100%;height:44px;border:none;border-radius:12px;margin-top:14px;cursor:pointer;
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-size:15px;font-weight:600;
+    transition:transform .12s ease;
+  }
+  .pay-submit:active{transform:scale(.98)}
+
+  /* ============ 充值记录页 ============ */
+  .records-scroll{flex:1;overflow-y:auto;padding:12px 14px 30px;-webkit-overflow-scrolling:touch}
+  .records-scroll::-webkit-scrollbar{display:none}
+  .rc-item{
+    border:1px solid var(--line);border-radius:14px;background:#fff;
+    padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow-card);
+    display:flex;align-items:center;gap:11px;
+  }
+  .rc-ico{
+    width:34px;height:34px;border-radius:9px;flex:none;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+  }
+  .rc-ico.wx{background:#09bb07}
+  .rc-ico.zfb{background:#1677ff}
+  .rc-info{flex:1;min-width:0}
+  .rc-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .rc-gift{font-size:10px;color:#7c3aed;background:#ede9fe;border-radius:5px;padding:1px 5px}
+  .rc-paid{font-size:10px;color:var(--ok);background:#e8f6ef;border-radius:5px;padding:1px 5px}
+  .rc-meta{font-size:11px;color:var(--text-3);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rc-amt{flex:none;text-align:right}
+  .rc-amt .a-pts{font-size:15px;font-weight:700;color:#7c3aed}
+  .rc-amt .a-rmb{font-size:11px;color:var(--text-3);margin-top:2px}
+  .rc-loadmore{
+    text-align:center;font-size:12px;color:var(--text-3);padding:14px 0;cursor:pointer;
+  }
+  .rc-empty{
+    text-align:center;color:var(--text-3);font-size:13px;padding:60px 0;
+  }
+
+  /* ============ 积分明细页 ============ */
+  .ledger-scroll{flex:1;overflow-y:auto;padding:6px 16px 40px;-webkit-overflow-scrolling:touch}
+  .ledger-scroll::-webkit-scrollbar{display:none}
+  .ledger-balance{display:flex;align-items:baseline;gap:8px;padding:14px 2px 18px;border-bottom:1px solid var(--line)}
+  .ledger-balance .num{font-size:36px;font-weight:700;letter-spacing:-1px}
+  .ledger-balance .lbl{font-size:13px;color:var(--text-3)}
+  .l-date{font-size:12.5px;color:var(--text-3);padding:16px 2px 10px;font-weight:500}
+  .l-item{
+    display:flex;align-items:center;gap:12px;
+    border:1px solid var(--line);border-radius:14px;background:#fff;
+    padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow-card);
+  }
+  .l-ico{
+    width:36px;height:36px;border-radius:11px;flex:none;
+    display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;
+  }
+  .l-ico.spend{background:#fdeced;color:var(--danger)}
+  .l-ico.refund{background:#e8f1fe;color:var(--accent)}
+  .l-info{flex:1;min-width:0}
+  .l-t{font-size:14.5px;font-weight:600}
+  .l-m{font-size:11.5px;color:var(--text-3);margin-top:4px;line-height:1.5}
+  .l-amt{flex:none;font-size:16px;font-weight:700}
+  .l-amt.plus{color:var(--accent)}
+  .l-amt.minus{color:var(--danger)}
+
+  /* ============ Toast ============ */
+  .toast{
+    position:absolute;left:50%;bottom:110px;transform:translateX(-50%) translateY(8px);
+    background:rgba(23,26,34,.92);color:#fff;font-size:13px;
+    padding:9px 16px;border-radius:10px;z-index:20;
+    opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;
+    white-space:nowrap;max-width:86%;overflow:hidden;text-overflow:ellipsis;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="phone" id="app">
+
+  <!-- ================= 首页：大集全链路AI矩阵（单层） ================= -->
+  <section class="screen active" id="homeScreen">
+    <header class="topbar">
+      <button class="points-pill" onclick="openCredits()" aria-label="我的积分">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
+        <span id="pillNum">84</span>
+      </button>
+      <div class="title">大集全链路AI矩阵</div>
+      <button class="history-btn" onclick="openHistory()">历史创作</button>
+    </header>
+
+    <div class="home-head">
+      <!-- 六大分类：点击切换下方功能卡片 -->
+      <div class="tile-grid" id="tileGrid"></div>
+
+      <div class="hint" id="homeHint"></div>
+    </div>
+
+    <main class="grid" id="grid"></main>
+
+    <!-- 集宝AI助手：右下角悬浮入口 -->
+    <button class="jibao-fab" onclick="openChat()" aria-label="集宝AI助手">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/>
+        <path d="M17.4 14.6l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>
+      </svg>
+    </button>
+  </section>
+
+  <!-- ================= 集宝AI助手 · 聊天页 ================= -->
+  <section class="screen" id="chatScreen">
+    <div class="chat-top">
+      <div class="chat-bar">
+        <button class="chat-icon" style="margin-left:-6px" onclick="goHome()" aria-label="返回">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="chat-ava">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" fill="#ffb59f"/>
+            <circle cx="9.2" cy="10.6" r="1.5" fill="#fff"/>
+            <circle cx="14.8" cy="10.6" r="1.5" fill="#fff"/>
+            <path d="M9 14.6c1.6 1.4 4.4 1.4 6 0" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M5.6 6.6c1.2-1.6 2.6-2.4 4-2.8" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </span>
+        <span class="cb-name">Hi! 我是集宝</span>
+        <button class="chat-icon" onclick="resetChat()" aria-label="新建对话">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h11M4 5.5v13h13v-8"/><path d="M19.5 3.5l1 1-6 6-2 .5.5-2 6-6z" transform="translate(-1.5,1.5)"/></svg>
+        </button>
+        <button class="chat-icon" onclick="toast('历史会话（原型演示）')" aria-label="历史会话">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5h8M8 12.5h8M8 16.5h5"/></svg>
+        </button>
+      </div>
+
+      <div class="chat-hero">
+        <h1>Hello，我是你的大集<em>AI助手</em></h1>
+        <p>我可以为你分析数据、创作图片/视频、欢迎向我提问</p>
+      </div>
+
+      <div class="chat-cards">
+        <div class="cc-main" onclick="pickQuick('帮我看看店铺近一周的经营数据')">
+          <div class="cc-img">
+            <svg width="86" height="62" viewBox="0 0 120 82" fill="none">
+              <ellipse cx="60" cy="70" rx="46" ry="8" fill="#c9d9f7" opacity=".55"/>
+              <rect x="30" y="22" width="60" height="40" rx="7" fill="#fff" stroke="#a9c4f0"/>
+              <rect x="36" y="28" width="30" height="17" rx="4" fill="#dbe9ff"/>
+              <path d="M40 40l6-6 5 4 6-8" stroke="#5b8def" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="80" cy="34" r="5" fill="#b7d0f8"/>
+              <rect x="70" y="45" width="14" height="4" rx="2" fill="#c9dcf8"/>
+              <circle cx="24" cy="26" r="7" fill="#e2ecff" stroke="#8fb3ea"/>
+              <circle cx="96" cy="24" r="6" fill="#e2ecff" stroke="#8fb3ea"/>
+              <circle cx="42" cy="12" r="5" fill="#e2ecff" stroke="#8fb3ea"/>
+              <path d="M28 34l4 3M92 30l-4 3" stroke="#8fb3ea" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="cc-txt">
+            <div class="cc-t1">这里全是 AI 能力</div>
+            <div class="cc-t2">对话即可调用 26 项工具</div>
+          </div>
+        </div>
+        <div class="cc-side">
+          <div class="cc-mini" onclick="pickQuick('帮我看下店铺经营情况')">
+            <span class="m-ico" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9z"/><path d="M3 9l2-5h14l2 5M9 20v-5h6v5"/></svg>
+            </span>
+            店铺经营
+          </div>
+          <div class="cc-mini" onclick="pickQuick('有什么值得做的选品方向？')">
+            <span class="m-ico" style="background:linear-gradient(135deg,#f0a95a,#e08a2b)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+            </span>
+            商机选品
+          </div>
+          <div class="cc-mini" onclick="pickQuick('出海贸易需要注意什么？')">
+            <span class="m-ico" style="background:linear-gradient(135deg,#7c9cf0,#4f6fe0)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 3 2.5 14 0 17M12 3.5c-2.5 3-2.5 14 0 17"/></svg>
+            </span>
+            出海贸易
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-dots"><i class="on"></i><i></i><i></i></div>
+    </div>
+
+    <div class="chat-scroll" id="chatBody"></div>
+
+    <div class="chat-bottom">
+      <div class="fn-bar" id="fnBar"></div>
+      <div class="input-row">
+        <div class="input-box">
+          <input id="chatInput" type="text" placeholder="请输入消息或者点击具体功能" onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="plus-btn" onclick="toast('支持上传图片/文档（原型演示）')" aria-label="更多">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <button class="send-btn" onclick="sendChat()" aria-label="发送">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10.5 13.5"/><path d="M21 3l-6.6 18-3.9-7.5L3 9.6 21 3z"/></svg>
+        </button>
+      </div>
+      <div class="chat-note">AI 生成的内容未必准确无误，请注意核查。</div>
+    </div>
+  </section>
+
+  <!-- ================= 工具表单页（点卡片直接进入） ================= -->
+  <section class="screen" id="flowScreen">
+
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromFlow()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title" id="flowTitle">工具名称</div>
+      <span class="spacer"></span>
+    </header>
+
+    <div class="flow-scroll" id="flowBody"></div>
+
+    <div class="cta-bar" id="flowBar">
+      <div class="ff-info" id="ffInfo"></div>
+      <button class="cta" id="flowCta">开始生成</button>
+    </div>
+  </section>
+
+  <!-- 积分明细页 -->
+  <section class="screen" id="ledgerScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromLedger()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#a855f7"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
+          我的积分
+        </span>
+      </div>
+      <button class="icon-btn" aria-label="关闭" onclick="closeOverlays(); showScreen(homeScreen)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </header>
+    <div class="ledger-scroll" id="ledgerBody"></div>
+  </section>
+
+  <!-- 充值中心页 -->
+  <section class="screen" id="chargeScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromCharge()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">充值中心</div>
+      <button class="history-btn" onclick="openRecords()">充值记录</button>
+    </header>
+    <div class="charge-scroll">
+      <div class="charge-balance">
+        <div class="cb-row">
+          <span class="num" id="chargeNum">84</span>
+          <span class="lbl">可用积分</span>
+        </div>
+        <div class="cb-links">
+          <span onclick="openLedger()">积分明细 ›</span>
+          <span onclick="openRecords()">充值记录 ›</span>
+          <span class="cb-total">累计充值 <b id="totalRmb">¥98</b> · 累计获赠 <b id="totalGift">200</b></span>
+        </div>
+      </div>
+
+      <div class="pack-title">积分套餐</div>
+      <p class="pack-sub">点击卡片即可充值，下单后积分立即到账</p>
+      <div id="packList"></div>
+
+      <div class="pack-agree on" id="packAgree" onclick="this.classList.toggle('on')">
+        <span class="ck">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        已阅读并同意<a onclick="event.stopPropagation();toast('《充值服务协议》（原型演示）')">《充值服务协议》</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 充值记录页 -->
+  <section class="screen" id="recordsScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="showScreen(chargeScreen)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">充值记录</div>
+      <button class="history-btn" onclick="showScreen(chargeScreen)">继续充值</button>
+    </header>
+    <div class="records-scroll" id="recordsBody"></div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- 遮罩（抽屉/积分卡共用） -->
+  <div class="mask" id="mask" onclick="closeOverlays()"></div>
+
+  <!-- 我的积分卡 -->
+  <div class="sheet" id="creditSheet" aria-label="我的积分">
+    <div class="sheet-head">
+      <span class="sh-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
+        我的积分
+      </span>
+      <span class="sh-links">
+        <span class="sh-link" onclick="openLedger()">积分明细
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+        <span class="sh-link" onclick="toast('计费规则页（原型演示）')">计费规则
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </span>
+      <button class="icon-btn" aria-label="关闭" onclick="closeOverlays()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="sheet-balance">
+      <span class="num" id="creditNum">84</span>
+      <span class="lbl">可用积分</span>
+    </div>
+
+    <button class="recharge-btn" onclick="openCharge()">充值积分</button>
+
+    <div class="signin">
+      <div class="s-info">
+        <div class="s-t">每日签到领取</div>
+        <div class="s-d">每日可领 +100 积分</div>
+      </div>
+      <button class="signin-btn" id="signinBtn" onclick="claimCredits()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v8h14v-8M12 8v12M12 8s-1.5-4-4-4-2.5 4 0 4h4zM12 8s1.5-4 4-4 2.5 4 0 4h-4z"/></svg>
+        一键领取
+      </button>
+    </div>
+  </div>
+
+  <!-- 支付方式弹层 -->
+  <div class="sheet" id="paySheet" aria-label="选择支付方式">
+    <div style="display:flex;align-items:center">
+      <span style="width:28px;flex:none"></span>
+      <div class="pay-title" style="flex:1">确认充值</div>
+      <button class="icon-btn" aria-label="关闭" onclick="closeOverlays()" style="flex:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="pay-pack">
+      <div class="pp-main">
+        <div class="pp-name" id="payPackName">标准包</div>
+        <div class="pp-sub" id="payPackSub">1,100 积分 · 含赠送 +100</div>
+      </div>
+      <span class="pp-price" id="payPackPrice">¥98</span>
+    </div>
+    <div class="pay-method on" data-m="wx" onclick="pickPay(this)">
+      <span class="pm-ico wx">微</span>
+      <span class="pm-name">微信支付</span>
+      <span class="pm-radio">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
+    </div>
+    <div class="pay-method" data-m="zfb" onclick="pickPay(this)">
+      <span class="pm-ico zfb">支</span>
+      <span class="pm-name">支付宝</span>
+      <span class="pm-radio">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
+    </div>
+    <button class="pay-submit" id="paySubmit" onclick="doPay()">确认支付 ¥98</button>
+  </div>
+
+  <!-- 历史创作抽屉 -->
+  <aside class="drawer" id="drawer" aria-label="历史创作">
+    <div class="drawer-head">
+      <div class="t">历史创作</div>
+      <button class="clear" onclick="toast('已清空记录（原型演示）')">清空</button>
+      <button class="icon-btn" aria-label="关闭" onclick="closeHistory()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="drawer-list" id="historyList"></div>
+  </aside>
+</div>
+
+<script>
+/* ================= 图标库 ================= */
+const ICONS = {
+  video:'<path d="M15 10l4.5-2.5v9L15 14"/><rect x="3" y="6" width="12" height="12" rx="3"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-4 4 3 4-3 5 4"/>',
+  translate:'<path d="M4 5h8"/><path d="M8 3v2c0 4-2 7-5 8"/><path d="M5 9c1.5 3 4 5 7 5"/><path d="M13 21l4.5-11L22 21"/><path d="M14.8 17h5.4"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/>',
+  store:'<path d="M4 10v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9"/><path d="M3.5 6.5L5 4h14l1.5 2.5c.6 1-.1 3.5-2.5 3.5-1.6 0-2.6-1-3-2-.4 1-1.4 2-3 2s-2.6-1-3-2c-.4 1-1.4 2-3 2-2.4 0-3.1-2.5-2.5-3.5z"/><path d="M9 20v-5h6v5"/>',
+  megaphone:'<path d="M3 11l14-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
+  captions:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 14h4M13 14h4"/>',
+  avatar:'<circle cx="12" cy="9" r="3.5"/><path d="M5.5 20c.8-3.2 3.4-4.8 6.5-4.8s5.7 1.6 6.5 4.8"/>',
+  copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+  film:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 5v14M16 5v14"/>',
+  cutout:'<rect x="4" y="4" width="16" height="16" rx="3" stroke-dasharray="3 3"/><path d="M9 12h6M12 9v6"/>',
+  sparkle:'<path d="M12 4l1.5 4.5L18 10l-4.5 1.5L12 16l-1.5-4.5L6 10l4.5-1.5z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
+  palette:'<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-.9 2-1.9 0-1.1-.6-1.6-1.6-1.6-.7 0-1.4-.6-1.4-1.4 0-.8.7-1.5 1.5-1.5h2.1A5.4 5.4 0 0 0 21 9.2C21 5.8 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.2"/><circle cx="10" cy="7.5" r="1.2"/>',
+  ruler:'<path d="M3 17L17 3l4 4L7 21z"/><path d="M8 16l1.5 1.5M11 13l1.5 1.5M14 10l1.5 1.5"/>',
+  magnify:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5M8 11h6M11 8v6"/>',
+  image1:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-4 4 3 4-3 5 4"/>',
+  image2:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 15l5-4 4 3 4-3 5 4"/><circle cx="15.5" cy="9.5" r="1.8"/>',
+  image3:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 4v16M3 9h18"/>',
+  image4:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="12" cy="12" r="3.5"/><path d="M12 6.5V8M12 16v1.5M6.5 12H8M16 12h1.5"/>',
+  image5:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h4M9 7v4"/><path d="M14 15c2 1.5 4 1.5 6 0"/>',
+  image6:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M12 8.5l1.2 2.5 2.8.4-2 2 .5 2.8-2.5-1.3-2.5 1.3.5-2.8-2-2 2.8-.4z"/>',
+  box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+  doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>',
+};
+
+/* ================= 首页数据：六大分类 ================= */
+const TILES = [
+  { key: 'video',     name: 'AI视频创作', icon: 'video',    theme: ['#ff9d6c','#e5623b'] },
+  { key: 'image',     name: 'AI图片创作', icon: 'image',    theme: ['#5aa2f0','#2f6bff'] },
+  { key: 'translate', name: '多语言翻译', icon: 'translate',theme: ['#4fc08d','#2f9e6e'] },
+  { key: 'sourcing',  name: '商机选品',   icon: 'chart',    theme: ['#f0b95a','#d98f2b'] },
+  { key: 'trading',   name: '出海贸易',   icon: 'globe',    theme: ['#7d5fc9','#5b3fb0'] },
+  { key: 'shop',      name: '店铺经营',   icon: 'store',    theme: ['#f39ab4','#d9567e'] },
+];
+
+/* ================= 创作中心数据 ================= */
+const SCENES = {
+  video: {
+    title: 'AI视频创作', cta: '开始视频创作', unit: '视频',
+    intro: '从产品展示到数字人口播，从多语种翻译到首尾帧生成，AI一键生成专业级营销视频',
+    items: [
+      { name: '产品宣传视频', tag: '热门', desc: '上传产品图+描述，AI生成专业展示短片', theme: ['#ffd9a8','#ff9d6c','#c96f3b'], icon: 'megaphone' },
+      { name: '数字人口播',   tag: '',      desc: '虚拟形象+文案，一键生成播报视频',       theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'avatar' },
+      { name: '真人口播视频', tag: 'NEW',  desc: '真人素材+新文案，智能生成全新内容',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'user' },
+      { name: '口播视频翻译', tag: '',      desc: 'AI口型同步，多语言版本一键生成',       theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
+      { name: '视频字幕翻译', tag: '',      desc: '自动识别语音，生成多语种字幕',         theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'captions' },
+      { name: '首尾帧生视频', tag: '新',    desc: '首尾两张图，AI生成流畅过渡视频',       theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'film' },
+    ]
+  },
+  image: {
+    title: 'AI图片创作', cta: '开始图片创作', unit: '图片',
+    intro: '商品视觉素材一站式智能生成，从白底图到场景图，全面提升商品视觉表现力',
+    items: [
+      { name: '生成白底图',   desc: '一键去背景，生成平台规范白底图', theme: ['#f2f4f7','#c3c9d6','#8f97a6'], icon: 'cutout' },
+      { name: '生成场景图',   desc: '商品融入真实场景，增强购买欲望', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'image2' },
+      { name: '图片变清晰',   desc: 'AI修复模糊图片，完美呈现细节',   theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'sparkle' },
+      { name: '商品图换背景', desc: '智能替换背景，适配不同平台',     theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'image3' },
+      { name: 'AI细节图',     desc: '自动生成细节放大图，突出工艺',   theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'magnify' },
+      { name: 'AI卖点图',     desc: '智能生成卖点信息图，提升转化',   theme: ['#ffd9a8','#f5b06c','#c9853b'], icon: 'image6' },
+      { name: '商品智能换色', desc: '一键更换商品颜色，预览多色效果', theme: ['#fff3c2','#e8d478','#c9ae3b'], icon: 'palette' },
+      { name: 'AI标尺图',     desc: '自动标注商品尺寸，生成标尺图',   theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'ruler' },
+    ]
+  }
+};
+
+const HISTORY = [
+  { name: '产品宣传视频 · 台益斯锂电钻', meta: '今天 10:24 · 消耗 120 积分', status: 'done',  st: '已完成', theme: ['#ffd9a8','#ff9d6c'], icon: 'megaphone' },
+  { name: '数字人口播 · 企业宣传片',     meta: '今天 09:51 · 消耗 200 积分', status: 'doing', st: '生成中', theme: ['#ffd6e0','#f39ab4'], icon: 'avatar' },
+  { name: '口播视频翻译 · 中→英语',     meta: '昨天 18:02 · 消耗 60 积分',  status: 'done',  st: '已完成', theme: ['#cdeedd','#93d6b5'], icon: 'translate' },
+  { name: '生成白底图 · 扳手主图',       meta: '昨天 15:37 · 消耗 20 积分',  status: 'fail',  st: '失败',   theme: ['#d6f0ff','#93cdef'], icon: 'cutout' },
+];
+
+/* ================= 通用工具页（多语言翻译/商机选品/出海贸易/店铺经营） ================= */
+const TOOL_PAGES = {
+  translate: {
+    title: '多语言翻译',
+    intro: '10+通用语种，专业商贸术语库，让商品内容一键说全球语言',
+    tools: [
+      { name: '多语言翻译',   desc: '将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
+      { name: '图片翻译',     desc: '识别图片文字并翻译为目标语言，保留原图排版布局，适用于说明书、包装', theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'image3' },
+      { name: '文本翻译',     desc: '输入或粘贴文本即译，支持10+通用语种，商贸术语库确保翻译精准',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'doc' },
+      { name: '视频音频翻译', desc: '识别视频或音频中的语音并翻译，生成多语种字幕和配音',            theme: ['#ffd9a8','#f5b06c','#c9853b'], icon: 'video' },
+      { name: 'AI口播视频转译', desc: '识别人物口播并转换为目标语言版本，智能对口型、多语种配音',      theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'avatar' },
+    ]
+  },
+  sourcing: {
+    title: '商机选品',
+    intro: '供需智能匹配，潜在买家主动找上门，商机不再遗漏',
+    tools: [
+      { name: 'AI选品',     desc: '根据采购需求和平台商品供给推荐候选商品，智能匹配供需，提升选品效率和精准度', theme: ['#fdeccd','#e8b95a','#b98a2b'], icon: 'chart' },
+      { name: 'AI商机探查', tag: 'HOT', desc: '按采购商或供应商角色梳理商机要点、相关建议和后续行动', theme: ['#ffd9a8','#f5b06c','#c9853b'], icon: 'magnify' },
+      { name: 'AI海外获客', tag: 'HOT', desc: '根据目标市场和商品方向查找潜在买家线索，智能匹配海外采购商，拓展国际客户资源', theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'globe' },
+    ]
+  },
+  trading: {
+    title: '出海贸易',
+    intro: '从铺货发品到智能报关，贸易全流程 AI 提效',
+    tools: [
+      { name: '智能发品',   desc: '一键将商品信息、图片、视频等素材发布到电商平台，自动填充商品字段，支持多平台批量发布', theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'box' },
+      { name: 'AI智能报关', desc: '识别报关单据，自动填报关单，智能校验商品编码和申报要素，大幅提升报关效率和准确率', theme: ['#d6e8ff','#93b4e8','#5a83c9'], icon: 'doc' },
+    ]
+  },
+  shop: {
+    title: '店铺经营',
+    intro: '经营数据智能诊断，企业与店铺形象一站升级',
+    tools: [
+      { name: 'AI经营分析', desc: '基于平台经营数据识别变化和优先处理方向，智能生成经营诊断报告，辅助决策优化', theme: ['#fdeccd','#e8b95a','#b98a2b'], icon: 'chart' },
+      { name: '大集AI名片', tag: 'NEW', desc: '一张会说话的智能名片，扫码即见企业资信、产品展示、多语言介绍', theme: ['#fbdde7','#f39ab4','#c9648a'], icon: 'store' },
+    ]
+  },
+};
+
+/* ================= 工具表单配置（点击卡片直接进入） ================= */
+const LANG_CHIPS = { type:'chips', label:'目标语种', required:true, options:['英语','日语','韩语','西班牙语','阿拉伯语'], default:0 };
+
+const FLOWS = {
+  /* ---- AI视频创作 ---- */
+  '产品宣传视频': { intro:'根据商品图片和卖点生成商品展示视频，自动运镜、配乐、加字幕，快速产出带货短片', cta:'开始生成视频', fields:[
+    { type:'upload', label:'上传商品图', required:true, hint:'支持 JPG/PNG，最多 9 张' },
+    { type:'textarea', label:'商品卖点', required:true, placeholder:'例：无刷锂电、21V 大扭矩、双速调节，专业级五金工具' },
+    { type:'chips', label:'视频时长', options:['10s','15s','30s'], default:0 },
+    { type:'chips', label:'画幅比例', options:['16:9','9:16','1:1'], default:0 },
+  ]},
+  '数字人口播': { intro:'虚拟形象 + 文案，一键生成专业播报视频，支持多语种配音', cta:'开始生成视频', fields:[
+    { type:'chips', label:'数字人形象', required:true, options:['商务男士','商务女士','亲和力讲解','科技感主播'], default:0 },
+    { type:'textarea', label:'口播文案', required:true, placeholder:'输入数字人需要播报的文案，约 100~500 字' },
+    { type:'chips', label:'播报语种', options:['中文','英语','日语','韩语','阿拉伯语'], default:0 },
+    { type:'chips', label:'视频时长', options:['30s','60s','90s'], default:0 },
+  ]},
+  '真人口播视频': { intro:'上传人物形象照或视频，自定义口播文案，AI生成同款人物口播视频，支持多语种', cta:'开始生成视频', fields:[
+    { type:'upload', label:'人物形象照或视频', required:true, hint:'正脸清晰、光线均匀，效果最佳' },
+    { type:'textarea', label:'口播文案', required:true, placeholder:'输入需要人物口播的文案内容' },
+    { type:'chips', label:'播报语种', options:['中文','英语','日语','韩语','阿拉伯语'], default:0 },
+  ]},
+  '口播视频翻译': { intro:'识别人物口播并转换为目标语言版本，AI口型同步、多语种配音，让产品视频说遍全球', cta:'开始翻译', fields:[
+    { type:'upload', label:'上传口播视频', required:true, hint:'支持 MP4/MOV，单条不超过 5 分钟' },
+    LANG_CHIPS,
+    { type:'chips', label:'字幕', options:['双语字幕','仅目标语','无字幕'], default:0 },
+  ]},
+  '视频字幕翻译': { intro:'识别视频或音频中的语音并翻译，自动生成多语种字幕', cta:'开始翻译', fields:[
+    { type:'upload', label:'上传视频/音频', required:true, hint:'支持 MP4/MOV/MP3，不超过 10 分钟' },
+    LANG_CHIPS,
+    { type:'chips', label:'字幕样式', options:['字幕条','居中大字幕','底部小字幕'], default:0 },
+  ]},
+  '首尾帧生视频': { intro:'提供首尾两张图片，AI自动生成流畅自然的过渡视频', cta:'开始生成视频', fields:[
+    { type:'upload2', label:'首尾帧图片', required:true, labels:['首帧图片','尾帧图片'] },
+    { type:'textarea', label:'过渡描述（选填）', placeholder:'例：镜头缓慢环绕商品，光影渐变' },
+    { type:'chips', label:'视频时长', options:['5s','8s','10s'], default:0 },
+  ]},
+  /* ---- AI图片创作 ---- */
+  '生成白底图': { intro:'一键去除背景，生成符合平台规范的商品白底图', cta:'开始生成', fields:[
+    { type:'upload', label:'上传商品图', required:true, hint:'主体清晰、无遮挡，效果最佳' },
+    { type:'chips', label:'输出比例', options:['1:1','3:4','16:9'], default:0 },
+  ]},
+  '生成场景图': { intro:'商品融入真实使用场景，增强买家代入感与购买欲望', cta:'开始生成', fields:[
+    { type:'upload', label:'上传商品图', required:true, hint:'建议白底或干净背景的商品图' },
+    { type:'textarea', label:'场景描述（选填）', placeholder:'例：户外露营桌上，阳光下的自然场景' },
+    { type:'chips', label:'场景风格', options:['生活场景','商务办公','户外自然','棚拍质感'], default:0 },
+  ]},
+  '图片变清晰': { intro:'AI修复模糊、低分辨率图片，完美呈现商品细节', cta:'开始修复', fields:[
+    { type:'upload', label:'上传模糊图片', required:true, hint:'支持 JPG/PNG，最大 10MB' },
+    { type:'chips', label:'放大倍数', options:['2倍','4倍'], default:0 },
+  ]},
+  '商品图换背景': { intro:'智能识别商品主体并替换背景，一键适配不同平台风格', cta:'开始生成', fields:[
+    { type:'upload', label:'上传商品图', required:true, hint:'主体清晰的商品图效果最佳' },
+    { type:'textarea', label:'背景描述（选填）', placeholder:'例：浅灰渐变背景，底部柔和阴影' },
+    { type:'chips', label:'快捷背景', options:['纯白','浅灰渐变','大理石纹','木质桌面'], default:0 },
+  ]},
+  'AI细节图': { intro:'放大材质与工艺细节，突出商品品质感', cta:'开始处理',
+    pricing:{ price:8, unit:'张', source:'生成张数' },
+    fields:[
+    { type:'upload', label:'商品图片', required:true, hint:'支持 JPG/JPEG/PNG，单张 25MB 以内，尺寸不小于 300px，限 1 张' },
+    { type:'chips', label:'突出细节', required:true, multi:true, default:-1, options:['材质纹理','工艺接缝','功能按键','品牌标识','包装细节','配件细节','内部结构','表面处理'], note:'可多选，AI 将围绕所选细节生成特写；不选则自动识别' },
+    { type:'chips', label:'展示形式', options:['单细节展示','多细节拼接展示'], default:0, note:'单选，决定细节图的呈现方式，默认单细节展示' },
+    { type:'chips', label:'生图比例', required:true, options:['1:1','4:3','9:16'], default:0, note:'1:1 平台主图 · 4:3 详情页横图 · 9:16 竖版主图 / 详情长图；默认 1:1' },
+    { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出' },
+  ]},
+  'AI卖点图': { intro:'自动提炼卖点文案，排版生成营销主图', cta:'开始处理',
+    pricing:{ price:8, unit:'张', source:'文案语种' },
+    fields:[
+    { type:'upload', label:'商品图片', required:true, hint:'支持 JPG/JPEG/PNG，单张 25MB 以内，尺寸不小于 300px，限 1 张' },
+    { type:'chips', label:'卖点类型', required:true, multi:true, default:-1, options:['核心功能','性能优势','材质工艺','设计亮点','使用场景','促销活动'], note:'可多选，AI 将围绕所选类型提炼卖点并排版上图；不选则自动识别' },
+    { type:'textarea', label:'卖点关键词（选填）', placeholder:'描述商品卖点，如「续航 48 小时 · IPX7 防水 · 一年换新」，留空则由 AI 自动提炼' },
+    { type:'chips', label:'生图比例', required:true, options:['1:1','4:3','9:16'], default:0, note:'1:1 平台主图 · 4:3 详情页横图 · 9:16 竖版主图 / 详情长图；默认 1:1' },
+    { type:'chips', label:'文案语种', required:true, multi:true, default:0, options:['中文','英语','阿拉伯语','泰语','印尼语','越南语','韩语','马来语','蒙古语'], note:'按所选语言输出整套卖点图，每个语种 1 张，按语种数计' },
+  ]},
+  '商品智能换色': { intro:'保留商品结构并调整指定颜色，一键生成多色款效果图', cta:'开始生成', fields:[
+    { type:'upload', label:'上传商品图', required:true, hint:'需清晰展示要换色的部位' },
+    { type:'chips', label:'目标颜色', required:true, options:['经典黑','商务蓝','活力橙','中国红','军绿色'], default:0 },
+  ]},
+  'AI标尺图': { intro:'自动标注商品尺寸比例，生成专业标尺图，减少买家咨询', cta:'开始生成', fields:[
+    { type:'upload', label:'上传商品图', required:true, hint:'正视角商品图标注更准确' },
+    { type:'textarea', label:'商品实际尺寸', required:true, placeholder:'例：长 25cm × 宽 8cm × 高 4cm' },
+    { type:'chips', label:'标注样式', options:['尺寸线','等比参照','标注+参照'], default:0 },
+  ]},
+  /* ---- 多语言翻译 ---- */
+  '多语言翻译': { intro:'将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', cta:'开始翻译', fields:[
+    { type:'textarea', label:'商品内容', required:true, placeholder:'粘贴商品标题、详情、关键词等内容' },
+    { type:'chips', label:'目标语种', required:true, options:['英语','日语','韩语','西班牙语','阿拉伯语'], default:0, multi:true },
+  ]},
+  '图片翻译': { intro:'识别图片文字并翻译为目标语言，保留原图排版布局，适用于说明书、包装等场景', cta:'开始翻译', fields:[
+    { type:'upload', label:'上传图片', required:true, hint:'支持 JPG/PNG，文字清晰即可' },
+    LANG_CHIPS,
+  ]},
+  '文本翻译': { intro:'输入或粘贴文本即译，10+ 通用语种，专业商贸术语库确保翻译精准', cta:'开始翻译', fields:[
+    { type:'textarea', label:'原文', required:true, placeholder:'输入需要翻译的文本' },
+    LANG_CHIPS,
+  ]},
+  '视频音频翻译': { intro:'识别视频或音频中的语音并翻译，生成多语种字幕和配音，适用于教程、采访、宣传视频', cta:'开始翻译', fields:[
+    { type:'upload', label:'上传视频/音频', required:true, hint:'支持 MP4/MOV/MP3，不超过 10 分钟' },
+    LANG_CHIPS,
+    { type:'chips', label:'输出形式', options:['字幕+配音','仅字幕','仅配音'], default:0 },
+  ]},
+  'AI口播视频转译': { intro:'识别人物口播并转换为目标语言版本，智能对口型、多语种配音', cta:'开始转译', fields:[
+    { type:'upload', label:'上传口播视频', required:true, hint:'人物口型清晰的视频效果最佳' },
+    LANG_CHIPS,
+  ]},
+  /* ---- 商机选品 ---- */
+  'AI选品': { intro:'根据采购需求和平台商品供给推荐候选商品，智能匹配供需，提升选品效率和精准度', cta:'开始推荐',
+    out:'输出：候选商品、推荐理由和查看入口', fields:[
+    { type:'textarea', label:'采购需求', required:true, placeholder:'例：欧美市场露营装备，客单价 $20~50，需要现货供应商' },
+    { type:'chips', label:'目标市场', required:true, options:['欧美','东南亚','中东','日韩','拉美'], default:0 },
+    { type:'chips', label:'客单价区间', required:true, options:['低客单($10以内)','中客单($10~50)','高客单($50以上)'], default:1 },
+    { type:'chips', label:'供应商要求', multi:true, default:-1, options:['有现货','支持定制','自有工厂','有出口资质','可小批量起订'], note:'可多选，用于过滤候选商品；不选则不限制' },
+    { type:'chips', label:'推荐数量', options:['10个','20个','50个'], default:0 },
+  ]},
+  'AI商机探查': { intro:'根据采购商或供应商角色提供可继续处理的商机内容，智能梳理商机要点、相关建议和后续行动', cta:'开始探查',
+    out:'输出：商机说明、相关内容和后续动作', fields:[
+    { type:'chips', label:'我的角色', required:true, options:['供应商','采购商'], default:0 },
+    { type:'textarea', label:'对方信息', required:true, placeholder:'例：德国采购商 Hans Tools GmbH，主营手工具，近30天有五金询盘' },
+    { type:'textarea', label:'商机背景（选填）', placeholder:'例：对方询盘手动扳手 5000 套，想判断成交可能和谈判要点' },
+    { type:'chips', label:'关注维度', multi:true, default:-1, options:['企业实力','信用评级','采购品类','近期动态','合作建议','谈判要点'], note:'可多选，决定报告的章节结构；不选则按默认结构输出' },
+  ]},
+  'AI海外获客': { intro:'根据目标市场和商品方向查找潜在买家线索，智能匹配海外采购商，拓展国际客户资源', cta:'开始匹配',
+    out:'输出：客户线索、企业信息和联系内容草稿', fields:[
+    { type:'textarea', label:'商品方向', required:true, placeholder:'例：手动工具、五金配件，有出口资质和自有工厂' },
+    { type:'chips', label:'目标市场', required:true, multi:true, options:['欧美','东南亚','中东','日韩','拉美'], default:0, note:'可多选，支持一次匹配多个市场' },
+    { type:'chips', label:'买家类型', required:true, multi:true, options:['进口批发商','连锁零售商','电商卖家','工程采购','品牌方'], default:0, note:'可多选，按所选类型筛选潜在买家' },
+    { type:'chips', label:'线索数量', options:['50家','100家','200家'], default:0 },
+    { type:'chips', label:'开发信草稿', options:['需要（自动生成）','暂不需要'], default:0, note:'选择需要时，将按目标市场语言生成跟进内容草稿' },
+  ]},
+  /* ---- 出海贸易 ---- */
+  '智能发品': { intro:'一键将商品素材发布到电商平台，自动填充商品字段，支持多平台批量发布，大幅提升铺货效率', cta:'开始发品',
+    out:'输出：已发布商品链接与发布状态', fields:[
+    { type:'upload', label:'商品素材', required:true, hint:'支持图片、视频、PDF 说明书，可一次上传多份' },
+    { type:'textarea', label:'商品信息（选填）', placeholder:'例：品名、规格、材质、起订量、交期，可只填要点' },
+    { type:'chips', label:'发布平台', required:true, multi:true, options:['中国大集','1688','亚马逊','速卖通','Temu'], default:0, note:'可多选，一次批量发布到所选平台' },
+    { type:'chips', label:'商品语种', multi:true, options:['中文','英语','日语','韩语','西班牙语','阿拉伯语'], default:0, note:'按所选语言生成对应语种的商品标题与详情' },
+    { type:'chips', label:'价格策略', options:['按平台建议定价','沿用现有售价','稍后手动填写'], default:0 },
+  ]},
+  'AI智能报关': { intro:'识别报关单据，自动填报关单，智能校验商品编码和申报要素，大幅提升报关效率和准确率', cta:'开始识别填报',
+    out:'输出：已识别填入信息的报关单', fields:[
+    { type:'upload', label:'报关单据', required:true, hint:'支持发票、箱单、合同、提单图片或 PDF' },
+    { type:'chips', label:'单据类型', required:true, multi:true, options:['商业发票','装箱单','合同','提单','报关单'], default:0, note:'可多选，便于按单据类型逐项识别' },
+    { type:'textarea', label:'HS编码（选填）', placeholder:'例：8204.11，留空则由 AI 按商品信息智能推荐' },
+    { type:'chips', label:'申报币种', options:['USD','CNY','EUR'], default:0 },
+    { type:'chips', label:'校验项', required:true, multi:true, options:['商品编码','申报要素','计量单位','价格合理性','原产地'], default:0, note:'可多选，逐项校验后给出风险提示与修改建议' },
+  ]},
+  /* ---- 店铺经营 ---- */
+  'AI经营分析': { intro:'基于平台经营数据识别变化和优先处理方向，智能生成经营诊断报告，辅助决策优化', cta:'开始分析', fields:[
+    { type:'chips', label:'分析周期', required:true, options:['近7天','近30天','近90天'], default:1 },
+    { type:'textarea', label:'关注的问题（选填）', placeholder:'例：最近询盘量下降，想知道原因和改善方向' },
+  ]},
+  '大集AI名片': { intro:'一张会说话的智能名片，扫码即见企业资信、产品展示、多语言介绍', cta:'开始生成', fields:[
+    { type:'upload', label:'企业Logo（选填）', hint:'建议透明底 PNG' },
+    { type:'textarea', label:'企业介绍', required:true, placeholder:'例：临沂五金工具工厂，主营扳手、钳类，15年出口经验' },
+    { type:'chips', label:'名片语种', options:['中英双语','仅中文','仅英文'], default:0 },
+  ]},
+};
+
+/* ================= 封面 SVG ================= */
+function coverSVG(theme, icon, horizontal){
+  const [c1, c2] = theme;
+  const gid = 'g' + Math.random().toString(36).slice(2,8);
+  const cy = horizontal ? 36 : 47, r = horizontal ? 18 : 21;
+  return `
+  <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="100" height="100" fill="url(#${gid})"/>
+    <circle cx="84" cy="14" r="26" fill="#ffffff" opacity=".14"/>
+    <circle cx="8" cy="94" r="32" fill="#ffffff" opacity=".10"/>
+    <circle cx="50" cy="${cy}" r="${r}" fill="#ffffff" opacity=".2"/>
+    <g transform="translate(${50-11},${cy-11})" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".95" width="22" height="22" viewBox="0 0 24 24">
+      ${ICONS[icon] || ICONS.image1}
+    </g>
+  </svg>`;
+}
+
+/* ================= 分类数据合并（视频/图片 + 四个工具分类） ================= */
+const CATS = {
+  video:     { ...SCENES.video,     tools: SCENES.video.items },
+  image:     { ...SCENES.image,     tools: SCENES.image.items },
+  translate: TOOL_PAGES.translate,
+  sourcing:  TOOL_PAGES.sourcing,
+  trading:   TOOL_PAGES.trading,
+  shop:      TOOL_PAGES.shop,
+};
+
+/* ================= 屏幕切换 ================= */
+const homeScreen = document.getElementById('homeScreen');
+const flowScreen = document.getElementById('flowScreen');
+let currentScreen = homeScreen;
+
+function showScreen(target){
+  currentScreen.classList.remove('active');
+  target.classList.add('active');
+  currentScreen = target;
+}
+function goHome(){
+  closeHistory();
+  showScreen(homeScreen);
+}
+
+/* ================= 首页渲染：分类切换 + 卡片平铺 ================= */
+let activeCat = 'video';
+const grid = document.getElementById('grid');
+
+document.getElementById('tileGrid').innerHTML = TILES.map((t, i) => `
+  <div class="tile ${t.key === activeCat ? 'on' : ''}" data-key="${t.key}" role="tab" tabindex="0">
+    <span class="t-ico" style="background:linear-gradient(135deg,${t.theme[0]},${t.theme[1]})">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[t.icon]}</svg>
+    </span>
+    <span class="t-name">${t.name}</span>
+  </div>
+`).join('');
+
+document.querySelectorAll('.tile').forEach(el => {
+  el.addEventListener('click', () => {
+    if (el.dataset.key === activeCat) return;
+    activeCat = el.dataset.key;
+    document.querySelectorAll('.tile').forEach(t => t.classList.toggle('on', t.dataset.key === activeCat));
+    render();
+  });
+});
+
+function render(){
+  const cat = CATS[activeCat];
+  document.getElementById('homeHint').textContent = cat.intro;
+  grid.innerHTML = cat.tools.map((it, i) => `
+    <div class="card" style="--i:${i}" data-i="${i}" role="button">
+      <div class="cover">
+        ${coverSVG(it.theme, it.icon)}
+        ${it.tag ? `<span class="tag">${it.tag}</span>` : ''}
+        ${activeCat === 'video' ? `<span class="play" aria-hidden="true">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </span>` : ''}
+      </div>
+      <div class="foot">
+        <span class="btn-label">${it.name}</span>
+        <div class="desc">${it.desc || ''}</div>
+      </div>
+    </div>
+  `).join('');
+
+  Array.from(grid.children).forEach(el => {
+    el.addEventListener('click', () => openFlow(cat.tools[+el.dataset.i].name));
+  });
+  grid.scrollTop = 0;
+}
+
+/* ================= 工具表单页 ================= */
+const flowBody = document.getElementById('flowBody');
+const flowCta = document.getElementById('flowCta');
+let flowName = '';
+
+function fieldHTML(f, i){
+  const req = f.required ? '<span class="req">*</span>' : '';
+  if (f.type === 'upload'){
+    return `<div class="f-group" style="--i:${i}">
+      <label>${f.label}${req}</label>
+      <div class="upload-box" onclick="toast('选择文件（原型演示）')">
+        <span class="u-ico">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+        <span>点击上传${f.label.replace(/^上传/, '')}</span>
+        ${f.hint ? `<span class="f-note" style="margin:0">${f.hint}</span>` : ''}
+      </div>
+    </div>`;
+  }
+  if (f.type === 'upload2'){
+    return `<div class="f-group" style="--i:${i}">
+      <label>${f.label}${req}</label>
+      <div class="upload-row">
+        ${f.labels.map(l => `
+          <div class="upload-box" onclick="toast('选择文件（原型演示）')">
+            <span class="u-ico">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+            <span>${l}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  if (f.type === 'textarea'){
+    return `<div class="f-group" style="--i:${i}">
+      <label>${f.label}${req}</label>
+      <textarea class="textarea" placeholder="${f.placeholder || ''}"></textarea>
+    </div>`;
+  }
+  if (f.type === 'chips'){
+    return `<div class="f-group" style="--i:${i}">
+      <label>${f.label}${req}</label>
+      ${f.note ? `<div class="f-note" style="margin:-2px 0 8px">${f.note}</div>` : ''}
+      <div class="chips" data-multi="${f.multi ? 1 : 0}" data-label="${f.label}">
+        ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+  return '';
+}
+
+function openFlow(name){
+  const f = FLOWS[name];
+  if (!f){ toast(`「${name}」流程建设中（原型演示）`); return; }
+  flowName = name;
+  document.getElementById('flowTitle').textContent = name;
+  flowBody.innerHTML = `<p class="flow-desc">${f.intro}</p>`
+    + (f.out ? `<p class="flow-out">${f.out}</p>` : '')
+    + f.fields.map(fieldHTML).join('');
+
+  /* 计费页脚：处理内容 N 张 · 共 N 积分 */
+  const bar = document.getElementById('flowBar');
+  let updateFooter = null;
+  if (f.pricing){
+    const p = f.pricing;
+    bar.classList.add('has-info');
+    updateFooter = () => {
+      const group = flowBody.querySelector(`.chips[data-label="${p.source}"]`);
+      let count = 1;
+      if (group){
+        if (group.dataset.multi === '1'){
+          count = group.querySelectorAll('.chip.on').length;
+        } else {
+          const on = group.querySelector('.chip.on');
+          const m = on && on.textContent.match(/\d+/);
+          count = m ? +m[0] : 1;
+        }
+      }
+      const total = count * p.price;
+      document.getElementById('ffInfo').innerHTML = `处理内容<b>${count} ${p.unit} · 共 ${total} 积分</b>`;
+      flowCta.innerHTML = `${f.cta}<span class="ff-badge">⚡${total}</span>`;
+    };
+    updateFooter();
+  } else {
+    bar.classList.remove('has-info');
+    flowCta.textContent = f.cta || '开始生成';
+  }
+
+  flowBody.querySelectorAll('.chips').forEach(group => {
+    group.addEventListener('click', e => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      if (group.dataset.multi === '1'){ chip.classList.toggle('on'); }
+      else {
+        group.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+        chip.classList.add('on');
+      }
+      if (updateFooter) updateFooter();
+    });
+  });
+  showScreen(flowScreen);
+  flowBody.scrollTop = 0;
+}
+
+function backFromFlow(){
+  showScreen(homeScreen);
+}
+
+flowCta.addEventListener('click', () => {
+  toast(`「${flowName}」任务已提交（原型演示）`);
+});
+
+/* ================= 历史抽屉 ================= */
+const drawer = document.getElementById('drawer');
+const mask = document.getElementById('mask');
+
+function openHistory(){ renderHistory(); drawer.classList.add('open'); mask.classList.add('open'); }
+function closeHistory(){ drawer.classList.remove('open'); if (!creditSheet.classList.contains('open')) mask.classList.remove('open'); }
+
+/* ================= 积分卡 ================= */
+const creditSheet = document.getElementById('creditSheet');
+let credits = 84;
+let claimed = false;
+
+/* ================= 积分明细 ================= */
+const LEDGER = [
+  { date: '2026-10-24', items: [
+    { t: '数字人口播完成', m: '10-24 09:13 · 已返还 25 积分 · 生成失败 · 已自动返还 25 积分', amt: 25,  kind: 'refund' },
+    { t: '数字人口播完成', m: '10-24 09:13 · 生成扣减 · 25 积分',                              amt: -25, kind: 'spend'  },
+    { t: '产品宣传视频完成', m: '10-24 09:12 · 生成扣减 · 25 积分',                            amt: -25, kind: 'spend'  },
+    { t: 'AI细节图',       m: '10-24 09:11 · AI细节图 单细节 · 表面处理 · 1 张 · 1:1 · 8 积分', amt: -8,  kind: 'spend'  },
+    { t: 'AI细节图',       m: '10-24 09:11 · AI细节图 单细节 · 表面处理 · 1 张 · 1:1 · 8 积分', amt: -8,  kind: 'spend'  },
+  ]},
+];
+
+function openLedger(){
+  renderLedger();
+  closeOverlays();
+  showScreen(document.getElementById('ledgerScreen'));
+}
+function backFromLedger(){
+  showScreen(homeScreen);
+  openCredits();
+}
+function renderLedger(){
+  const body = document.getElementById('ledgerBody');
+  body.innerHTML = `
+    <div class="ledger-balance">
+      <span class="num">${credits}</span>
+      <span class="lbl">可用积分</span>
+    </div>
+    ` + LEDGER.map(g => `
+      <div class="l-date">${g.date}</div>
+      ${g.items.map(it => `
+        <div class="l-item">
+          <span class="l-ico ${it.kind}">${it.kind === 'refund'
+            ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>'
+            : '−'}</span>
+          <div class="l-info">
+            <div class="l-t">${it.t}</div>
+            <div class="l-m">${it.m}</div>
+          </div>
+          <span class="l-amt ${it.amt >= 0 ? 'plus' : 'minus'}">${it.amt >= 0 ? '+' + it.amt : it.amt}</span>
+        </div>
+      `).join('')}
+    `).join('');
+  body.scrollTop = 0;
+}
+
+function openCredits(){ creditSheet.classList.add('open'); mask.classList.add('open'); }
+function closeOverlays(){
+  drawer.classList.remove('open');
+  creditSheet.classList.remove('open');
+  paySheet.classList.remove('open');
+  mask.classList.remove('open');
+}
+function claimCredits(){
+  if (claimed) return;
+  claimed = true;
+  credits += 100;
+  document.getElementById('creditNum').textContent = credits;
+  document.getElementById('pillNum').textContent = credits;
+  const btn = document.getElementById('signinBtn');
+  btn.classList.add('done');
+  btn.innerHTML = '今日已领取';
+  toast('+100 积分已到账');
+}
+
+/* ================= 充值中心 ================= */
+const PACKAGES = [
+  { name:'体验包', points:60,   gift:0,    price:6,   unit:'0.100', featured:false,
+    perks:['立即生效到账','积分长期有效','支持微信 / 支付宝','在线客服 7×24h'] },
+  { name:'基础包', points:320,  gift:0,    price:30,  unit:'0.094', featured:false,
+    perks:['立即生效到账','积分长期有效','在线客服工单','可申请电子发票'] },
+  { name:'标准包', points:1100, gift:100,  price:98,  unit:'0.082', featured:true,
+    perks:['立即生效到账','积分长期有效','客服工单优先','可申请电子发票'] },
+  { name:'创作包', points:2400, gift:400,  price:198, unit:'0.071', featured:false,
+    perks:['立即生效到账','积分长期有效','专属 1v1 客服','生图特惠工具解锁','VIP 创作徽标','头部模型 Beta 体验'] },
+  { name:'至尊包', points:6200, gift:1500, price:498, unit:'0.065', featured:false,
+    perks:['立即生效到账','积分长期有效','专属 VIP 客户经理','优先排队生成','内部模型 Beta 体验'] },
+];
+
+let totalRmb = 98, totalGift = 200;
+const RECORDS = [
+  { pack:'标准包', gift:100, price:98, method:'zfb', order:'60452385', time:'2026-09-22 16:04', points:1200 },
+  { pack:'标准包', gift:100, price:98, method:'wx',  order:'60452385', time:'2026-09-22 16:04', points:1200 },
+  { pack:'体验包', gift:0,   price:6,  method:'wx',  order:'51820417', time:'2026-09-18 10:32', points:60 },
+];
+
+const chargeScreen = document.getElementById('chargeScreen');
+const recordsScreen = document.getElementById('recordsScreen');
+const paySheet = document.getElementById('paySheet');
+let payIdx = 2;
+
+document.getElementById('packList').innerHTML = PACKAGES.map((p, i) => `
+  <div class="pack ${p.featured ? 'featured' : ''}">
+    ${p.featured ? '<span class="p-badge">推荐</span>' : ''}
+    <div class="p-head">
+      <div class="p-main">
+        <div class="p-name">${p.name}
+          <span class="p-gift ${p.gift ? '' : 'none'}">${p.gift ? '赠 +' + p.gift : '无赠送'}</span>
+        </div>
+        <div class="p-points">${p.points.toLocaleString()} <small>积分</small></div>
+      </div>
+      <div class="p-buy">
+        <button class="p-buy-btn" onclick="buyPack(${i})">¥${p.price} 充值</button>
+        <span class="p-unit">${p.unit} 元/积分</span>
+      </div>
+    </div>
+    <div class="p-perks">${p.perks.map(k => `
+      <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>${k}</span>
+    `).join('')}</div>
+  </div>
+`).join('');
+
+function syncCredits(){
+  document.getElementById('pillNum').textContent = credits;
+  document.getElementById('creditNum').textContent = credits;
+  document.getElementById('chargeNum').textContent = credits.toLocaleString();
+}
+function openCharge(){
+  closeOverlays();
+  syncCredits();
+  showScreen(chargeScreen);
+}
+function backFromCharge(){
+  showScreen(homeScreen);
+  openCredits();
+}
+
+function buyPack(i){
+  if (!document.getElementById('packAgree').classList.contains('on')){
+    toast('请先勾选并同意《充值服务协议》');
+    return;
+  }
+  payIdx = i;
+  const p = PACKAGES[i];
+  document.getElementById('payPackName').textContent = p.name;
+  document.getElementById('payPackSub').textContent = `${p.points.toLocaleString()} 积分${p.gift ? ' · 含赠送 +' + p.gift : ' · 无赠送'}`;
+  document.getElementById('payPackPrice').textContent = '¥' + p.price;
+  document.getElementById('paySubmit').textContent = `确认支付 ¥${p.price}`;
+  paySheet.classList.add('open');
+  mask.classList.add('open');
+}
+function pickPay(el){
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('on'));
+  el.classList.add('on');
+}
+function doPay(){
+  const p = PACKAGES[payIdx];
+  const arrive = p.points + p.gift;
+  credits += arrive;
+  totalRmb += p.price;
+  totalGift += p.gift;
+  document.getElementById('totalRmb').textContent = '¥' + totalRmb;
+  document.getElementById('totalGift').textContent = totalGift;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  RECORDS.unshift({
+    pack: p.name, gift: p.gift, price: p.price, points: arrive,
+    method: document.querySelector('.pay-method.on').dataset.m,
+    order: String(Math.floor(10000000 + Math.random() * 89999999)),
+    time: `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`,
+  });
+  paySheet.classList.remove('open');
+  mask.classList.remove('open');
+  syncCredits();
+  toast(`支付成功，+${arrive.toLocaleString()} 积分已到账`);
+}
+
+/* ================= 充值记录 ================= */
+function openRecords(){
+  renderRecords();
+  closeOverlays();
+  showScreen(recordsScreen);
+}
+function renderRecords(){
+  const body = document.getElementById('recordsBody');
+  body.innerHTML = RECORDS.length ? RECORDS.map(r => `
+    <div class="rc-item">
+      <span class="rc-ico ${r.method}">${r.method === 'wx' ? '微' : '支'}</span>
+      <div class="rc-info">
+        <div class="rc-name">${r.pack}
+          ${r.gift ? `<span class="rc-gift">含赠送 +${r.gift}</span>` : ''}
+          <span class="rc-paid">已支付</span>
+        </div>
+        <div class="rc-meta">${r.method === 'wx' ? '微信支付' : '支付宝'} · 单号 ${r.order} · ${r.time}</div>
+      </div>
+      <div class="rc-amt">
+        <div class="a-pts">+${r.points.toLocaleString()}</div>
+        <div class="a-rmb">¥${r.price}</div>
+      </div>
+    </div>
+  `).join('') + '<div class="rc-loadmore" onclick="toast(\'没有更多记录了\')">向下加载 ▾</div>'
+    : '<div class="rc-empty">暂无充值记录</div>';
+  body.scrollTop = 0;
+}
+
+function renderHistory(){
+  const list = document.getElementById('historyList');
+  list.innerHTML = HISTORY.length ? HISTORY.map(h => `
+    <div class="h-item">
+      <div class="h-thumb">${coverSVG(h.theme, h.icon)}</div>
+      <div class="h-info">
+        <div class="n">${h.name}</div>
+        <div class="m">${h.meta}</div>
+      </div>
+      <span class="h-status ${h.status}">${h.st}</span>
+    </div>
+  `).join('') : `
+    <div class="drawer-empty">
+      <div class="ring">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      </div>
+      暂无创作记录
+    </div>`;
+}
+
+/* ================= 集宝AI助手 · 聊天页 ================= */
+const chatScreen = document.getElementById('chatScreen');
+const chatBody = document.getElementById('chatBody');
+
+const QUICK_QUESTIONS = [
+  'AI助手能做什么？',
+  '出海贸易商机推荐',
+  '过去一周店铺经营数据分析',
+  '帮我生成一张商品白底图',
+  '适合东南亚市场的选品方向',
+];
+
+const FUNC_TABS = [
+  { name: 'AI图片创作', icon: 'image',     cat: 'image' },
+  { name: 'AI视频创作', icon: 'video',     cat: 'video' },
+  { name: '店铺经营',   icon: 'store',     cat: 'shop' },
+  { name: '商机选品',   icon: 'chart',     cat: 'sourcing' },
+  { name: '出海贸易',   icon: 'globe',     cat: 'trading' },
+  { name: '多语言翻译', icon: 'translate', cat: 'translate' },
+];
+
+document.getElementById('fnBar').innerHTML = FUNC_TABS.map(f => `
+  <span class="fn-chip" onclick="jumpToCat('${f.cat}')">
+    <span class="f-ico">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[f.icon]}</svg>
+    </span>${f.name}
+  </span>
+`).join('');
+
+let chatMsgs = [];
+
+function replyFor(q){
+  const t = q.replace(/\s/g, '');
+  if (/能做|什么|功能|会点/.test(t)) {
+    return '我是集宝，你的一句话就是指令。我能帮你：\n· 内容创作：商品白底图、场景图、卖点图、宣传视频、数字人口播\n· 智能翻译：商品详情、图片、视频字幕多语种翻译\n· 商机经营：选品推荐、商机探查、海外买家线索\n· 贸易赋能：智能发品、AI智能报关、经营数据分析\n直接说需求就行，比如"给这款电钻做一张卖点图"。';
+  }
+  if (/店铺|经营|数据|访客|转化/.test(t)) {
+    return '近 7 天店铺数据概览（示例）：\n· 访客 1,842（环比 +12.4%）\n· 商详转化 4.8%（环比 -0.6%）\n· 询盘 36 条（环比 +20%）\n\n主要问题：主图风格偏工业、场景图缺失，移动端首屏吸引力不足。\n建议：① 补 3 张场景图；② 卖点图突出"铬钒钢+终身质保"；③ 详情首屏加对比表格。\n需要我直接生成这 3 张图吗？';
+  }
+  if (/选品|商机|推荐|方向/.test(t)) {
+    return '基于近期询盘与平台供给，给你 3 个方向：\n1. 户外露营工具套装｜东南亚需求稳定，客单 $18~35，供给偏少\n2. 家用小五金组合｜中东复购高，适合做礼盒装\n3. 电动工具配件｜欧美备货需求强，注意认证（CE/UL）\n\n要不要我出一份选品报告，含竞品价格带和利润测算？';
+  }
+  if (/出海|海外|贸易|买家|客户/.test(t)) {
+    return '出海三步走：\n① 资质与合规：出口资质、目标国认证（CE/FCC/SASO）、商标先行\n② 获客：AI海外获客按品类匹配进口批发商与连锁零售，先小单试水\n③ 内容本地化：详情页与视频做多语种版本，询盘响应控制在 2 小时内\n\n我可以先帮你跑一轮买家线索，按目标市场筛选，你要哪个市场？';
+  }
+  if (/图片|白底|场景|卖点|抠图|换色/.test(t)) {
+    return '没问题。图片创作支持白底图、场景图、卖点图、细节图、换色、标尺图等 8 项能力。\n给我商品图 + 想要的风格（如"户外场景、暖色调"），我先出 2 张 1:1 主图给你挑。\n也可以直接说"给这款扳手做一张卖点图，中文文案"。';
+  }
+  if (/视频|口播|数字人|宣传片|字幕/.test(t)) {
+    return '视频创作有 6 项能力：产品宣传视频、数字人口播、真人口播、口播视频翻译、字幕翻译、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
+  }
+  if (/翻译|多语言|英文|阿拉伯/.test(t)) {
+    return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
+  }
+  return '收到。我先按这个需求梳理一下思路，给出可执行的建议。\n你可以补充：目标市场、商品品类、期望产出（图/视频/数据报告），我就能直接调用对应工具开工。';
+}
+
+function renderChat(){
+  chatScreen.classList.toggle('talking', chatMsgs.length > 0);
+  if (!chatMsgs.length){
+    chatBody.innerHTML = `<div class="q-list">${QUICK_QUESTIONS.map(q => `
+      <button class="q-chip" onclick="pickQuick('${q}')">
+        <span class="q-spark">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2 5.7 5.7 2-5.7 2-2 5.7-2-5.7-5.7-2 5.7-2z"/></svg>
+        </span>${q}
+      </button>`).join('')}</div>`;
+    return;
+  }
+  chatBody.innerHTML = chatMsgs.map(m => m.role === 'me'
+    ? `<div class="msg me"><div class="bubble">${m.text}</div></div>`
+    : `<div class="msg bot">
+         <span class="m-ava">
+           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/></svg>
+         </span>
+         <div class="bubble"${m.typing ? ' style="padding:12px 14px"' : ''}>${m.typing
+            ? '<div class="typing"><i></i><i></i><i></i></div>'
+            : m.text}</div>
+       </div>`
+  ).join('');
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function openChat(){
+  showScreen(chatScreen);
+  if (!chatMsgs.length) renderChat();
+}
+function resetChat(){
+  chatMsgs = [];
+  document.getElementById('chatInput').value = '';
+  renderChat();
+  toast('已开启新对话');
+}
+function jumpToCat(cat){
+  activeCat = cat;
+  document.querySelectorAll('.tile').forEach(t => t.classList.toggle('on', t.dataset.key === activeCat));
+  render();
+  showScreen(homeScreen);
+}
+function pickQuick(q){
+  document.getElementById('chatInput').value = q;
+  sendChat();
+}
+function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text){ toast('请输入你想问的内容'); return; }
+  input.value = '';
+  chatMsgs.push({ role: 'me', text });
+  chatMsgs.push({ role: 'bot', typing: true });
+  renderChat();
+  const idx = chatMsgs.length - 1;
+  setTimeout(() => {
+    chatMsgs[idx] = { role: 'bot', text: replyFor(text) };
+    renderChat();
+  }, 850);
+}
+
+
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+render();
+</script>
+</body>
+</html>
