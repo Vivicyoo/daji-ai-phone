@@ -956,8 +956,9 @@
     padding:6px 4px;margin:-6px -4px;
   }
   .sheet-head .sh-links{flex:1;display:flex;gap:14px;justify-content:flex-end}
-  .sheet-balance{display:flex;align-items:baseline;gap:8px;margin:18px 0 16px}
-  .sheet-balance .num{font-size:38px;font-weight:700;letter-spacing:-1px}
+  .sheet-balance{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 14px}
+  .sheet-balance .sb-left{display:flex;align-items:baseline;gap:8px;min-width:0}
+  .sheet-balance .num{font-size:38px;font-weight:700;letter-spacing:-1px;line-height:1}
   .sheet-balance .lbl{font-size:13px;color:var(--text-3)}
   .signin{
     display:flex;align-items:center;gap:10px;
@@ -977,14 +978,17 @@
     background:#f3eefe;border-color:#e7defb;color:#a89ce4;pointer-events:none;cursor:default;
   }
 
-  /* 积分卡内：充值按钮（单个按钮，无说明行） */
+  /* 积分卡内：充值入口（与余额同行，右侧紧凑主按钮） */
   .recharge-btn{
-    display:block;width:100%;height:44px;margin-bottom:10px;border:none;border-radius:12px;cursor:pointer;
+    position:relative;flex:none;display:inline-flex;align-items:center;gap:4px;
+    height:34px;padding:0 13px;border:none;border-radius:17px;cursor:pointer;
     background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;
-    font-size:14.5px;font-weight:600;letter-spacing:.3px;
+    font-size:12.5px;font-weight:600;letter-spacing:.2px;
+    box-shadow:0 4px 12px rgba(124,58,237,.26);
     transition:transform .12s ease,filter .15s ease;
   }
-  .recharge-btn:active{transform:scale(.98);filter:brightness(.96)}
+  .recharge-btn::after{content:"";position:absolute;inset:-5px;border-radius:22px}
+  .recharge-btn:active{transform:scale(.96);filter:brightness(.96)}
 
   /* ============ 充值中心页 ============ */
   .charge-scroll{flex:1;overflow-y:auto;padding:12px var(--pad-x) 30px;-webkit-overflow-scrolling:touch}
@@ -1605,11 +1609,15 @@
     </div>
 
     <div class="sheet-balance">
-      <span class="num" id="creditNum">84</span>
-      <span class="lbl">可用积分</span>
+      <div class="sb-left">
+        <span class="num" id="creditNum">84</span>
+        <span class="lbl">可用积分</span>
+      </div>
+      <button class="recharge-btn" onclick="openCharge()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        充值积分
+      </button>
     </div>
-
-    <button class="recharge-btn" onclick="openCharge()">充值积分</button>
 
     <div class="signin">
       <div class="s-info">
