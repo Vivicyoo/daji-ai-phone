@@ -453,50 +453,91 @@
   }
   .f-note{font-size:11px;color:var(--text-3);margin-top:6px}
 
-  /* ============ 历史创作抽屉 ============ */
+  /* ============ 遮罩（弹层/下拉菜单共用） ============ */
   .mask{
     position:absolute;inset:0;background:rgba(17,20,28,.42);z-index:10;
     opacity:0;pointer-events:none;transition:opacity .25s ease;
   }
   .mask.open{opacity:1;pointer-events:auto}
-  .drawer{
-    position:absolute;top:0;right:0;bottom:0;width:84%;max-width:330px;z-index:11;
-    background:var(--surface);border-radius:20px 0 0 20px;
-    transform:translateX(105%);transition:transform .32s cubic-bezier(.16,1,.3,1);
-    display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(16,24,40,.14);
+  .mask.plain{background:transparent}
+
+  /* ============ 创作历史页 ============ */
+  .hd-filters{flex:none;display:flex;gap:10px;padding:10px 14px 6px}
+  .hd-filter{
+    flex:1;min-width:0;display:flex;align-items:center;gap:6px;
+    height:38px;padding:0 12px;border-radius:10px;
+    border:1px solid var(--line);background:#fff;
+    font-size:13px;color:var(--text);cursor:pointer;
+    transition:border-color .14s ease,background .14s ease;
   }
-  .drawer.open{transform:none}
-  .drawer-head{
-    display:flex;align-items:center;gap:8px;
-    padding:16px 16px 12px;border-bottom:1px solid var(--line);
+  .hd-filter .v{flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hd-filter svg{flex:none;color:var(--text-3);transition:transform .18s ease}
+  .hd-filter.on{border-color:#c9b8f5;background:#faf7ff;color:#7c3aed}
+  .hd-filter.on svg{transform:rotate(180deg);color:#7c3aed}
+  .hd-menu{
+    position:absolute;z-index:12;min-width:130px;max-height:264px;overflow-y:auto;
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;
+    box-shadow:0 12px 32px rgba(16,24,40,.18);
+    opacity:0;pointer-events:none;transform:translateY(-5px);
+    transition:opacity .16s ease,transform .16s ease;
   }
-  .drawer-head .t{flex:1;font-size:16px;font-weight:600}
-  .drawer-head .clear{
-    font-size:12px;color:var(--text-3);background:none;border:none;cursor:pointer;
-    padding:8px 6px;margin:-8px -6px;
+  .hd-menu.open{opacity:1;pointer-events:auto;transform:none}
+  .hd-menu::-webkit-scrollbar{display:none}
+  .hd-mi{
+    display:flex;align-items:center;gap:7px;height:34px;padding:0 9px;border-radius:8px;
+    font-size:13px;color:var(--text-2);cursor:pointer;white-space:nowrap;
   }
-  .drawer-list{flex:1;overflow-y:auto;padding:12px 14px 20px;display:flex;flex-direction:column;gap:10px}
-  .h-item{
-    display:flex;gap:10px;align-items:center;
-    border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;
+  .hd-mi:active{background:#f6f7fa}
+  .hd-mi.on{background:#f4efff;color:#7c3aed;font-weight:600}
+  .hd-mi .ck{flex:none;width:13px;opacity:0;color:#7c3aed}
+  .hd-mi.on .ck{opacity:1}
+
+  .hd-scroll{flex:1;overflow-y:auto;padding:6px 14px 14px;-webkit-overflow-scrolling:touch}
+  .hd-scroll::-webkit-scrollbar{display:none}
+  .hd-group{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    margin-bottom:10px;box-shadow:var(--shadow-card);overflow:hidden;
   }
-  .h-thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;flex:none}
-  .h-thumb svg{width:100%;height:100%;display:block}
-  .h-info{flex:1;min-width:0}
-  .h-info .n{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .h-info .m{font-size:11px;color:var(--text-3);margin-top:3px}
-  .h-status{flex:none;font-size:11px;padding:4px 8px;border-radius:20px;font-weight:500}
-  .h-status.ok{background:#e8f6ef;color:var(--ok)}
-  .h-status.doing{background:var(--accent-soft);color:var(--accent)}
-  .h-status.fail{background:#fdeced;color:var(--danger)}
-  .drawer-empty{
-    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    color:var(--text-3);font-size:13px;gap:10px;
+  .hd-ghead{display:flex;align-items:center;gap:8px;padding:14px;cursor:pointer;user-select:none}
+  .hd-ghead .d{flex:1;font-size:14px;font-weight:600;color:var(--text);letter-spacing:.2px}
+  .hd-ghead .n{font-size:11.5px;color:var(--text-3)}
+  .hd-ghead svg{flex:none;color:var(--text-3);transition:transform .2s ease}
+  .hd-group.fold .hd-ghead svg{transform:rotate(180deg)}
+  .hd-group.fold .hd-items{display:none}
+  .hd-items{border-top:1px solid var(--line)}
+  .hd-item{display:flex;gap:10px;padding:11px 14px}
+  .hd-item + .hd-item{border-top:1px solid #f4f5f8}
+  .hd-thumb{width:48px;height:48px;border-radius:9px;overflow:hidden;flex:none;background:#f4f5f8}
+  .hd-thumb svg{width:100%;height:100%;display:block}
+  .hd-main{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .hd-row1{display:flex;align-items:center;gap:8px}
+  .hd-name{flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hd-row2{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .hd-sub{
+    flex:1;min-width:0;font-size:11.5px;color:var(--text-3);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    display:flex;align-items:center;gap:4px;
   }
-  .drawer-empty .ring{
-    width:52px;height:52px;border-radius:50%;border:1.5px dashed var(--line-strong);
-    display:flex;align-items:center;justify-content:center;color:var(--text-3);
+  .hd-sub .s-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hd-meta{flex:none;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-3)}
+  .hd-meta .sep{color:#dfe3ea}
+  .hd-pts{display:inline-flex;align-items:center;gap:2px;color:#8b5cf6;font-weight:600;font-size:11px}
+  .hd-pts svg{flex:none}
+  .hd-badge{
+    flex:none;display:inline-flex;align-items:center;gap:3px;
+    height:20px;padding:0 6px;border-radius:6px;
+    font-size:10.5px;font-weight:500;border:1px solid transparent;white-space:nowrap;
   }
+  .hd-badge.ing{color:#b3720f;background:#fff8ec;border-color:#f2ddb8}
+  .hd-badge.ok{color:#2a9b69;background:#effaf4;border-color:#c2e7d5}
+  .hd-badge.fail{color:#d1382f;background:#fdeeec;border-color:#f6cbc6}
+  .hd-foot{
+    flex:none;display:flex;align-items:center;justify-content:space-between;
+    padding:11px 16px calc(11px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line);background:var(--surface);
+    font-size:11.5px;color:var(--text-3);
+  }
+  .hd-empty{text-align:center;color:var(--text-3);font-size:13px;padding:70px 0}
 
   /* ============ 积分卡（底部弹层） ============ */
   .points-pill{
@@ -933,7 +974,7 @@
       <button class="icon-btn" aria-label="返回" onclick="backFromLedger()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <div class="title">我的积分</div>
+      <div class="title">积分明细</div>
       <span class="spacer"></span>
     </header>
     <div class="ledger-scroll" id="ledgerBody"></div>
@@ -1062,17 +1103,34 @@
     <button class="pay-submit" id="paySubmit" onclick="doPay()">确认支付 ¥98</button>
   </div>
 
-  <!-- 历史创作抽屉 -->
-  <aside class="drawer" id="drawer" aria-label="历史创作">
-    <div class="drawer-head">
-      <div class="t">历史创作</div>
-      <button class="clear" onclick="toast('已清空记录（原型演示）')">清空</button>
-      <button class="icon-btn" aria-label="关闭" onclick="closeHistory()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  <!-- 创作历史页 -->
+  <section class="screen" id="historyScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromHistory()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">创作历史</div>
+      <span class="spacer"></span>
+    </header>
+    <div class="hd-filters">
+      <button class="hd-filter" id="hdFType" onclick="openHdMenu('type')">
+        <span class="v" id="hdFTypeTxt">全部类型</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button class="hd-filter" id="hdFStatus" onclick="openHdMenu('status')">
+        <span class="v" id="hdFStatusTxt">全部状态</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
     </div>
-    <div class="drawer-list" id="historyList"></div>
-  </aside>
+    <div class="hd-scroll" id="historyBody"></div>
+    <div class="hd-foot">
+      <span>仅保留最近30天的内容</span>
+      <span id="hdTotal">共 0 条</span>
+    </div>
+  </section>
+
+  <!-- 筛选下拉菜单（挂在 app 层，才能压住遮罩） -->
+  <div class="hd-menu" id="hdMenu"></div>
 </div>
 
 <script>
@@ -1145,11 +1203,44 @@ const SCENES = {
   }
 };
 
-const HISTORY = [
-  { name: '产品宣传视频 · 台益斯锂电钻', meta: '今天 10:24 · 消耗 120 积分', status: 'done',  st: '已完成', theme: ['#ffd9a8','#ff9d6c'], icon: 'megaphone' },
-  { name: '数字人口播 · 企业宣传片',     meta: '今天 09:51 · 消耗 200 积分', status: 'doing', st: '生成中', theme: ['#ffd6e0','#f39ab4'], icon: 'avatar' },
-  { name: '口播视频翻译 · 中→英语',     meta: '昨天 18:02 · 消耗 60 积分',  status: 'done',  st: '已完成', theme: ['#cdeedd','#93d6b5'], icon: 'translate' },
-  { name: '生成白底图 · 扳手主图',       meta: '昨天 15:37 · 消耗 20 积分',  status: 'fail',  st: '失败',   theme: ['#d6f0ff','#93cdef'], icon: 'cutout' },
+/* 创作历史：按日期分组的记录；kind 决定行样式（video 带时长、积分在右侧；image 积分跟在副标题后） */
+const HIS = [
+  { date:'2026年05月09日', items:[
+    { kind:'video', type:'产品宣传视频', name:'产品宣传视频产品宣传视频_20260509_002', sub:'产品宣传视频_20260509_002产品宣传视频_20260509_002', time:'16:25', dur:'3s', pts:null, st:'ing',  theme:['#ffd9a8','#ff9d6c'], icon:'megaphone' },
+    { kind:'video', type:'数字人口播',   name:'数字人口播',   sub:'数字人口播_20260509_002', time:'16:25', dur:'3s', pts:25, st:'ok',   theme:['#ffd6e0','#f39ab4'], icon:'avatar' },
+    { kind:'video', type:'数字人口播',   name:'数字人口播',   sub:'数字人口播_20260509_001', time:'16:25', dur:'3s', pts:25, st:'ok',   theme:['#ffd6e0','#f39ab4'], icon:'avatar' },
+    { kind:'video', type:'产品宣传视频', name:'产品宣传视频', sub:'产品宣传视频_20260509_001', time:'16:25', dur:'3s', pts:0,  st:'fail', theme:['#ffd9a8','#ff9d6c'], icon:'megaphone' },
+  ]},
+  { date:'2026年05月08日', items:[
+    { kind:'video', type:'数字人口播',   name:'数字人口播',   sub:'数字人口播_20260508_003', time:'11:02', dur:'5s', pts:25, st:'ok',   theme:['#ffd6e0','#f39ab4'], icon:'avatar' },
+    { kind:'video', type:'口播视频翻译', name:'口播视频翻译 · 中→英语', sub:'口播视频翻译_20260508_002', time:'10:41', dur:'8s', pts:40, st:'ok', theme:['#cdeedd','#93d6b5'], icon:'translate' },
+    { kind:'video', type:'产品宣传视频', name:'产品宣传视频', sub:'产品宣传视频_20260508_001', time:'09:58', dur:'3s', pts:0,  st:'fail', theme:['#ffd9a8','#ff9d6c'], icon:'megaphone' },
+    { kind:'video', type:'视频字幕翻译', name:'视频字幕翻译', sub:'视频字幕翻译_20260508_001', time:'09:20', dur:'6s', pts:null, st:'ing', theme:['#e4d8ff','#b9a1f2'], icon:'captions' },
+  ]},
+  { date:'2026年05月07日', items:[
+    { kind:'video', type:'真人口播视频', name:'真人口播视频', sub:'真人口播视频_20260507_002', time:'17:12', dur:'9s', pts:60, st:'ok', theme:['#c7e0ff','#8fb8f5'], icon:'user' },
+    { kind:'video', type:'产品宣传视频', name:'产品宣传视频', sub:'产品宣传视频_20260507_001', time:'15:36', dur:'3s', pts:25, st:'ok', theme:['#ffd9a8','#ff9d6c'], icon:'megaphone' },
+  ]},
+  { date:'2026年05月09日', items:[
+    { kind:'image', type:'生成白底图',   name:'生成白底图',   sub:'一键生成白底图',   time:'16:25', pts:0, st:'ing',  theme:['#e4e8ef','#b6bfcd'], icon:'cutout' },
+    { kind:'image', type:'图片调整',     name:'图片调整',     sub:'抠图（白底图）',   time:'16:25', pts:5, st:'ok',   theme:['#c7e0ff','#8fb8f5'], icon:'image1' },
+    { kind:'image', type:'商品图换背景', name:'商品图换背景', sub:'更换商品背景图',   time:'16:25', pts:5, st:'fail', theme:['#cdeedd','#93d6b5'], icon:'image3' },
+  ]},
+  { date:'2026年05月09日', items:[
+    { kind:'image', type:'图片调整',     name:'图片调整',     sub:'抠图（透明底）',   time:'16:25', pts:5, st:'fail', theme:['#c7e0ff','#8fb8f5'], icon:'image1' },
+    { kind:'image', type:'局部消除',     name:'局部消除',     sub:'文字替换',         time:'16:25', pts:5, st:'ok',   theme:['#e4d8ff','#b9a1f2'], icon:'image4' },
+    { kind:'image', type:'商品图换背景', name:'商品图换背景', sub:'更换商品背景图',   time:'16:25', pts:5, st:'ing',  theme:['#cdeedd','#93d6b5'], icon:'image3' },
+  ]},
+  { date:'2026年05月08日', items:[
+    { kind:'image', type:'生成白底图',   name:'生成白底图',   sub:'一键生成白底图',   time:'14:08', pts:0, st:'ok',   theme:['#e4e8ef','#b6bfcd'], icon:'cutout' },
+    { kind:'image', type:'生成场景图',   name:'生成场景图',   sub:'商品融入真实场景', time:'11:27', pts:5, st:'ok',   theme:['#cdeedd','#93d6b5'], icon:'image2' },
+    { kind:'image', type:'图片变清晰',   name:'图片变清晰',   sub:'AI 修复模糊图片',  time:'09:44', pts:5, st:'ok',   theme:['#c7e0ff','#8fb8f5'], icon:'sparkle' },
+  ]},
+  { date:'2026年05月07日', items:[
+    { kind:'image', type:'AI细节图',     name:'AI细节图',     sub:'单细节 · 表面处理', time:'18:03', pts:8, st:'ok',   theme:['#ffd6e0','#f39ab4'], icon:'magnify' },
+    { kind:'image', type:'商品图换背景', name:'商品图换背景', sub:'更换商品背景图',   time:'16:51', pts:5, st:'fail', theme:['#cdeedd','#93d6b5'], icon:'image3' },
+    { kind:'image', type:'生成白底图',   name:'生成白底图',   sub:'一键生成白底图',   time:'10:12', pts:0, st:'ok',   theme:['#e4e8ef','#b6bfcd'], icon:'cutout' },
+  ]},
 ];
 
 /* ================= 通用工具页（多语言翻译/商机选品/出海贸易/店铺经营） ================= */
@@ -1393,7 +1484,7 @@ function showScreen(target){
   currentScreen = target;
 }
 function goHome(){
-  closeHistory();
+  closeHdMenu();
   showScreen(homeScreen);
 }
 
@@ -1556,12 +1647,168 @@ flowCta.addEventListener('click', () => {
   toast(`「${flowName}」任务已提交（原型演示）`);
 });
 
-/* ================= 历史抽屉 ================= */
-const drawer = document.getElementById('drawer');
+/* ================= 创作历史页 ================= */
 const mask = document.getElementById('mask');
+const historyScreen = document.getElementById('historyScreen');
+const hdMenu = document.getElementById('hdMenu');
+const HD_ST = { ing:{ t:'生成中', c:'ing' }, ok:{ t:'成功', c:'ok' }, fail:{ t:'失败', c:'fail' } };
+const HD_STATUS = [{ k:'all', t:'全部状态' }, { k:'ing', t:'生成中' }, { k:'ok', t:'成功' }, { k:'fail', t:'失败' }];
 
-function openHistory(){ renderHistory(); drawer.classList.add('open'); mask.classList.add('open'); }
-function closeHistory(){ drawer.classList.remove('open'); if (!creditSheet.classList.contains('open')) mask.classList.remove('open'); }
+let hdScope = 'all';        // video / image / all，由进页面时的分类决定
+let hdType = 'all';
+let hdStatus = 'all';
+let hdMenuFor = null;       // 当前展开的下拉：type / status
+let hdFold = new Set();     // 折叠的日期分组 key
+let hdFirstRender = true;
+let hdLast = [];            // 最近一次渲染的分组（供折叠用）
+
+function hdKey(g){
+  return g.date + '|' + g.items[0].time + '|' + g.items[0].name + '|' + g.items.length;
+}
+function hdTypeOptions(){
+  const names = [];
+  HIS.forEach(g => g.items.forEach(it => {
+    if (hdScope !== 'all' && it.kind !== hdScope) return;
+    if (!names.includes(it.type)) names.push(it.type);
+  }));
+  return [{ k:'all', t:'全部类型' }].concat(names.map(n => ({ k:n, t:n })));
+}
+function hdFiltered(){
+  return HIS.map(g => ({
+    date: g.date,
+    items: g.items.filter(it =>
+      (hdScope === 'all' || it.kind === hdScope) &&
+      (hdType === 'all' || it.type === hdType) &&
+      (hdStatus === 'all' || it.st === hdStatus))
+  })).filter(g => g.items.length);
+}
+
+function openHistory(){
+  hdScope = (activeCat === 'video' || activeCat === 'image') ? activeCat : 'all';
+  hdType = 'all'; hdStatus = 'all'; hdFold.clear(); hdFirstRender = true;
+  closeOverlays();
+  document.getElementById('hdFTypeTxt').textContent = '全部类型';
+  document.getElementById('hdFStatusTxt').textContent = '全部状态';
+  renderHistory();
+  showScreen(historyScreen);
+}
+function backFromHistory(){
+  closeHdMenu();
+  showScreen(homeScreen);
+}
+
+function renderHistory(){
+  const body = document.getElementById('historyBody');
+  const groups = hdFiltered();
+  hdLast = groups;
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
+  document.getElementById('hdTotal').textContent = `共 ${total} 条`;
+
+  if (!groups.length){
+    body.innerHTML = '<div class="hd-empty">没有符合条件的记录</div>';
+    return;
+  }
+  if (hdFirstRender){
+    groups.forEach((g, i) => { if (i > 0) hdFold.add(hdKey(g)); });
+    hdFirstRender = false;
+  }
+  body.innerHTML = groups.map((g, i) => {
+    const fold = hdFold.has(hdKey(g));
+    return `
+      <div class="hd-group ${fold ? 'fold' : ''}">
+        <div class="hd-ghead" onclick="toggleHdGroup(${i})" role="button" tabindex="0">
+          <span class="d">${g.date}</span>
+          <span class="n">${g.items.length}条</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+        </div>
+        <div class="hd-items">${g.items.map(hdRow).join('')}</div>
+      </div>`;
+  }).join('');
+  body.scrollTop = 0;
+}
+function toggleHdGroup(i){
+  const g = hdLast[i];
+  if (!g) return;
+  const k = hdKey(g);
+  hdFold.has(k) ? hdFold.delete(k) : hdFold.add(k);
+  renderHistory();
+}
+function hdPts(n){
+  return `<span class="hd-pts"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/></svg>${n}</span>`;
+}
+function hdRow(it){
+  const st = HD_ST[it.st] || HD_ST.ok;
+  const ico = it.st === 'ok' ? `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M7.8 10.4L12 14.6l4.2-4.2"/><path d="M5.5 19.5h13"/></svg>`
+    : it.st === 'fail' ? `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.6v5.2M12 16.3h.01"/></svg>`
+    : '';
+  const meta = it.kind === 'video'
+    ? `<span>${it.time}</span><span class="sep">|</span><span>${it.dur}</span><span class="sep">|</span>${hdPts(it.pts == null ? '—' : it.pts)}`
+    : `<span>${it.time}</span>`;
+  const sub = it.kind === 'video'
+    ? `<span class="s-txt">${it.sub}</span>`
+    : `<span class="s-txt">${it.sub}</span>${hdPts(it.pts)}`;
+  return `
+    <div class="hd-item">
+      <div class="hd-thumb">${coverSVG(it.theme, it.icon)}</div>
+      <div class="hd-main">
+        <div class="hd-row1">
+          <span class="hd-name">${it.name}</span>
+          <span class="hd-badge ${st.c}">${ico}${st.t}</span>
+        </div>
+        <div class="hd-row2">
+          <span class="hd-sub">${sub}</span>
+          <span class="hd-meta">${meta}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* 下拉筛选 */
+function openHdMenu(which){
+  if (hdMenuFor === which){ closeHdMenu(); return; }
+  const isType = which === 'type';
+  const opts = isType ? hdTypeOptions() : HD_STATUS;
+  const cur = isType ? hdType : hdStatus;
+  hdMenu.innerHTML = opts.map(o => `
+    <div class="hd-mi ${o.k === cur ? 'on' : ''}" onclick="pickHd('${which}', ${JSON.stringify(o.k)})">
+      <span class="ck"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+      ${o.t}
+    </div>`).join('');
+  const chip = document.getElementById(isType ? 'hdFType' : 'hdFStatus');
+  const r = chip.getBoundingClientRect();
+  const a = document.getElementById('app').getBoundingClientRect();
+  const top = Math.round(r.bottom - a.top + 6);
+  hdMenu.style.left = Math.round(r.left - a.left) + 'px';
+  hdMenu.style.top = top + 'px';
+  hdMenu.style.minWidth = Math.round(r.width) + 'px';
+  hdMenu.style.maxHeight = Math.max(120, Math.round(a.height - top - 14)) + 'px';
+  hdMenu.classList.add('open');
+  chip.classList.add('on');
+  hdMenuFor = which;
+  mask.classList.add('open');
+  mask.classList.add('plain');
+}
+function pickHd(which, k){
+  if (which === 'type'){
+    hdType = k;
+    const hit = hdTypeOptions().find(o => o.k === k);
+    document.getElementById('hdFTypeTxt').textContent = hit ? hit.t : '全部类型';
+  } else {
+    hdStatus = k;
+    document.getElementById('hdFStatusTxt').textContent = (HD_STATUS.find(o => o.k === k) || { t:'全部状态' }).t;
+  }
+  hdFold.clear(); hdFirstRender = true;
+  closeHdMenu();
+  renderHistory();
+}
+function closeHdMenu(){
+  hdMenu.classList.remove('open');
+  document.getElementById('hdFType').classList.remove('on');
+  document.getElementById('hdFStatus').classList.remove('on');
+  hdMenuFor = null;
+  mask.classList.remove('plain');
+  if (!creditSheet.classList.contains('open') && !paySheet.classList.contains('open')) mask.classList.remove('open');
+}
 
 /* ================= 积分卡 ================= */
 const creditSheet = document.getElementById('creditSheet');
@@ -1638,7 +1885,7 @@ function nowStr(){
 
 function openCredits(){ creditSheet.classList.add('open'); mask.classList.add('open'); }
 function closeOverlays(){
-  drawer.classList.remove('open');
+  closeHdMenu();
   creditSheet.classList.remove('open');
   paySheet.classList.remove('open');
   mask.classList.remove('open');
@@ -1847,26 +2094,6 @@ function rcRow(r){
         <div class="rc-amt">${amt}<div class="a-rmb">¥${r.price}</div></div>
       </div>
       ${note}
-    </div>`;
-}
-
-function renderHistory(){
-  const list = document.getElementById('historyList');
-  list.innerHTML = HISTORY.length ? HISTORY.map(h => `
-    <div class="h-item">
-      <div class="h-thumb">${coverSVG(h.theme, h.icon)}</div>
-      <div class="h-info">
-        <div class="n">${h.name}</div>
-        <div class="m">${h.meta}</div>
-      </div>
-      <span class="h-status ${h.status}">${h.st}</span>
-    </div>
-  `).join('') : `
-    <div class="drawer-empty">
-      <div class="ring">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-      </div>
-      暂无创作记录
     </div>`;
 }
 
