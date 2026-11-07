@@ -75,6 +75,13 @@
   .topbar .title{
     flex:1;text-align:center;font-size:17px;font-weight:600;letter-spacing:.5px;
   }
+  .topbar .flow-title{
+    display:flex;align-items:center;justify-content:center;gap:3px;
+    font-size:15.5px;letter-spacing:.2px;min-width:0;
+  }
+  .flow-title span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .icon-btn.ghost{border:none;background:transparent}
+  .icon-btn.ghost:active{background:#f2f3f7}
   .topbar .spacer{width:38px;flex:none}
   .history-btn{
     position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;
@@ -472,11 +479,16 @@
     display:flex;justify-content:center;
   }
   .cta{
-    width:100%;height:46px;border-radius:12px;border:none;cursor:pointer;
-    font-size:15.5px;font-weight:600;letter-spacing:1px;color:#fff;
-    background:var(--accent);
-    box-shadow:0 6px 16px rgba(47,107,255,.32);
+    width:100%;height:48px;border-radius:24px;border:none;cursor:pointer;
+    font-size:15px;font-weight:600;letter-spacing:.6px;color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    background:linear-gradient(90deg,#fb7185 0%,#a855f7 58%,#7c3aed 100%);
+    box-shadow:0 8px 20px rgba(168,85,247,.30);
     transition:transform .12s ease,filter .15s ease,box-shadow .2s ease;
+  }
+  .cta .cta-cost{
+    background:rgba(255,255,255,.22);border-radius:11px;padding:2px 9px;
+    font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:2px;
   }
   .cta:disabled{
     background:#c3c9d6;box-shadow:none;cursor:not-allowed;color:#fff;
@@ -486,21 +498,15 @@
   /* 带计费信息的表单页脚（处理内容 · 积分 · 开始处理） */
   .cta-bar.has-info{
     background:#fff;border-top:1px solid var(--line);
-    justify-content:space-between;align-items:center;gap:12px;
+    flex-direction:column;align-items:stretch;gap:8px;
     padding-top:12px;
   }
-  .ff-info{display:none;font-size:11px;color:var(--text-3);line-height:1.45;min-width:0}
-  .ff-info b{display:block;font-size:13.5px;color:var(--text);font-weight:600}
+  .ff-info{display:none;font-size:11px;color:var(--text-3);line-height:1.4;text-align:center}
+  .ff-info b{color:var(--text);font-weight:600}
   .cta-bar.has-info .ff-info{display:block}
-  .cta-bar.has-info .cta{
-    width:auto;flex:none;padding:0 20px;height:44px;
-    display:inline-flex;align-items:center;gap:8px;
-    background:linear-gradient(135deg,#a855f7,#d946ef);
-    box-shadow:0 6px 16px rgba(168,85,247,.32);
-  }
   .ff-badge{
-    background:rgba(255,255,255,.25);border-radius:12px;padding:2px 9px;
-    font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:2px;
+    background:rgba(255,255,255,.22);border-radius:12px;padding:2px 9px;
+    font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:2px;
   }
 
   /* ============ 通用工具页（多语言翻译/商机选品/出海贸易/店铺经营） ============ */
@@ -549,6 +555,243 @@
     border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:600;
   }
   .f-note{font-size:11px;color:var(--text-3);margin-top:6px}
+  .f-note.warn{color:#8b90a0;font-size:11px;margin:-2px 0 9px}
+
+  /* ============ 表单页：顶部说明卡 / 步骤编号 ============ */
+  .flow-hero{
+    border-radius:16px;padding:14px;margin-bottom:16px;
+    background:linear-gradient(135deg,#f4eeff 0%,#eef4ff 56%,#f7f1ff 100%);
+    border:1px solid #ece3fb;
+  }
+  .fh-t{font-size:14.5px;font-weight:700;letter-spacing:.2px}
+  .fh-d{font-size:11.5px;color:#6b7280;line-height:1.55;margin-top:5px}
+  .fh-steps{display:flex;align-items:center;gap:6px;margin-top:12px}
+  .fh-step{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+    background:rgba(255,255,255,.74);border-radius:10px;padding:8px 3px;
+  }
+  .fh-step i{
+    width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .fh-step span{font-size:10px;color:#5b6172;letter-spacing:.2px}
+
+  .f-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .f-no{
+    flex:none;width:22px;height:22px;border-radius:7px;background:#f3eeff;color:#7c3aed;
+    font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;
+    letter-spacing:.2px;
+  }
+  .f-label{flex:1;min-width:0;font-size:13.5px;font-weight:600}
+  .f-label .req,.f-head .req{color:var(--danger);margin-left:2px}
+  .f-ai{display:flex;align-items:center;gap:9px;flex:none}
+  .f-ai button{
+    border:none;background:none;padding:0;font-size:11.5px;font-weight:600;color:#7c3aed;cursor:pointer;
+    display:inline-flex;align-items:center;gap:3px;
+  }
+  .f-ai button.busy{color:#b9a6f7;font-weight:500}
+  .f-ai .sep{width:1px;height:10px;background:#e2d9f5}
+  .f-link{font-size:11.5px;color:#2563eb;font-weight:600;cursor:pointer;flex:none}
+
+  /* 上传框（新版：浅紫渐变 + 图标块） */
+  .upload-box{
+    border:1px solid #ece6fb;border-radius:14px;
+    background:linear-gradient(180deg,#f8f5ff 0%,#f4f7ff 100%);
+    min-height:136px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;color:#2c2f36;font-size:13px;font-weight:600;cursor:pointer;text-align:center;
+    transition:transform .14s ease,border-color .14s ease;
+  }
+  .upload-box:active{transform:scale(.99);border-color:#c9b8f5}
+  .upload-box .u-ico{
+    width:42px;height:42px;border-radius:13px;flex:none;
+    background:linear-gradient(135deg,#a78bfa 0%,#7c6bf0 52%,#5b8def 100%);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 14px rgba(124,107,240,.28);
+  }
+  .upload-box .u-hint{font-size:10.5px;color:#8b90a0;font-weight:400;line-height:1.5;max-width:90%}
+  .upload-box.sm{min-height:92px;font-size:12px}
+  .upload-box.sm .u-ico{width:32px;height:32px;border-radius:10px}
+  .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .u-thumbs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+  .u-thumb{
+    width:46px;height:46px;border-radius:9px;overflow:hidden;position:relative;
+    background:linear-gradient(135deg,#dbeafe,#c7d2fe);
+  }
+  .u-thumb svg{width:100%;height:100%;display:block}
+  .u-more{font-size:11px;color:#6b7280;font-weight:500}
+
+  /* 文本域 + 计数 + AI 生成 */
+  .ta-wrap{position:relative}
+  .ta-wrap .textarea{
+    min-height:104px;padding-bottom:26px;background:#fafbfd;border-color:#eceff4;
+  }
+  .ta-count{
+    position:absolute;right:11px;bottom:8px;font-size:10.5px;color:#a2a7b4;pointer-events:none;
+  }
+
+  /* 开关行 */
+  .sw-row{
+    display:flex;align-items:center;gap:10px;padding:13px 14px;
+    border:1px solid #eef1f6;border-radius:12px;background:#fff;margin-bottom:8px;
+  }
+  .sw-row .t{flex:1;min-width:0;font-size:12.5px;color:#2c2f36}
+  .sw{
+    flex:none;width:42px;height:24px;border-radius:12px;background:#e2e6ee;position:relative;
+    transition:background .18s ease;cursor:pointer;
+  }
+  .sw::after{
+    content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(16,24,40,.22);transition:transform .18s ease;
+  }
+  .sw.on{background:linear-gradient(135deg,#a78bfa,#7c6bf0)}
+  .sw.on::after{transform:translateX(18px)}
+
+  /* 选择/参数行 */
+  .pick-row{
+    display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;
+    border:1px solid #eef1f6;border-radius:12px;background:#fafbfd;
+    font-size:12.5px;color:#8b90a0;cursor:pointer;margin-bottom:8px;
+  }
+  .pick-row .v{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pick-row.filled{color:#1a1d24}
+  .pick-row.filled .v{font-weight:500}
+  .pick-row svg{flex:none;color:#b6bcc9}
+
+  /* 版权授权确认 */
+  .consent{
+    display:flex;align-items:flex-start;gap:8px;padding:14px 2px 2px;
+    font-size:11.5px;color:#6b7280;line-height:1.55;cursor:pointer;user-select:none;
+  }
+  .consent .ck{
+    width:17px;height:17px;border-radius:5px;border:1.5px solid #cbd2df;flex:none;margin-top:1px;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .consent.on .ck{background:linear-gradient(135deg,#f472b6,#8b5cf6);border-color:transparent}
+  .consent em{font-style:normal;color:#e5484d}
+  .consent.shake{animation:agreeShake .4s ease}
+
+  /* ============ 上传来源弹层 ============ */
+  .up-sheet{padding:6px 14px calc(16px + env(safe-area-inset-bottom))}
+  .up-title{text-align:center;font-size:14px;font-weight:600;padding:8px 0 14px}
+  .up-row{
+    display:flex;align-items:center;justify-content:space-between;
+    height:52px;padding:0 14px;border-radius:12px;background:#f6f7fb;
+    margin-bottom:9px;font-size:13.5px;cursor:pointer;
+  }
+  .up-row:active{background:#eff1f7}
+  .up-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .up-tile{
+    height:82px;border-radius:14px;background:#f6f7fb;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    font-size:12.5px;color:#2c2f36;
+  }
+  .up-tile:active{background:#eff1f7}
+  .up-tile svg{color:#3a3f4b}
+
+  /* ============ 图库选择页 ============ */
+  .gl-tabs{flex:none;display:flex;gap:20px;padding:0 16px;border-bottom:1px solid #f1f3f7}
+  .gl-tab{
+    font-size:13.5px;color:#6b7280;padding:11px 0 10px;cursor:pointer;position:relative;
+  }
+  .gl-tab.on{color:#1a1d24;font-weight:700}
+  .gl-tab.on::after{
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;
+    background:linear-gradient(90deg,#f472b6,#8b5cf6);
+  }
+  .gl-note{flex:none;font-size:11px;color:#8b90a0;padding:10px 16px 8px;display:flex;align-items:center;gap:4px}
+  .gl-grid{
+    flex:1;overflow-y:auto;padding:2px 10px 14px;display:grid;
+    grid-template-columns:repeat(4,1fr);gap:4px;align-content:start;
+  }
+  .gl-grid::-webkit-scrollbar{display:none}
+  .gl-cell{position:relative;aspect-ratio:1/1;border-radius:9px;overflow:hidden;cursor:pointer;background:#eef1f6}
+  .gl-cell svg{width:100%;height:100%;display:block}
+  .gl-pick{
+    position:absolute;right:5px;top:5px;width:18px;height:18px;border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.92);background:rgba(255,255,255,.28);
+    box-shadow:0 1px 4px rgba(16,24,40,.18);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .gl-cell.on{box-shadow:inset 0 0 0 2px #ef4444}
+  .gl-cell.on .gl-pick{background:#ef4444;border-color:#fff}
+  .gl-add{
+    aspect-ratio:1/1;border-radius:9px;background:#f7f8fc;border:1px dashed #d8dbe3;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    font-size:10px;color:#8b90a0;cursor:pointer;
+  }
+  .gl-bar{
+    flex:none;display:flex;gap:10px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top:1px solid #f1f3f7;background:#fff;
+  }
+  .gl-btn{
+    flex:1;height:44px;border-radius:22px;border:none;font-size:15px;font-weight:600;cursor:pointer;
+  }
+  .gl-btn.cancel{background:#f1f2f6;color:#2c2f36}
+  .gl-btn.ok{background:linear-gradient(90deg,#f472b6 0%,#a855f7 60%,#7c3aed 100%);color:#fff}
+  .gl-btn.ok:disabled{opacity:.5}
+
+  /* ============ 图片调整：子功能条 + 编辑器 ============ */
+  .ed-tabs{
+    flex:none;display:flex;gap:20px;padding:0 16px;border-bottom:1px solid #f1f3f7;
+    overflow-x:auto;
+  }
+  .ed-tabs::-webkit-scrollbar{display:none}
+  .ed-tab{
+    flex:none;font-size:13px;color:#6b7280;padding:11px 0 10px;cursor:pointer;position:relative;
+    white-space:nowrap;
+  }
+  .ed-tab.on{color:#1a1d24;font-weight:700}
+  .ed-tab.on::after{
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:#1a1d24;
+  }
+  .ed-tip{
+    border-radius:12px;padding:10px 12px;margin:12px 0 16px;
+    background:linear-gradient(135deg,#f6f1ff,#eff4ff);border:1px solid #efe7fb;
+  }
+  .ed-tip .t{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px}
+  .ed-tip .d{font-size:11px;color:#8b90a0;margin-top:4px}
+
+  .crop-stage{margin:12px 14px 0;border-radius:14px;overflow:hidden;background:#e9eef6;position:relative}
+  .crop-img{
+    aspect-ratio:3/4;position:relative;
+    background:
+      radial-gradient(120px 90px at 50% 38%, #ffffff 0%, #eef2f8 62%, transparent 100%),
+      linear-gradient(160deg,#dbe7f5 0%,#c9d8ea 55%,#bccde2 100%);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .crop-frame{
+    position:absolute;inset:9%;border:2px solid #7c6bf0;
+  }
+  .crop-frame .h{
+    position:absolute;width:14px;height:14px;background:#7c6bf0;border-radius:3px;
+  }
+  .crop-frame .h1{left:-7px;top:-7px}
+  .crop-frame .h2{right:-7px;top:-7px}
+  .crop-frame .h3{left:-7px;bottom:-7px}
+  .crop-frame .h4{right:-7px;bottom:-7px}
+  .crop-photo{
+    width:58%;height:56%;border-radius:6px;
+    background:linear-gradient(160deg,#f8fafc,#e2e8f0);
+    box-shadow:0 8px 24px rgba(16,24,40,.14);
+    display:flex;align-items:center;justify-content:center;color:#9aa3b2;
+  }
+  .crop-opts{padding:14px 16px 128px}
+  .co-t{font-size:13px;font-weight:600;margin:4px 0 10px}
+  .co-t:not(:first-child){margin-top:18px}
+  .co-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .co-btn{
+    height:48px;border-radius:11px;border:1px solid #eef1f6;background:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    font-size:10.5px;color:#5b6172;cursor:pointer;line-height:1.2;
+  }
+  .co-btn.on{border-color:#ef4444;color:#ef4444;background:#fff5f6;font-weight:600}
+  .co-ratios{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .co-ratio{
+    height:52px;border-radius:11px;border:1px solid #eef1f6;background:#fff;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+    font-size:11.5px;color:#5b6172;cursor:pointer;
+  }
+  .co-ratio.on{border-color:#ef4444;color:#ef4444;background:#fff5f6;font-weight:600}
 
   /* ============ 遮罩（弹层/下拉菜单共用） ============ */
   .mask{
@@ -1092,15 +1335,129 @@
       <button class="icon-btn" aria-label="返回" onclick="backFromFlow()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <div class="title" id="flowTitle">工具名称</div>
-      <span class="spacer"></span>
+      <div class="title flow-title" id="flowTitle" onclick="openToolSwitch()" role="button" tabindex="0" title="切换工具">
+        <span id="flowTitleTxt">工具名称</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:#8b90a0"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <button class="points-pill" onclick="openCredits()" aria-label="我的积分">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
+        <span id="flowPillNum">84</span>
+      </button>
+      <button class="icon-btn ghost" onclick="openHistory()" aria-label="历史创作">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.6V12l3 1.9"/></svg>
+      </button>
     </header>
 
+    <div class="ed-tabs" id="flowTabs" style="display:none"></div>
     <div class="flow-scroll" id="flowBody"></div>
 
     <div class="cta-bar" id="flowBar">
       <div class="ff-info" id="ffInfo"></div>
       <button class="cta" id="flowCta">开始生成</button>
+    </div>
+  </section>
+
+  <!-- ================= 图库选择页 ================= -->
+  <section class="screen" id="galleryScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="closeGallery()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">图库选择</div>
+      <button class="history-btn" onclick="toggleGalleryManage()" id="glManage">管理</button>
+    </header>
+    <div class="gl-tabs">
+      <div class="gl-tab on" data-tab="mine" onclick="setGalleryTab('mine')">我的上传</div>
+      <div class="gl-tab" data-tab="aigc" onclick="setGalleryTab('aigc')">AIGC生成库</div>
+    </div>
+    <div class="gl-note">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      支持jpg、png文件，大小不超过20MB
+    </div>
+    <div class="gl-grid" id="glGrid"></div>
+    <div class="gl-bar">
+      <button class="gl-btn cancel" onclick="closeGallery()">取消</button>
+      <button class="gl-btn ok" id="glOk" onclick="confirmGallery()">确认</button>
+    </div>
+  </section>
+
+  <!-- ================= 剪切旋转（图片调整编辑器） ================= -->
+  <section class="screen" id="cropScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromCrop()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">剪切旋转</div>
+      <span class="spacer"></span>
+    </header>
+
+    <div class="flow-scroll" style="padding:0 0 92px">
+      <div class="crop-stage">
+        <div class="crop-img">
+          <div class="crop-photo">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4 4 3 3-2 4 3"/>
+            </svg>
+          </div>
+          <div class="crop-frame">
+            <i class="h h1"></i><i class="h h2"></i><i class="h h3"></i><i class="h h4"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="crop-opts">
+        <div class="co-t">旋转角度</div>
+        <div class="co-grid">
+          <div class="co-btn" onclick="pickCropOpt(this)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h11a4 4 0 0 1 0 8H9"/><path d="M7 5L3 9l4 4"/></svg>
+            右转90°
+          </div>
+          <div class="co-btn on" onclick="pickCropOpt(this)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9H9a4 4 0 0 0 0 8h6"/><path d="M17 5l4 4-4 4"/></svg>
+            左转90°
+          </div>
+          <div class="co-btn" onclick="pickCropOpt(this)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M12 4l-4 4M12 4l4 4M12 20l-4-4M12 20l4-4"/></svg>
+            水平翻转
+          </div>
+          <div class="co-btn" onclick="pickCropOpt(this)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/></svg>
+            垂直翻转
+          </div>
+        </div>
+
+        <div class="co-t">生成图比例</div>
+        <div class="co-ratios">
+          <div class="co-ratio on" onclick="pickCropRatio(this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/></svg>
+            原尺寸
+          </div>
+          <div class="co-ratio" onclick="pickCropRatio(this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
+            自定义
+          </div>
+          <div class="co-ratio" onclick="pickCropRatio(this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+            1:1
+          </div>
+          <div class="co-ratio" onclick="pickCropRatio(this)">
+            <svg width="14" height="11" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2" y="2" width="20" height="14" rx="2"/></svg>
+            16:9
+          </div>
+          <div class="co-ratio" onclick="pickCropRatio(this)">
+            <svg width="10" height="14" viewBox="0 0 18 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2" y="2" width="14" height="20" rx="2"/></svg>
+            9:16
+          </div>
+          <div class="co-ratio" onclick="pickCropRatio(this)">
+            <svg width="14" height="11" viewBox="0 0 20 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2" y="2" width="16" height="11" rx="2"/></svg>
+            4:3
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-bar">
+      <button class="cta" onclick="startCropGen()">开始生成<span class="cta-cost">✦5</span></button>
     </div>
   </section>
 
@@ -1239,6 +1596,40 @@
     <button class="pay-submit" id="paySubmit" onclick="doPay()">确认支付 ¥98</button>
   </div>
 
+  <!-- 上传来源弹层 -->
+  <div class="sheet up-sheet" id="uploadSheet" aria-label="上传图片">
+    <div class="up-title" id="upTitle">上传图片</div>
+    <div id="upLevel1">
+      <div class="up-row" onclick="uploadFromGallery()">
+        图库上传
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#b6bcc9"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="up-row" onclick="showUploadLevel2()">
+        本地上传
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#b6bcc9"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+    <div id="upLevel2" style="display:none">
+      <div class="up-tiles">
+        <div class="up-tile" onclick="pickUploadSource('拍照')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.7l1.2-1.7h7.2L16.8 6h1.7A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.4"/></svg>
+          拍照
+        </div>
+        <div class="up-tile" onclick="pickUploadSource('打开相册')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 17l5-4 4 3 3-2 4 3"/></svg>
+          打开相册
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 单选弹层（语种/参数等） -->
+  <div class="sheet" id="pickSheet" aria-label="选择">
+    <div class="up-title" id="pickTitle">请选择</div>
+    <div id="pickList" style="max-height:46vh;overflow-y:auto"></div>
+    <button class="gl-btn cancel" style="width:100%;margin-top:10px;height:42px" onclick="closeOverlays()">取消</button>
+  </div>
+
   <!-- 创作历史页 -->
   <section class="screen" id="historyScreen">
     <header class="topbar">
@@ -1285,6 +1676,7 @@ const ICONS = {
   copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
   film:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 5v14M16 5v14"/>',
   cutout:'<rect x="4" y="4" width="16" height="16" rx="3" stroke-dasharray="3 3"/><path d="M9 12h6M12 9v6"/>',
+  adjust:'<path d="M7 3v11a3 3 0 0 0 3 3h11"/><path d="M3 7h11a3 3 0 0 1 3 3v11"/>',
   sparkle:'<path d="M12 4l1.5 4.5L18 10l-4.5 1.5L12 16l-1.5-4.5L6 10l4.5-1.5z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
   palette:'<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-.9 2-1.9 0-1.1-.6-1.6-1.6-1.6-.7 0-1.4-.6-1.4-1.4 0-.8.7-1.5 1.5-1.5h2.1A5.4 5.4 0 0 0 21 9.2C21 5.8 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.2"/><circle cx="10" cy="7.5" r="1.2"/>',
   ruler:'<path d="M3 17L17 3l4 4L7 21z"/><path d="M8 16l1.5 1.5M11 13l1.5 1.5M14 10l1.5 1.5"/>',
@@ -1327,6 +1719,7 @@ const SCENES = {
     title: 'AI图片创作', cta: '开始图片创作', unit: '图片',
     intro: '商品视觉素材一站式智能生成，从白底图到场景图，全面提升商品视觉表现力',
     items: [
+      { name: '图片调整',     tag: 'NEW', desc: '剪切旋转、抠图、变清晰、无损放大', theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'adjust' },
       { name: '生成白底图',   desc: '一键去背景，生成平台规范白底图', theme: ['#f2f4f7','#c3c9d6','#8f97a6'], icon: 'cutout' },
       { name: '生成场景图',   desc: '商品融入真实场景，增强购买欲望', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'image2' },
       { name: '图片变清晰',   desc: 'AI修复模糊图片，完美呈现细节',   theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'sparkle' },
@@ -1424,11 +1817,17 @@ const LANG_CHIPS = { type:'chips', label:'目标语种', required:true, options:
 
 const FLOWS = {
   /* ---- AI视频创作 ---- */
-  '产品宣传视频': { intro:'根据商品图片和卖点生成商品展示视频，自动运镜、配乐、加字幕，快速产出带货短片', cta:'开始生成视频', fields:[
-    { type:'upload', label:'上传商品图', required:true, hint:'支持 JPG/PNG，最多 9 张' },
-    { type:'textarea', label:'商品卖点', required:true, placeholder:'例：无刷锂电、21V 大扭矩、双速调节，专业级五金工具' },
-    { type:'chips', label:'视频时长', options:['10s','15s','30s'], default:0 },
-    { type:'chips', label:'画幅比例', options:['16:9','9:16','1:1'], default:0 },
+  '产品宣传视频': { title:'产品宣传视频', intro:'上传产品图片，AI自动生成电商宣传视频。', cta:'生成视频', cost:55, fields:[
+    { type:'upload', label:'产品图片', required:true, note:'请勿上传裸露、暴力、血腥或其他包含非法信息图片。',
+      uploadText:'上传图片', hint:'支持PNG、JPG，20MB以内，1-3张' },
+    { type:'textarea', label:'镜头描述', required:true, ai:true, max:500,
+      placeholder:'画面风格、运镜、场景描述；内置电商模板「简约高级」「工厂实拍」「氛围感」「ins 风」……' },
+    { type:'rows', label:'视频参数', required:true, items:[
+      { kind:'switch', label:'添加字幕', on:true },
+      { kind:'switch', label:'生成音频', on:true },
+      { kind:'param', label:'画面比例 | 分辨率 | 时长', value:'1:1 | 720 | 5s',
+        options:['1:1 | 720 | 5s','16:9 | 1080 | 5s','9:16 | 720 | 10s','4:3 | 720 | 5s'] },
+    ]},
   ]},
   '数字人口播': { intro:'虚拟形象 + 文案，一键生成专业播报视频，支持多语种配音', cta:'开始生成视频', fields:[
     { type:'chips', label:'数字人形象', required:true, options:['商务男士','商务女士','亲和力讲解','科技感主播'], default:0 },
@@ -1436,10 +1835,16 @@ const FLOWS = {
     { type:'chips', label:'播报语种', options:['中文','英语','日语','韩语','阿拉伯语'], default:0 },
     { type:'chips', label:'视频时长', options:['30s','60s','90s'], default:0 },
   ]},
-  '真人口播视频': { intro:'上传人物形象照或视频，自定义口播文案，AI生成同款人物口播视频，支持多语种', cta:'开始生成视频', fields:[
-    { type:'upload', label:'人物形象照或视频', required:true, hint:'正脸清晰、光线均匀，效果最佳' },
-    { type:'textarea', label:'口播文案', required:true, placeholder:'输入需要人物口播的文案内容' },
-    { type:'chips', label:'播报语种', options:['中文','英语','日语','韩语','阿拉伯语'], default:0 },
+  '真人口播视频': { title:'真人口播视频', intro:'根据上传人像，生成对应人像的口播视频。', cta:'生成视频', cost:55, fields:[
+    { type:'upload', label:'上传人物素材', required:true, note:'请勿上传裸露、暴力、血腥或其他包含非法信息图片。',
+      uploadText:'上传图片/视频', hint:'支持JPG、JPEG、PNG，20MB以内；MP4、MOV，100MB以内；人物清晰正面照片/视频' },
+    { type:'textarea', label:'输入口播文案', required:true, sample:true, max:500,
+      placeholder:'在此输入要融合的口播文案，或点击上方示例快速填入…' },
+    { type:'select', label:'播报语言', required:true, options:['中文','英语','日语','韩语','阿拉伯语','西班牙语'] },
+    { type:'rows', label:'视频参数', required:true, items:[
+      { kind:'param', label:'画面比例 | 分辨率', value:'原始比例 | 原始分辨率',
+        options:['原始比例 | 原始分辨率','1:1 | 720p','16:9 | 1080p','9:16 | 720p'] },
+    ]},
   ]},
   '口播视频翻译': { intro:'识别人物口播并转换为目标语言版本，AI口型同步、多语种配音，让产品视频说遍全球', cta:'开始翻译', fields:[
     { type:'upload', label:'上传口播视频', required:true, hint:'支持 MP4/MOV，单条不超过 5 分钟' },
@@ -1457,6 +1862,15 @@ const FLOWS = {
     { type:'chips', label:'视频时长', options:['5s','8s','10s'], default:0 },
   ]},
   /* ---- AI图片创作 ---- */
+  '图片调整': { title:'图片调整', intro:'裁剪旋转、一键抠图、变清晰、无损放大，一站式图片处理', cta:'开始生成', tabs:[
+    { name:'剪切旋转', desc:'轻松调整画面尺寸与方向', upload:'上传图片', hint:'支持最大20MB的 jpg/png，尺寸不小于300px', cta:'开始生成', cost:5 },
+    { name:'一键抠图', desc:'自动识别主体，输出透明底或纯色背景', upload:'上传图片', hint:'主体清晰、背景简单的图片效果更好',
+      chipLabel:'输出背景', chips:['透明底','白底','自定义背景'], cta:'开始抠图', cost:5 },
+    { name:'变清晰', desc:'AI 修复模糊，提升细节与锐度', upload:'上传图片', hint:'支持最大20MB的 jpg/png',
+      chipLabel:'清晰度', chips:['标准','高清','超清'], cta:'开始处理', cost:8 },
+    { name:'扩图(无损放大)', desc:'智能补全画面，实现无损放大', upload:'上传图片', hint:'支持最大20MB的 jpg/png',
+      chipLabel:'放大倍数', chips:['2x','4x','8x'], cta:'开始扩图', cost:10 },
+  ], fields:[] },
   '生成白底图': { intro:'一键去除背景，生成符合平台规范的商品白底图', cta:'开始生成', fields:[
     { type:'upload', label:'上传商品图', required:true, hint:'主体清晰、无遮挡，效果最佳' },
     { type:'chips', label:'输出比例', options:['1:1','3:4','16:9'], default:0 },
@@ -1713,89 +2127,206 @@ function extraHTML(){
 /* ================= 工具表单页 ================= */
 const flowBody = document.getElementById('flowBody');
 const flowCta = document.getElementById('flowCta');
+const flowTabs = document.getElementById('flowTabs');
 let flowName = '';
+let currentFlow = null;
+let flowCost = 5;
+let flowTabIdx = 0;
+let updateFooter = null;
+
+const UPLOAD_NOTE = '请勿上传裸露、暴力、血腥或其他包含非法信息图片。';
+const PICK_OPTS = {};
+/* 只有视频/图片类工具才需要「素材版权 + 肖像授权」确认 */
+const MEDIA_TOOLS = new Set([...SCENES.video.items, ...SCENES.image.items].map(i => i.name));
+
+/* ---- 表单原子组件 ---- */
+function stepHead(f, i, extra){
+  return `<div class="f-head">
+    <span class="f-no">${String(i + 1).padStart(2, '0')}</span>
+    <span class="f-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}</span>
+    ${extra || ''}
+  </div>`;
+}
+function uploadBox(key, text, hint, sm){
+  return `<div class="upload-box ${sm ? 'sm' : ''}" data-u="${key}" onclick="openUpload('${key}')">
+    <span class="u-ico">
+      <svg width="${sm ? 15 : 19}" height="${sm ? 15 : 19}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 17l5-4 4 3 3-2 4 3"/>
+      </svg>
+    </span>
+    <span>${text || '上传图片'}</span>
+    <span class="u-hint">${hint || '支持 JPG/PNG，20MB 以内'}</span>
+  </div>`;
+}
+function pickRow(key, title, options, value, placeholder){
+  PICK_OPTS[key] = options;
+  return `<div class="pick-row ${value ? 'filled' : ''}" data-k="${key}" onclick="openPick('${key}','${title}',this)">
+    <span class="v">${value || placeholder || '请选择'}</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+  </div>`;
+}
 
 function fieldHTML(f, i){
-  const req = f.required ? '<span class="req">*</span>' : '';
   if (f.type === 'upload'){
+    const note = f.note ? `<div class="f-note warn">${f.note}</div>` : '';
     return `<div class="f-group" style="--i:${i}">
-      <label>${f.label}${req}</label>
-      <div class="upload-box" onclick="toast('选择文件（原型演示）')">
-        <span class="u-ico">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-        <span>点击上传${f.label.replace(/^上传/, '')}</span>
-        ${f.hint ? `<span class="f-note" style="margin:0">${f.hint}</span>` : ''}
-      </div>
+      ${stepHead(f, i)}
+      ${note}
+      ${uploadBox(String(i), f.uploadText || '上传图片', f.hint)}
     </div>`;
   }
   if (f.type === 'upload2'){
+    const note = f.note ? `<div class="f-note warn">${f.note}</div>` : '';
     return `<div class="f-group" style="--i:${i}">
-      <label>${f.label}${req}</label>
+      ${stepHead(f, i)}
+      ${note}
       <div class="upload-row">
-        ${f.labels.map(l => `
-          <div class="upload-box" onclick="toast('选择文件（原型演示）')">
-            <span class="u-ico">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </span>
-            <span>${l}</span>
-          </div>`).join('')}
+        ${f.labels.map((l, j) => uploadBox(`${i}-${j}`, l, f.hint || '', true)).join('')}
       </div>
     </div>`;
   }
   if (f.type === 'textarea'){
+    const extra = f.ai
+      ? `<span class="f-ai">
+           <button class="busy" onclick="toast('AI 正在生成，请稍候…')">✦ AI生成中…</button>
+           <span class="sep"></span>
+           <button onclick="aiFill(${i})">✦ AI生成</button>
+         </span>`
+      : (f.sample ? `<span class="f-link" onclick="toast('示例文案（原型演示）')">查看示例</span>` : '');
+    const max = f.max || 500;
     return `<div class="f-group" style="--i:${i}">
-      <label>${f.label}${req}</label>
-      <textarea class="textarea" placeholder="${f.placeholder || ''}"></textarea>
+      ${stepHead(f, i, extra)}
+      <div class="ta-wrap">
+        <textarea class="textarea" id="ta${i}" maxlength="${max}" placeholder="${f.placeholder || ''}"
+          oninput="taCount(${i},${max})"></textarea>
+        <span class="ta-count" id="tac${i}">0/${max}</span>
+      </div>
     </div>`;
   }
   if (f.type === 'chips'){
     return `<div class="f-group" style="--i:${i}">
-      <label>${f.label}${req}</label>
-      ${f.note ? `<div class="f-note" style="margin:-2px 0 8px">${f.note}</div>` : ''}
+      ${stepHead(f, i)}
+      ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
       <div class="chips" data-multi="${f.multi ? 1 : 0}" data-label="${f.label}">
         ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
       </div>
     </div>`;
   }
+  if (f.type === 'rows'){
+    const rows = f.items.map((it, j) => {
+      if (it.kind === 'switch'){
+        return `<div class="sw-row">
+          <span class="t">${it.label}</span>
+          <span class="sw ${it.on ? 'on' : ''}" onclick="this.classList.toggle('on')" role="switch" aria-label="${it.label}"></span>
+        </div>`;
+      }
+      return pickRow(`p${i}_${j}`, it.label, it.options, it.value, it.placeholder);
+    }).join('');
+    return `<div class="f-group" style="--i:${i}">
+      ${stepHead(f, i)}
+      ${rows}
+    </div>`;
+  }
+  if (f.type === 'select'){
+    return `<div class="f-group" style="--i:${i}">
+      ${stepHead(f, i)}
+      ${pickRow(`s${i}`, f.label, f.options, f.value, f.placeholder || '请选择' + f.label)}
+    </div>`;
+  }
   return '';
 }
 
+/* ---- 输入联动 ---- */
+function taCount(i, max){
+  const el = document.getElementById('ta' + i);
+  const c = document.getElementById('tac' + i);
+  if (el && c) c.textContent = el.value.length + '/' + max;
+}
+function aiFill(i){
+  const f = currentFlow && currentFlow.fields[i];
+  const el = document.getElementById('ta' + i);
+  if (!el) return;
+  el.value = (f && (f.aiText || f.placeholder)) || 'AI 已根据商品信息生成描述，可继续编辑。';
+  taCount(i, f && f.max || 500);
+  toast('AI 已生成，可继续编辑');
+}
+
+/* ---- 表单页说明卡 ---- */
+function heroHTML(f){
+  const steps = [
+    { t: '上传素材', c: 'linear-gradient(135deg,#a78bfa,#7c6bf0)', i: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 17l5-4 4 3 3-2 4 3"/>' },
+    { t: 'AI 生成', c: 'linear-gradient(135deg,#818cf8,#5b8def)', i: '<path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/>' },
+    { t: '下载使用', c: 'linear-gradient(135deg,#60a5fa,#3b82f6)', i: '<path d="M12 4v10M7.8 10.4L12 14.6l4.2-4.2"/><path d="M5.5 19.5h13"/>' },
+  ];
+  return `<div class="flow-hero">
+    <div class="fh-t">${f.title || flowName}</div>
+    <div class="fh-d">${f.intro || ''}</div>
+    <div class="fh-steps">
+      ${steps.map(s => `<div class="fh-step">
+        <i style="background:${s.c}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${s.i}</svg>
+        </i>
+        <span>${s.t}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+function consentHTML(){
+  return `<div class="consent" id="flowConsent" onclick="this.classList.toggle('on')">
+    <span class="ck">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+    </span>
+    <span>我已确认对上传素材拥有<em>合法版权</em>，并已获得出镜人物的<em>肖像授权</em>。</span>
+  </div>`;
+}
+
+/* ---- 打开表单 ---- */
 function openFlow(name){
   const f = FLOWS[name];
   if (!f){ toast(`「${name}」流程建设中（原型演示）`); return; }
-  flowName = name;
-  document.getElementById('flowTitle').textContent = name;
-  flowBody.innerHTML = `<p class="flow-desc">${f.intro}</p>`
-    + (f.out ? `<p class="flow-out">${f.out}</p>` : '')
-    + f.fields.map(fieldHTML).join('');
-
-  /* 计费页脚：处理内容 N 张 · 共 N 积分 */
+  flowName = name; currentFlow = f; flowTabIdx = 0;
+  document.getElementById('flowTitleTxt').textContent = f.title || name;
+  flowTabs.style.display = f.tabs ? 'flex' : 'none';
+  if (f.tabs){
+    flowTabs.innerHTML = f.tabs.map((t, i) =>
+      `<div class="ed-tab ${i === 0 ? 'on' : ''}" onclick="switchFlowTab(${i})">${t.name}</div>`).join('');
+  }
   const bar = document.getElementById('flowBar');
-  let updateFooter = null;
-  if (f.pricing){
-    const p = f.pricing;
-    bar.classList.add('has-info');
-    updateFooter = () => {
-      const group = flowBody.querySelector(`.chips[data-label="${p.source}"]`);
-      let count = 1;
-      if (group){
-        if (group.dataset.multi === '1'){
-          count = group.querySelectorAll('.chip.on').length;
-        } else {
-          const on = group.querySelector('.chip.on');
-          const m = on && on.textContent.match(/\d+/);
-          count = m ? +m[0] : 1;
+  bar.classList.remove('has-info');
+  updateFooter = null;
+
+  if (f.tabs){ renderEditor(); }
+  else {
+    flowCost = f.cost || 5;
+    flowBody.innerHTML = heroHTML(f)
+      + (f.out ? `<p class="flow-out">${f.out}</p>` : '')
+      + f.fields.map(fieldHTML).join('')
+      + (f.consent !== false && MEDIA_TOOLS.has(name) ? consentHTML() : '');
+
+    if (f.pricing){
+      const p = f.pricing;
+      bar.classList.add('has-info');
+      updateFooter = () => {
+        const group = flowBody.querySelector(`.chips[data-label="${p.source}"]`);
+        let count = 1;
+        if (group){
+          if (group.dataset.multi === '1'){
+            count = group.querySelectorAll('.chip.on').length;
+          } else {
+            const on = group.querySelector('.chip.on');
+            const m = on && on.textContent.match(/\d+/);
+            count = m ? +m[0] : 1;
+          }
         }
-      }
-      const total = count * p.price;
-      document.getElementById('ffInfo').innerHTML = `处理内容<b>${count} ${p.unit} · 共 ${total} 积分</b>`;
-      flowCta.innerHTML = `${f.cta}<span class="ff-badge">⚡${total}</span>`;
-    };
-    updateFooter();
-  } else {
-    bar.classList.remove('has-info');
-    flowCta.textContent = f.cta || '开始生成';
+        const total = count * p.price;
+        flowCost = total;
+        document.getElementById('ffInfo').innerHTML = `处理内容 <b>${count} ${p.unit} · 共 ${total} 积分</b>`;
+        flowCta.innerHTML = `${f.cta || '开始处理'}<span class="cta-cost">✦${total}</span>`;
+      };
+      updateFooter();
+    } else {
+      flowCta.innerHTML = `${f.cta || '开始生成'}<span class="cta-cost">✦${flowCost}</span>`;
+    }
   }
 
   flowBody.querySelectorAll('.chips').forEach(group => {
@@ -1814,13 +2345,216 @@ function openFlow(name){
   flowBody.scrollTop = 0;
 }
 
+/* ---- 图片调整：子功能 + 编辑器 ---- */
+function switchFlowTab(i){
+  flowTabIdx = i;
+  flowTabs.querySelectorAll('.ed-tab').forEach((t, j) => t.classList.toggle('on', j === i));
+  renderEditor();
+}
+function renderEditor(){
+  const f = currentFlow;
+  const tab = f.tabs[flowTabIdx];
+  flowCost = tab.cost || 5;
+  const chips = tab.chips ? `<div class="f-group" style="--i:2">
+      ${stepHead({ label: tab.chipLabel || '输出选项' }, 1)}
+      <div class="chips" data-multi="0" data-label="${tab.chipLabel || '输出选项'}">
+        ${tab.chips.map((o, j) => `<span class="chip ${j === 0 ? 'on' : ''}">${o}</span>`).join('')}
+      </div>
+    </div>` : '';
+  flowBody.innerHTML = `
+    <div class="f-group" style="--i:0">
+      <div class="f-head"><span class="f-label">待调整图片<span class="req">*</span></span></div>
+      <div class="f-note" style="margin:-2px 0 10px">支持最大20MB的 jpg/png，尺寸不小于300px</div>
+    </div>
+    <div class="f-group" style="--i:1">
+      ${stepHead({ label: tab.name }, 0)}
+      <div class="f-note warn">${tab.desc || ''}</div>
+      ${uploadBox('0', tab.upload || '上传图片', tab.hint || '')}
+    </div>
+    ${chips}
+    <div style="height:10px"></div>`;
+  flowCta.innerHTML = `${tab.cta || '开始生成'}<span class="cta-cost">✦${flowCost}</span>`;
+  flowBody.scrollTop = 0;
+}
+
 function backFromFlow(){
+  flowTabs.style.display = 'none';
   showScreen(homeScreen);
 }
 
 flowCta.addEventListener('click', () => {
+  const c = document.getElementById('flowConsent');
+  if (c && !c.classList.contains('on')){
+    c.classList.add('shake');
+    setTimeout(() => c.classList.remove('shake'), 420);
+    toast('请先确认素材版权与肖像授权');
+    return;
+  }
+  if (currentFlow && currentFlow.tabs && flowTabIdx === 0 && !flowBody.querySelector('.u-thumbs')){
+    toast('请先上传待调整图片');
+    return;
+  }
   toast(`「${flowName}」任务已提交（原型演示）`);
 });
+
+/* ================= 上传弹层 / 图库选择 / 图片调整 ================= */
+const uploadSheet = document.getElementById('uploadSheet');
+const pickSheet = document.getElementById('pickSheet');
+const galleryScreen = document.getElementById('galleryScreen');
+const cropScreen = document.getElementById('cropScreen');
+let uploadCtx = '0';
+let pickTarget = null;
+
+const GL_THUMB = [
+  { theme: ['#ffe0c2', '#f6b17a'], icon: 'megaphone' },
+  { theme: ['#cfe6ff', '#8fb8f5'], icon: 'image1' },
+  { theme: ['#d9f2e4', '#93d6b5'], icon: 'image2' },
+  { theme: ['#e7dcff', '#b9a1f2'], icon: 'image3' },
+  { theme: ['#ffd9e2', '#f39ab4'], icon: 'magnify' },
+  { theme: ['#e4e8ef', '#b6bfcd'], icon: 'cutout' },
+  { theme: ['#ffe8c9', '#f0c07a'], icon: 'palette' },
+  { theme: ['#d6f0ff', '#93cdef'], icon: 'ruler' },
+];
+
+function openSheet(el){
+  el.classList.add('open');
+  document.getElementById('mask').classList.add('open');
+}
+function openUpload(key){
+  uploadCtx = key;
+  document.getElementById('upLevel1').style.display = 'block';
+  document.getElementById('upLevel2').style.display = 'none';
+  document.getElementById('upTitle').textContent = '上传图片';
+  openSheet(uploadSheet);
+}
+function showUploadLevel2(){
+  document.getElementById('upLevel1').style.display = 'none';
+  document.getElementById('upLevel2').style.display = 'block';
+  document.getElementById('upTitle').textContent = '本地上传';
+}
+function uploadFromGallery(){
+  closeOverlays();
+  setTimeout(openGallery, 140);
+}
+function pickUploadSource(src){
+  closeOverlays();
+  markUpload(1);
+  toast(`${src}：已选择 1 张（原型演示）`);
+  goCropIfNeeded();
+}
+function markUpload(count){
+  const box = flowBody.querySelector(`.upload-box[data-u="${uploadCtx}"]`);
+  if (!box) return;
+  const thumbs = Array.from({ length: Math.min(count, 3) }).map((_, k) => {
+    const t = GL_THUMB[k % GL_THUMB.length];
+    return `<span class="u-thumb">${coverSVG(t.theme, t.icon)}</span>`;
+  }).join('');
+  box.innerHTML = `<span class="u-thumbs">${thumbs}</span>
+    <span class="u-more">已选 ${count} 张 · 点击重新选择</span>`;
+}
+function goCropIfNeeded(){
+  if (currentFlow && currentFlow.tabs && flowTabIdx === 0) openCrop();
+}
+
+/* 图库选择 */
+let glTab = 'mine';
+let glSel = new Set();
+function openGallery(){
+  glSel.clear();
+  document.querySelectorAll('.gl-tab').forEach(t => t.classList.toggle('on', t.dataset.tab === glTab));
+  renderGallery();
+  showScreen(galleryScreen);
+}
+function closeGallery(){ showScreen(flowScreen); }
+function setGalleryTab(t){
+  glTab = t;
+  glSel.clear();
+  document.querySelectorAll('.gl-tab').forEach(e => e.classList.toggle('on', e.dataset.tab === t));
+  renderGallery();
+}
+function renderGallery(){
+  const n = glTab === 'mine' ? 23 : 20;
+  const add = glTab === 'mine'
+    ? `<div class="gl-add" onclick="toast('本地上传（原型演示）')">
+         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+         上传图片
+       </div>` : '';
+  document.getElementById('glGrid').innerHTML = add + Array.from({ length: n }).map((_, k) => {
+    const t = GL_THUMB[(k + (glTab === 'mine' ? 0 : 3)) % GL_THUMB.length];
+    const on = glSel.has(k);
+    return `<div class="gl-cell ${on ? 'on' : ''}" onclick="toggleGl(${k})">
+      ${coverSVG(t.theme, t.icon)}
+      <span class="gl-pick">${on ? '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ''}</span>
+    </div>`;
+  }).join('');
+  const ok = document.getElementById('glOk');
+  ok.textContent = glSel.size ? `确认(${glSel.size})` : '确认';
+  ok.disabled = !glSel.size;
+}
+function toggleGl(k){
+  glSel.has(k) ? glSel.delete(k) : glSel.add(k);
+  renderGallery();
+}
+function confirmGallery(){
+  if (!glSel.size){ toast('请先选择图片'); return; }
+  const n = glSel.size;
+  markUpload(n);
+  showScreen(flowScreen);
+  toast(`已选择 ${n} 张图片`);
+  goCropIfNeeded();
+}
+function toggleGalleryManage(){ toast('管理图片（原型演示）'); }
+
+/* 顶部标题切换同类工具 */
+function openToolSwitch(){
+  const cat = CATS[activeCat];
+  const list = cat ? cat.tools.map(t => t.name) : [];
+  if (flowName && !list.includes(flowName)) list.unshift(flowName);
+  document.getElementById('pickTitle').textContent = '切换工具';
+  document.getElementById('pickList').innerHTML = list.map(n => `
+    <div class="up-row" onclick="switchFlowTo('${n}')">
+      <span>${n}</span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:${n === flowName ? 1 : 0}"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>`).join('');
+  openSheet(pickSheet);
+}
+function switchFlowTo(n){
+  closeOverlays();
+  if (n !== flowName) openFlow(n);
+}
+
+/* 单选弹层 */
+function openPick(key, title, el){
+  pickTarget = el;
+  document.getElementById('pickTitle').textContent = title;
+  const cur = el.querySelector('.v').textContent.trim();
+  document.getElementById('pickList').innerHTML = (PICK_OPTS[key] || []).map(o => `
+    <div class="up-row" onclick="pickValue('${o}')">
+      <span>${o}</span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:${cur === o ? 1 : 0}"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>`).join('');
+  openSheet(pickSheet);
+}
+function pickValue(val){
+  if (pickTarget){
+    pickTarget.querySelector('.v').textContent = val;
+    pickTarget.classList.add('filled');
+  }
+  closeOverlays();
+}
+
+/* 剪切旋转 */
+function openCrop(){ showScreen(cropScreen); }
+function backFromCrop(){ showScreen(flowScreen); }
+function pickCropOpt(el){
+  el.parentNode.querySelectorAll('.co-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+function pickCropRatio(el){
+  el.parentNode.querySelectorAll('.co-ratio').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+function startCropGen(){ toast('剪切旋转任务已提交（原型演示）'); }
 
 /* ================= 创作历史页 ================= */
 const mask = document.getElementById('mask');
@@ -2065,6 +2799,10 @@ function closeOverlays(){
   closeHdMenu();
   creditSheet.classList.remove('open');
   paySheet.classList.remove('open');
+  const up = document.getElementById('uploadSheet');
+  const pk = document.getElementById('pickSheet');
+  if (up) up.classList.remove('open');
+  if (pk) pk.classList.remove('open');
   mask.classList.remove('open');
 }
 function claimCredits(){
@@ -2145,6 +2883,8 @@ function syncCredits(){
   document.getElementById('pillNum').textContent = credits;
   document.getElementById('creditNum').textContent = credits;
   document.getElementById('chargeNum').textContent = credits.toLocaleString();
+  const fp = document.getElementById('flowPillNum');
+  if (fp) fp.textContent = credits;
 }
 function openCharge(){
   closeOverlays();
