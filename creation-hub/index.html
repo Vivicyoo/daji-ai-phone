@@ -596,17 +596,6 @@
   .pack .p-perks span{display:flex;align-items:center;gap:4px}
   .pack .p-perks svg{color:var(--ok);flex:none}
   .pack.featured .p-perks{color:#5b21b6}
-  .pack-agree{
-    display:flex;align-items:center;gap:6px;margin:4px 2px 0;
-    font-size:11.5px;color:var(--text-3);cursor:pointer;user-select:none;
-  }
-  .pack-agree .ck{
-    width:15px;height:15px;border-radius:50%;border:1.5px solid var(--line-strong);
-    display:flex;align-items:center;justify-content:center;color:#fff;flex:none;
-    transition:background .15s ease,border-color .15s ease;
-  }
-  .pack-agree.on .ck{background:#8b5cf6;border-color:#8b5cf6}
-  .pack-agree a{color:#8b5cf6;text-decoration:none}
 
   /* 支付方式弹层 */
   .pay-title{font-size:15.5px;font-weight:600;text-align:center}
@@ -634,6 +623,24 @@
     display:flex;align-items:center;justify-content:center;color:#fff;
   }
   .pay-method.on .pm-radio{background:#8b5cf6;border-color:#8b5cf6}
+  /* 协议勾选行（放在确认支付按钮上方） */
+  .pay-agree{
+    display:flex;align-items:center;gap:9px;margin:17px 2px 0;
+    font-size:13px;color:#6b7280;cursor:pointer;user-select:none;line-height:1.45;
+  }
+  .pay-agree .ck{
+    width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;color:#fff;flex:none;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .pay-agree.on .ck{background:#8b5cf6;border-color:#8b5cf6}
+  .pay-agree a{color:#8b5cf6;text-decoration:none;font-weight:500}
+  .pay-agree.shake{animation:agreeShake .42s ease}
+  @keyframes agreeShake{
+    0%,100%{transform:translateX(0)}
+    22%,62%{transform:translateX(-4px)}
+    42%,82%{transform:translateX(4px)}
+  }
   .pay-submit{
     width:100%;height:44px;border:none;border-radius:12px;margin-top:14px;cursor:pointer;
     background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-size:15px;font-weight:600;
@@ -904,13 +911,6 @@
       <div class="pack-title">积分套餐</div>
       <p class="pack-sub">点击卡片即可充值，下单后积分立即到账</p>
       <div id="packList"></div>
-
-      <div class="pack-agree on" id="packAgree" onclick="this.classList.toggle('on')">
-        <span class="ck">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        </span>
-        已阅读并同意<a onclick="event.stopPropagation();toast('《充值服务协议》（原型演示）')">《充值服务协议》</a>
-      </div>
     </div>
   </section>
 
@@ -999,6 +999,12 @@
       <span class="pm-radio">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
       </span>
+    </div>
+    <div class="pay-agree on" id="payAgree" onclick="this.classList.toggle('on')">
+      <span class="ck">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
+      已阅读并同意<a onclick="event.stopPropagation();toast('《充值服务协议》（原型演示）')">《充值服务协议》</a>
     </div>
     <button class="pay-submit" id="paySubmit" onclick="doPay()">确认支付 ¥98</button>
   </div>
@@ -1636,16 +1642,13 @@ function backFromCharge(){
 }
 
 function buyPack(i){
-  if (!document.getElementById('packAgree').classList.contains('on')){
-    toast('请先勾选并同意《充值服务协议》');
-    return;
-  }
   payIdx = i;
   const p = PACKAGES[i];
   document.getElementById('payPackName').textContent = p.name;
   document.getElementById('payPackSub').textContent = `${p.points.toLocaleString()} 积分${p.gift ? ' · 含赠送 +' + p.gift : ' · 无赠送'}`;
   document.getElementById('payPackPrice').textContent = '¥' + p.price;
   document.getElementById('paySubmit').textContent = `确认支付 ¥${p.price}`;
+  document.getElementById('payAgree').classList.add('on');   // 每次打开回到默认已勾选
   paySheet.classList.add('open');
   mask.classList.add('open');
 }
@@ -1654,6 +1657,14 @@ function pickPay(el){
   el.classList.add('on');
 }
 function doPay(){
+  const agree = document.getElementById('payAgree');
+  if (!agree.classList.contains('on')){
+    agree.classList.remove('shake');
+    void agree.offsetWidth;          // 重启动画
+    agree.classList.add('shake');
+    toast('请先勾选并同意《充值服务协议》');
+    return;
+  }
   const p = PACKAGES[payIdx];
   const arrive = p.points + p.gift;
   credits += arrive;
