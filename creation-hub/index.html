@@ -597,7 +597,7 @@
     border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:600;
   }
   .f-note{font-size:11px;color:var(--text-3);margin-top:6px}
-  .f-note.warn{color:#8b90a0;font-size:11px;margin:-2px 0 9px}
+  .f-note.warn{color:#b06c22;font-size:11px;margin:-2px 0 9px}
 
   /* ============ 表单页：顶部说明卡 / 步骤编号 ============ */
   .flow-hero{
@@ -686,6 +686,28 @@
   }
   .sw.on{background:linear-gradient(135deg,#a78bfa,#7c6bf0)}
   .sw.on::after{transform:translateX(18px)}
+
+  /* 开关行：带说明与子选项（翻译设置） */
+  .sw-item{
+    border:1px solid #eef1f6;border-radius:12px;background:#fff;
+    padding:12px var(--pad-card);margin-bottom:8px;
+  }
+  .sw-item .sw-row{padding:0;border:none;background:transparent;margin:0;border-radius:0}
+  .sw-item .sw-main{flex:1;min-width:0}
+  .sw-item .sw-desc{font-size:11px;color:var(--text-3);line-height:1.5;margin-top:3px}
+  .sw-item .sw-sub{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-strong)}
+  .sw-item .sw-sub .sub-lb{font-size:11.5px;color:var(--text-2);margin-bottom:8px}
+  .sw-item .sw-sub[hidden]{display:none}
+  /* 分组小标题 + 胶囊（输出规格） */
+  .f-grp{margin-bottom:14px}
+  .f-grp:last-child{margin-bottom:2px}
+  .f-grp .g-lb{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px}
+  /* 选择结果提示条（多语种版本） */
+  .chips-sum{
+    display:none;margin-top:10px;padding:9px var(--pad-card);border-radius:10px;
+    background:#edf9f2;color:#2f8f65;font-size:11.5px;font-weight:600;line-height:1.5;
+  }
+  .chips-sum.show{display:block}
 
   /* 选择/参数行 */
   .pick-row{
@@ -1766,7 +1788,7 @@ const SCENES = {
       { name: '产品宣传视频', tag: '热门', desc: '上传产品图+描述，AI生成专业展示短片', theme: ['#ffd9a8','#ff9d6c','#c96f3b'], icon: 'megaphone' },
       { name: '数字人口播',   tag: '',      desc: '虚拟形象+文案，一键生成播报视频',       theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'avatar' },
       { name: '真人口播视频', tag: 'NEW',  desc: '真人素材+新文案，智能生成全新内容',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'user' },
-      { name: '视频翻译', tag: '',      desc: '口播配音 + 多语种字幕，一条视频说遍全球', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
+      { name: '视频翻译', tag: '',      desc: '翻译视频语音与字幕，一键生成多语种版本', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
       { name: '首尾帧生视频', tag: '新',    desc: '首尾两张图，AI生成流畅过渡视频',       theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'film' },
     ]
   },
@@ -1901,14 +1923,27 @@ const FLOWS = {
         options:['原始比例 | 原始分辨率','1:1 | 720p','16:9 | 1080p','9:16 | 720p'] },
     ]},
   ]},
-  '视频翻译': { intro:'口播配音与字幕翻译合并处理：识别人声并做 AI 口型同步，或只输出多语种字幕，一条视频覆盖全球市场', cta:'开始翻译', fields:[
-    { type:'upload', label:'上传视频', required:true, uploadText:'上传视频',
-      hint:'支持 MP4/MOV，单条不超过 5 分钟；仅做字幕翻译时也可上传 MP3' },
-    { type:'chips', label:'翻译方式', required:true, options:['口播配音（口型同步）','字幕翻译'], default:0,
-      note:'口播配音：保留人物画面、换语种重配并对齐口型；字幕翻译：不改画面，只生成对应语种字幕' },
-    LANG_CHIPS,
-    { type:'chips', label:'字幕', options:['双语字幕','仅目标语','无字幕'], default:0 },
-  ]},
+  '视频翻译': { title:'视频翻译', intro:'翻译视频的语音与字幕，一键生成多语种版本', cta:'开始翻译',
+    cost:25, pricing:{ price:25, unit:'个语言版本', source:'目标语言' },
+    fields:[
+      { type:'upload', label:'上传视频', required:true, uploadText:'点击上传视频',
+        note:'请勿上传裸露、暴力、血腥或其他包含非法信息视频。',
+        hint:'支持 MP4、MOV，50M 以内' },
+      { type:'chips', label:'目标语言', required:true, multi:true, default:1,
+        note:'可多选，每种语言生成独立版本',
+        summary:'将生成 {n} 个语言版本 · {list}',
+        options:['中文','英语','阿拉伯语','泰语','印尼语','越南语','韩语','马来语','蒙古语'] },
+      { type:'rows', label:'翻译设置', items:[
+        { kind:'switch', label:'口型翻译', desc:'对齐人物口型；关闭仅替换音频', on:true },
+        { kind:'switch', label:'添加字幕', desc:'生成目标语言字幕并烧入画面', on:true,
+          sub:{ label:'字幕位置', options:['底部居中','顶部居中','跟随原片'], default:0 } },
+        { kind:'switch', label:'保留原始背景音', desc:'仅替换人声部分', on:true },
+      ]},
+      { type:'rows', label:'输出规格', items:[
+        { kind:'group', label:'画面比例', options:['原始','16:9','9:16','1:1'], default:0 },
+        { kind:'group', label:'输出分辨率', options:['720p','1080p'], default:0 },
+      ]},
+    ]},
   '首尾帧生视频': { intro:'提供首尾两张图片，AI自动生成流畅自然的过渡视频', cta:'开始生成视频', fields:[
     { type:'upload2', label:'首尾帧图片', required:true, labels:['首帧图片','尾帧图片'] },
     { type:'textarea', label:'过渡描述（选填）', placeholder:'例：镜头缓慢环绕商品，光影渐变' },
@@ -2260,17 +2295,38 @@ function fieldHTML(f, i){
     return `<div class="f-group" style="--i:${i}">
       ${stepHead(f, i)}
       ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
-      <div class="chips" data-multi="${f.multi ? 1 : 0}" data-label="${f.label}">
+      <div class="chips" data-multi="${f.multi ? 1 : 0}" data-label="${f.label}"${f.summary ? ` data-summary="1" data-sum-tpl="${f.summary}"` : ''}>
         ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
       </div>
+      ${f.summary ? '<div class="chips-sum"></div>' : ''}
     </div>`;
   }
   if (f.type === 'rows'){
     const rows = f.items.map((it, j) => {
       if (it.kind === 'switch'){
-        return `<div class="sw-row">
-          <span class="t">${it.label}</span>
-          <span class="sw ${it.on ? 'on' : ''}" onclick="this.classList.toggle('on')" role="switch" aria-label="${it.label}"></span>
+        const sub = it.sub ? `<div class="sw-sub"${it.on ? '' : ' hidden'}>
+            <div class="sub-lb">${it.sub.label || '选项'}</div>
+            <div class="chips" data-multi="0" data-label="${it.sub.label || ''}">
+              ${it.sub.options.map((o, k) => `<span class="chip ${k === (it.sub.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
+            </div>
+          </div>` : '';
+        return `<div class="sw-item">
+          <div class="sw-row">
+            <div class="sw-main">
+              <div class="t">${it.label}</div>
+              ${it.desc ? `<div class="sw-desc">${it.desc}</div>` : ''}
+            </div>
+            <span class="sw ${it.on ? 'on' : ''}" onclick="toggleSw(this)" role="switch" aria-checked="${it.on ? 'true' : 'false'}" aria-label="${it.label}"></span>
+          </div>
+          ${sub}
+        </div>`;
+      }
+      if (it.kind === 'group'){
+        return `<div class="f-grp">
+          <div class="g-lb">${it.label}</div>
+          <div class="chips" data-multi="0" data-label="${it.label}">
+            ${it.options.map((o, k) => `<span class="chip ${k === (it.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
+          </div>
         </div>`;
       }
       return pickRow(`p${i}_${j}`, it.label, it.options, it.value, it.placeholder);
@@ -2302,6 +2358,27 @@ function aiFill(i){
   el.value = (f && (f.aiText || f.placeholder)) || 'AI 已根据商品信息生成描述，可继续编辑。';
   taCount(i, f && f.max || 500);
   toast('AI 已生成，可继续编辑');
+}
+
+/* ---- 开关：带子选项时联动显示/隐藏 ---- */
+function toggleSw(el){
+  el.classList.toggle('on');
+  const on = el.classList.contains('on');
+  el.setAttribute('aria-checked', on ? 'true' : 'false');
+  const item = el.closest('.sw-item');
+  const sub = item && item.querySelector('.sw-sub');
+  if (sub) sub.hidden = !on;
+}
+
+/* ---- 多选胶囊：结果提示条（如「将生成 1 个语言版本 · 英语」） ---- */
+function updateChipsSum(group){
+  const el = group.parentElement.querySelector('.chips-sum');
+  if (!el) return;
+  const on = [...group.querySelectorAll('.chip.on')].map(c => c.textContent.trim());
+  const tpl = group.dataset.sumTpl || '已选 {n} 项 · {list}';
+  el.textContent = on.length ? tpl.replace('{n}', on.length).replace('{list}', on.join('、'))
+                             : '请至少选择 1 项';
+  el.classList.add('show');
 }
 
 /* ---- 表单页说明卡 ---- */
@@ -2391,8 +2468,10 @@ function openFlow(name){
         group.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
         chip.classList.add('on');
       }
+      if (group.dataset.summary === '1') updateChipsSum(group);
       if (updateFooter) updateFooter();
     });
+    if (group.dataset.summary === '1') updateChipsSum(group);
   });
   showScreen(flowScreen);
   flowBody.scrollTop = 0;
@@ -2923,7 +3002,6 @@ document.getElementById('packList').innerHTML = PACKAGES.map((p, i) => `
       </div>
       <div class="p-buy">
         <button class="p-buy-btn" onclick="buyPack(${i})">¥${p.price} 充值</button>
-        <span class="p-unit">${p.unit} 元/积分</span>
       </div>
     </div>
     <div class="p-perks">${p.perks.map(k => `
