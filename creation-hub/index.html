@@ -1766,8 +1766,7 @@ const SCENES = {
       { name: '产品宣传视频', tag: '热门', desc: '上传产品图+描述，AI生成专业展示短片', theme: ['#ffd9a8','#ff9d6c','#c96f3b'], icon: 'megaphone' },
       { name: '数字人口播',   tag: '',      desc: '虚拟形象+文案，一键生成播报视频',       theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'avatar' },
       { name: '真人口播视频', tag: 'NEW',  desc: '真人素材+新文案，智能生成全新内容',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'user' },
-      { name: '口播视频翻译', tag: '',      desc: 'AI口型同步，多语言版本一键生成',       theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
-      { name: '视频字幕翻译', tag: '',      desc: '自动识别语音，生成多语种字幕',         theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'captions' },
+      { name: '视频翻译', tag: '',      desc: '口播配音 + 多语种字幕，一条视频说遍全球', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
       { name: '首尾帧生视频', tag: '新',    desc: '首尾两张图，AI生成流畅过渡视频',       theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'film' },
     ]
   },
@@ -1798,9 +1797,9 @@ const HIS = [
   ]},
   { date:'2026年05月08日', items:[
     { kind:'video', type:'数字人口播',   name:'数字人口播',   sub:'数字人口播_20260508_003', time:'11:02', dur:'5s', pts:25, st:'ok',   theme:['#ffd6e0','#f39ab4'], icon:'avatar' },
-    { kind:'video', type:'口播视频翻译', name:'口播视频翻译 · 中→英语', sub:'口播视频翻译_20260508_002', time:'10:41', dur:'8s', pts:40, st:'ok', theme:['#cdeedd','#93d6b5'], icon:'translate' },
+    { kind:'video', type:'视频翻译', name:'视频翻译 · 口播配音', sub:'视频翻译_20260508_002', time:'10:41', dur:'8s', pts:40, st:'ok', theme:['#cdeedd','#93d6b5'], icon:'translate' },
     { kind:'video', type:'产品宣传视频', name:'产品宣传视频', sub:'产品宣传视频_20260508_001', time:'09:58', dur:'3s', pts:0,  st:'fail', theme:['#ffd9a8','#ff9d6c'], icon:'megaphone' },
-    { kind:'video', type:'视频字幕翻译', name:'视频字幕翻译', sub:'视频字幕翻译_20260508_001', time:'09:20', dur:'6s', pts:null, st:'ing', theme:['#e4d8ff','#b9a1f2'], icon:'captions' },
+    { kind:'video', type:'视频翻译', name:'视频翻译 · 字幕', sub:'视频翻译_20260508_001', time:'09:20', dur:'6s', pts:null, st:'ing', theme:['#e4d8ff','#b9a1f2'], icon:'captions' },
   ]},
   { date:'2026年05月07日', items:[
     { kind:'video', type:'真人口播视频', name:'真人口播视频', sub:'真人口播视频_20260507_002', time:'17:12', dur:'9s', pts:60, st:'ok', theme:['#c7e0ff','#8fb8f5'], icon:'user' },
@@ -1902,15 +1901,13 @@ const FLOWS = {
         options:['原始比例 | 原始分辨率','1:1 | 720p','16:9 | 1080p','9:16 | 720p'] },
     ]},
   ]},
-  '口播视频翻译': { intro:'识别人物口播并转换为目标语言版本，AI口型同步、多语种配音，让产品视频说遍全球', cta:'开始翻译', fields:[
-    { type:'upload', label:'上传口播视频', required:true, hint:'支持 MP4/MOV，单条不超过 5 分钟' },
+  '视频翻译': { intro:'口播配音与字幕翻译合并处理：识别人声并做 AI 口型同步，或只输出多语种字幕，一条视频覆盖全球市场', cta:'开始翻译', fields:[
+    { type:'upload', label:'上传视频', required:true, uploadText:'上传视频',
+      hint:'支持 MP4/MOV，单条不超过 5 分钟；仅做字幕翻译时也可上传 MP3' },
+    { type:'chips', label:'翻译方式', required:true, options:['口播配音（口型同步）','字幕翻译'], default:0,
+      note:'口播配音：保留人物画面、换语种重配并对齐口型；字幕翻译：不改画面，只生成对应语种字幕' },
     LANG_CHIPS,
     { type:'chips', label:'字幕', options:['双语字幕','仅目标语','无字幕'], default:0 },
-  ]},
-  '视频字幕翻译': { intro:'识别视频或音频中的语音并翻译，自动生成多语种字幕', cta:'开始翻译', fields:[
-    { type:'upload', label:'上传视频/音频', required:true, hint:'支持 MP4/MOV/MP3，不超过 10 分钟' },
-    LANG_CHIPS,
-    { type:'chips', label:'字幕样式', options:['字幕条','居中大字幕','底部小字幕'], default:0 },
   ]},
   '首尾帧生视频': { intro:'提供首尾两张图片，AI自动生成流畅自然的过渡视频', cta:'开始生成视频', fields:[
     { type:'upload2', label:'首尾帧图片', required:true, labels:['首帧图片','尾帧图片'] },
@@ -2785,7 +2782,7 @@ let claimed = false;
 /* ================= 积分明细 ================= */
 /* ico: video 视频 / img 图片 / sign 签到 / mail 系统发放 */
 const LEDGER = [
-  { ico:'video', t:'字幕翻译视频（集集智创台）', time:'2026-09-16 11:57', st:'排队生成中',        amt:-80 },
+  { ico:'video', t:'视频翻译（集集智创台）', time:'2026-09-16 11:57', st:'排队生成中',        amt:-80 },
   { ico:'video', t:'真人口播视频（集集智创台）', time:'2026-09-16 11:57', st:'生成成功',          amt:-80 },
   { ico:'video', t:'产品宣传视频（集集智创台）', time:'2026-09-16 11:57', st:'生成失败，自动返还积分', amt:80, refund:true },
   { ico:'video', t:'产品宣传视频（集集智创台）', time:'2026-09-16 11:57', st:'生成成功',          amt:-80 },
@@ -2794,7 +2791,7 @@ const LEDGER = [
   { ico:'video', t:'产品宣传视频（集集智创台）', time:'2026-09-15 11:57', st:'生成成功',          amt:-80 },
   { ico:'video', t:'产品宣传视频（集集智创台）', time:'2026-09-15 11:57', st:'生成成功',          amt:-80 },
   { ico:'video', t:'产品宣传视频（集集智创台）', time:'2026-09-15 11:57', st:'生成成功',          amt:-80 },
-  { ico:'video', t:'字幕翻译视频（集集智创台）', time:'2026-09-15 11:57', st:'生成成功',          amt:-80 },
+  { ico:'video', t:'视频翻译（集集智创台）', time:'2026-09-15 11:57', st:'生成成功',          amt:-80 },
   { ico:'video', t:'产品宣传视频（集集智创台）', time:'2026-09-14 18:32', st:'生成失败，自动返还积分', amt:80, refund:true },
   { ico:'img',   t:'AI卖点图（集集智创台）',     time:'2026-09-14 18:30', st:'生成成功',          amt:-16 },
   { ico:'img',   t:'AI细节图（集集智创台）',     time:'2026-09-14 18:28', st:'生成成功',          amt:-8 },
@@ -2876,11 +2873,11 @@ function claimCredits(){
 /* ================= 充值中心 ================= */
 const PACKAGES = [
   { name:'体验包', points:60,   gift:0,    price:6,   unit:'0.100', featured:false,
-    perks:['立即生效到账','积分长期有效','支持微信 / 支付宝','在线客服 7×24h'] },
+    perks:['立即生效到账','积分长期有效','在线客服 7×24h'] },
   { name:'基础包', points:320,  gift:0,    price:30,  unit:'0.094', featured:false,
-    perks:['立即生效到账','积分长期有效','在线客服工单','可申请电子发票'] },
+    perks:['立即生效到账','积分长期有效','在线客服工单'] },
   { name:'标准包', points:1100, gift:100,  price:98,  unit:'0.082', featured:true,
-    perks:['立即生效到账','积分长期有效','客服工单优先','可申请电子发票'] },
+    perks:['立即生效到账','积分长期有效','客服工单优先'] },
   { name:'创作包', points:2400, gift:400,  price:198, unit:'0.071', featured:false,
     perks:['立即生效到账','积分长期有效','专属 1v1 客服','生图特惠工具解锁','头部模型 Beta 体验'] },
   { name:'至尊包', points:6200, gift:1500, price:498, unit:'0.065', featured:false,
@@ -3121,7 +3118,7 @@ function replyFor(q){
     return '没问题。图片创作支持白底图、场景图、卖点图、细节图、换色、标尺图等 8 项能力。\n给我商品图 + 想要的风格（如"户外场景、暖色调"），我先出 2 张 1:1 主图给你挑。\n也可以直接说"给这款扳手做一张卖点图，中文文案"。';
   }
   if (/视频|口播|数字人|宣传片|字幕/.test(t)) {
-    return '视频创作有 6 项能力：产品宣传视频、数字人口播、真人口播、口播视频翻译、字幕翻译、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
+    return '视频创作有 5 项能力：产品宣传视频、数字人口播、真人口播视频、视频翻译（口播配音 / 字幕翻译）、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
   }
   if (/翻译|多语言|英文|阿拉伯/.test(t)) {
     return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
