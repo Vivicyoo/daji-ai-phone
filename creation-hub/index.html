@@ -1420,6 +1420,17 @@
   .ld-acts button::after{content:"";position:absolute;inset:-4px;border-radius:12px}
   .ld-acts button.pri{border-color:#bcd0ff;background:var(--accent-soft);color:var(--accent)}
   .ld-acts button.on{border-color:#bfe6d2;background:#e9f8f0;color:#1f8a5c}
+  /* 开发信状态：已生成小标签 / 生成中禁用态 */
+  .ld-mail-state{
+    display:inline-flex;align-items:center;font-size:9px;font-weight:600;line-height:1;
+    padding:3px 5px;border-radius:5px;margin-right:5px;
+    background:#e6f6ee;color:#1f8a5c;vertical-align:1px;
+  }
+  .ld-acts button.gen{
+    background:#f4f6fb;border-color:var(--line);color:var(--text-3);
+    cursor:default;opacity:.85;
+  }
+  .ld-acts button.gen::after{display:none}
   .ld-empty{text-align:center;padding:44px 0;font-size:12.5px;color:var(--text-3);line-height:1.7}
   .ld-more{text-align:center;font-size:11px;color:var(--text-3);padding:6px 0 2px}
 
@@ -2809,6 +2820,8 @@ const probeScreen = document.getElementById('probeScreen');
 const leadsScreen = document.getElementById('leadsScreen');
 let probeVals = {}, leadVals = {}, probeFollowed = false, mailDraft = { subject:'', body:'' };
 let leadFollow = new Set(), leadFilter = 'all', leadSort = 'score';
+/* 开发信生成状态：generated = 已就绪可查看，busy = 正在生成 */
+let leadMailGenerated = new Set(), leadMailBusy = new Set();
 
 /* 读取当前表单值：chips 按 data-label，textarea 按渲染顺序 */
 function flowValues(){
@@ -3016,10 +3029,17 @@ const LEADS = [
     person:'J. Kim', role:'运营负责人', src:['公开店铺数据'], market:'日韩', lang:'韩语', active:15 },
 ];
 
-function leadCardHTML(l, needMail){
+function leadCardHTML(l){
   const grade = l.score >= 85 ? 'a' : l.score >= 78 ? 'b' : 'c';
   const gl = l.score >= 85 ? 'A类' : l.score >= 78 ? 'B类' : 'C类';
   const followed = leadFollow.has(l.co);
+  /* 开发信：随任务一并生成的直接可查看（带「已生成」状态标签）；
+     选择「暂不需要」的线索需逐条生成，生成完成后才出现查看入口 */
+  const mailBtn = leadMailBusy.has(l.co)
+    ? `<button class="gen" disabled>生成中…</button>`
+    : leadMailGenerated.has(l.co)
+      ? `<button class="pri" onclick="openMailDraft('${escAttr(l.co)}')"><span class="ld-mail-state">已生成</span>查看开发信</button>`
+      : `<button class="pri" onclick="generateLeadMail('${escAttr(l.co)}', this)">生成开发信</button>`;
   return `
     <div class="ld-card">
       <div class="ld-ch">
@@ -3040,9 +3060,7 @@ function leadCardHTML(l, needMail){
       </div>
       <div class="ld-srcs">${l.src.map(s => `<span class="ld-src">${s}</span>`).join('')}<span class="ld-src">来源可追溯</span></div>
       <div class="ld-acts">
-        ${needMail
-          ? `<button class="pri" onclick="openMailDraft('${escAttr(l.co)}')">查看开发信</button>`
-          : `<button onclick="toast('本次未生成开发信草稿，可重新发起匹配并开启该选项')">开发信未生成</button>`}
+        ${mailBtn}
         <button class="${followed ? 'on' : ''}" onclick="toggleLeadFollow('${escAttr(l.co)}')">${followed ? '已加入跟进' : '加入跟进'}</button>
       </div>
     </div>`;
@@ -3050,6 +3068,9 @@ function leadCardHTML(l, needMail){
 
 function openLeads(v){
   leadVals = v; leadFollow = new Set(); leadFilter = 'all'; leadSort = 'score';
+  leadMailBusy = new Set();
+  /* 表单选「需要（自动生成）」：开发信随匹配任务在开始时即已生成完毕 */
+  leadMailGenerated = v['开发信草稿'] !== '暂不需要' ? new Set(LEADS.map(l => l.co)) : new Set();
   renderLeads();
   showScreen(leadsScreen);
   document.getElementById('leadsBody').scrollTop = 0;
@@ -3059,8 +3080,9 @@ function renderLeads(){
   const total = (String(v['线索数量'] || '100家').replace(/[^0-9]/g,'')) || '100';
   const markets = Array.isArray(v['目标市场']) ? v['目标市场'] : (v['目标市场'] ? [v['目标市场']] : []);
   const types = Array.isArray(v['买家类型']) ? v['买家类型'] : (v['买家类型'] ? [v['买家类型']] : []);
-  const needMail = v['开发信草稿'] !== '暂不需要';
   const cat = String(v['商品方向'] || '手动工具、五金配件').slice(0, 26);
+  const mailState = leadMailGenerated.size >= LEADS.length ? '已生成'
+    : leadMailGenerated.size ? '已生成 ' + leadMailGenerated.size + ' 封' : '未生成';
 
   let list = LEADS.slice();
   list.sort((a, b) => {
@@ -3075,7 +3097,7 @@ function renderLeads(){
 
   const filters = [ ['all','全部'], ['a','A类 ≥85'], ['follow','已跟进'] ];
   const cards = list.length
-    ? list.map(l => leadCardHTML(l, needMail)).join('') + `<div class="ld-more">— 本页展示高匹配线索 ${list.length} 条，其余可在导出文件中查看 —</div>`
+    ? list.map(l => leadCardHTML(l)).join('') + `<div class="ld-more">— 本页展示高匹配线索 ${list.length} 条，其余可在导出文件中查看 —</div>`
     : `<div class="ld-empty">当前筛选下暂无线索<br>换个筛选条件试试</div>`;
 
   document.getElementById('leadsBody').innerHTML = `
@@ -3085,7 +3107,7 @@ function renderLeads(){
     </div>
     <div class="ld-sum">
       <div class="l1">已匹配 <b>${total}</b> 家潜在买家</div>
-      <div class="l2">覆盖 ${markets.length || 5} 个市场 · ${types.length || 5} 类买家 · 开发信：${needMail ? '已生成' : '未生成'}<br>优先联系匹配分 ≥85 的 A 类客户，B/C 类建议补充资料或长期触达。</div>
+      <div class="l2">覆盖 ${markets.length || 5} 个市场 · ${types.length || 5} 类买家 · 开发信：${mailState}<br>优先联系匹配分 ≥85 的 A 类客户，B/C 类建议补充资料或长期触达。</div>
     </div>
     <div class="ld-tools">
       <div class="ld-chips">
@@ -3109,6 +3131,22 @@ function toggleLeadFollow(co){
   renderLeads();
   box.scrollTop = top;
   toast(leadFollow.has(co) ? '已加入跟进清单' : '已取消跟进');
+}
+
+/* 未随任务生成的开发信：逐条补生成，生成完成后才开放「查看开发信」入口 */
+function generateLeadMail(co, btn){
+  if (leadMailBusy.has(co) || leadMailGenerated.has(co)) return;
+  leadMailBusy.add(co);
+  if (btn){ btn.disabled = true; btn.className = 'gen'; btn.textContent = '生成中…'; }
+  setTimeout(() => {
+    leadMailBusy.delete(co);
+    leadMailGenerated.add(co);
+    const box = document.getElementById('leadsBody');
+    const top = box ? box.scrollTop : 0;
+    renderLeads();
+    if (box) box.scrollTop = top;
+    toast('开发信已生成，可点击查看');
+  }, 760);
 }
 
 /* ---------------- 开发信草稿（报告页与线索页共用） ---------------- */
@@ -3158,6 +3196,7 @@ function openMailDraft(co){
           personLabel:'采购负责人（待核验）', mailTag:'邮箱待核验', mailTagWarn:true,
           lang, type:'潜在合作方' };
   } else {
+    if (!leadMailGenerated.has(co)){ toast('请先生成开发信'); return; }
     l = LEADS.find(x => x.co === co) || LEADS[0];
   }
   const tpl = MAIL_TPL[l.lang] || MAIL_TPL['英语'];
