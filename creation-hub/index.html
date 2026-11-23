@@ -1434,6 +1434,107 @@
   .ld-empty{text-align:center;padding:44px 0;font-size:12.5px;color:var(--text-3);line-height:1.7}
   .ld-more{text-align:center;font-size:11px;color:var(--text-3);padding:6px 0 2px}
 
+  /* ============ AI选品：推荐商品结果页 ============
+     列表工具条（ld-tools / ld-chips / ld-chip / ld-sort）与概览指标（rp-stats / rp-stat）
+     复用商机探查、海外买家线索的通用样式，保证三张结果页视觉与 320px 行为一致 */
+  .pk-scroll{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);
+    padding:var(--gap-sec) var(--pad-x) calc(84px + env(safe-area-inset-bottom));
+  }
+  .pk-scroll::-webkit-scrollbar{display:none}
+  .pk-sum{
+    background:linear-gradient(150deg,#eef3ff 0%,#f6f0ff 100%);
+    border:1px solid #e2e8fb;border-radius:var(--radius);
+    padding:var(--pad-card);margin-bottom:var(--gap-item);
+  }
+  .pk-sum .l1{font-size:16px;font-weight:700;color:#2f56d8;letter-spacing:-.3px}
+  .pk-sum .l1 b{font-size:22px}
+  .pk-sum .l2{font-size:11.5px;color:var(--text-2);margin-top:6px;line-height:1.6}
+  .pk-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:var(--pad-card);margin-bottom:var(--gap-item);
+  }
+  .pk-main{display:flex;align-items:flex-start;gap:10px}
+  .pk-thumb{
+    width:62px;height:62px;border-radius:12px;flex:none;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .pk-thumb .pk-rank{
+    position:absolute;left:0;right:0;bottom:0;text-align:center;
+    font-size:9px;font-weight:700;letter-spacing:.3px;padding:2px 0;
+    background:rgba(0,0,0,.26);color:#fff;
+  }
+  .pk-info{flex:1;min-width:0}
+  .pk-name{font-size:13.5px;font-weight:650;line-height:1.35;word-break:break-word}
+  .pk-en{font-size:10.5px;color:var(--text-3);margin-top:3px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pk-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+  .pk-tag{font-size:9.5px;color:var(--text-2);background:#f2f4fa;border-radius:5px;padding:2px 5px}
+  .pk-tag.hit{background:#e6f6ee;color:#1f8a5c;font-weight:600}
+  .pk-sc{flex:none;text-align:center;min-width:44px}
+  .pk-sc .n{font-size:19px;font-weight:750;line-height:1;letter-spacing:-.5px;color:#2f6bff}
+  .pk-sc .n.b{color:#d98f2b}
+  .pk-sc .n.c{color:var(--text-3)}
+  .pk-sc .l{font-size:9.5px;color:var(--text-3);margin-top:4px}
+  .pk-nums{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+    margin-top:11px;padding:9px 0;
+    border-top:1px solid #f1f2f6;border-bottom:1px solid #f1f2f6;
+  }
+  .pk-num{text-align:center;min-width:0}
+  .pk-num b{display:block;font-size:12px;font-weight:700;color:var(--text);line-height:1.3}
+  .pk-num b.up{color:#d94452}
+  .pk-num span{display:block;font-size:9.5px;color:var(--text-3);margin-top:3px;line-height:1.2}
+  .pk-why{font-size:11.5px;color:var(--text-2);line-height:1.6;margin-top:9px}
+  .pk-why b{color:var(--text);font-weight:600}
+  .pk-srcs{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .pk-src{font-size:9.5px;color:var(--text-3);border:1px solid var(--line);border-radius:4px;padding:2px 5px}
+  .pk-acts{display:flex;gap:8px;margin-top:10px}
+  .pk-acts button{
+    flex:1;min-height:34px;position:relative;border-radius:10px;font-size:11.5px;font-weight:600;
+    cursor:pointer;border:1px solid var(--line-strong);background:#fff;color:var(--text);
+  }
+  .pk-acts button::after{content:"";position:absolute;inset:-4px;border-radius:12px}
+  .pk-acts button.pri{border-color:#bcd0ff;background:var(--accent-soft);color:var(--accent)}
+  .pk-acts button.on{border-color:#bfe6d2;background:#e9f8f0;color:#1f8a5c}
+  .pk-empty{text-align:center;padding:44px 0;font-size:12.5px;color:var(--text-3);line-height:1.7}
+  .pk-more{text-align:center;font-size:11px;color:var(--text-3);padding:6px 0 2px}
+
+  /* 商品详情弹层 */
+  #productSheet{max-height:86dvh;overflow-y:auto}
+  .pd-hero{
+    height:100px;border-radius:14px;margin-top:12px;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .pd-hero .pd-badge{
+    position:absolute;top:10px;left:10px;font-size:10px;font-weight:700;
+    background:rgba(255,255,255,.94);color:#2f56d8;border-radius:6px;padding:4px 8px;
+  }
+  .pd-title{font-size:16px;font-weight:650;margin-top:12px;line-height:1.4}
+  .pd-en{font-size:11px;color:var(--text-3);margin-top:3px}
+  .pd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+  .pd-cell{background:#f7f9fd;border-radius:10px;padding:9px 8px;min-width:0}
+  .pd-cell b{display:block;font-size:13px;font-weight:700;line-height:1.3}
+  .pd-cell b.up{color:#d94452}
+  .pd-cell span{display:block;font-size:9.5px;color:var(--text-3);margin-top:3px}
+  .pd-sec{margin-top:16px}
+  .pd-sec .t{font-size:12.5px;font-weight:650;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+  .pd-sec .t::before{content:"";width:3px;height:12px;border-radius:2px;background:linear-gradient(180deg,#3f66f2,#544ee0)}
+  .pd-kv{display:flex;gap:10px;font-size:11.5px;line-height:1.9;color:var(--text-2)}
+  .pd-kv .k{flex:none;width:64px;color:var(--text-3)}
+  .pd-kv .v{flex:1;min-width:0}
+  .pd-why{font-size:11.5px;color:var(--text-2);line-height:1.7;background:#f7f9fd;border-radius:10px;padding:10px 12px}
+  .pd-btns{
+    display:flex;gap:10px;margin-top:16px;
+    position:sticky;bottom:-2px;z-index:2;
+    background:var(--surface);padding:10px 0 2px;
+    box-shadow:0 -10px 14px -10px rgba(16,24,40,.14);
+  }
+  .pd-btns button{
+    flex:1;min-height:44px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;
+    border:1px solid var(--line-strong);background:#fff;color:var(--text);
+  }
+  .pd-btns button.pri{background:linear-gradient(135deg,#3f66f2,#544ee0);border-color:transparent;color:#fff}
+
   /* 开发信草稿弹层 */
   #leadMailSheet{max-height:84dvh;overflow-y:auto}
   .lm-row{margin-top:12px}
@@ -1744,6 +1845,22 @@
     </div>
   </section>
 
+  <!-- ================= AI选品：后续结果页（推荐商品） ================= -->
+  <section class="screen" id="picksScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromResult()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">推荐商品</div>
+      <button class="history-btn" onclick="toast('选品清单已导出（原型演示）')">导出</button>
+    </header>
+    <div class="pk-scroll" id="picksBody"></div>
+    <div class="ld-foot">
+      <button class="btn" onclick="toast('已批量导出选品清单（原型演示）')">导出选品清单</button>
+      <button class="btn primary" onclick="askJibaoAboutPicks()">让集宝跟进</button>
+    </div>
+  </section>
+
   <!-- ================= 图库选择页 ================= -->
   <section class="screen" id="galleryScreen">
     <header class="topbar">
@@ -2045,6 +2162,18 @@
       <div class="sh-links"><span class="sh-link" onclick="closeOverlays()">关闭</span></div>
     </div>
     <div id="lmBody"></div>
+  </div>
+
+  <!-- 商品详情弹层（AI选品 推荐商品） -->
+  <div class="sheet" id="productSheet" aria-label="商品详情">
+    <div class="sheet-head">
+      <div class="sh-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5M12 12v9"/></svg>
+        商品详情
+      </div>
+      <div class="sh-links"><span class="sh-link" onclick="closeOverlays()">关闭</span></div>
+    </div>
+    <div id="pdBody"></div>
   </div>
 
   <!-- 创作历史页 -->
@@ -2739,6 +2868,11 @@ const HERO_STEPS_BY_FLOW = {
     { t:'AI 匹配买家', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="3.6"/>' },
     { t:'查看线索草稿', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="3.2" y="5.6" width="17.6" height="12.8" rx="2.4"/><path d="M4 7l8 5.8L20 7"/>' },
   ],
+  'AI选品': [
+    { t:'填写采购需求', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
+    { t:'AI 匹配商品', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5M12 12v9"/>' },
+    { t:'查看推荐清单', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.2" cy="6" r="1.1"/><circle cx="4.2" cy="12" r="1.1"/><circle cx="4.2" cy="18" r="1.1"/>' },
+  ],
 };
 function heroHTML(f){
   const steps = HERO_STEPS_BY_FLOW[flowName] || HERO_STEPS_DEFAULT;
@@ -2880,18 +3014,21 @@ flowCta.addEventListener('click', () => {
     toast('请先上传待调整图片');
     return;
   }
-  /* 商机探查 / 海外获客：走全屏 loading 步骤条，完成后进入结果页 */
-  if (flowName === 'AI商机探查' || flowName === 'AI海外获客'){
+  /* 商机探查 / 海外获客 / AI选品：走全屏 loading 步骤条，完成后进入结果页 */
+  if (flowName === 'AI商机探查' || flowName === 'AI海外获客' || flowName === 'AI选品'){
     const vals = flowValues();
     const miss = (currentFlow.fields || []).filter(f => f.required && !hasFlowVal(vals[f.label]));
     if (miss.length){ toast('请填写「' + miss[0].label + '」'); return; }
     const old = flowCta.innerHTML;
     flowCta.disabled = true;
-    flowCta.textContent = flowName === 'AI商机探查' ? 'AI 探查中…' : 'AI 匹配中…';
+    flowCta.textContent = flowName === 'AI商机探查' ? 'AI 探查中…'
+      : flowName === 'AI海外获客' ? 'AI 匹配中…' : 'AI 选品中…';
     runAILoading(flowName, () => {
       flowCta.disabled = false;
       flowCta.innerHTML = old;
-      if (flowName === 'AI商机探查') openProbe(vals); else openLeads(vals);
+      if (flowName === 'AI商机探查') openProbe(vals);
+      else if (flowName === 'AI海外获客') openLeads(vals);
+      else openPicks(vals);
     });
     return;
   }
@@ -2909,6 +3046,11 @@ const AI_LOAD_CONF = {
     title: 'AI 正在匹配海外买家',
     sub: '正在检索公开贸易数据与平台线索',
     steps: ['识别目标国家和商品', '匹配 HS Code', '获取贸易信息', '筛选买家与决策人', '生成开发信草稿'],
+  },
+  'AI选品': {
+    title: 'AI 正在挑选商品',
+    sub: '正在比对跨境趋势榜与平台在售货源',
+    steps: ['解析采购需求与品类', '匹配目标市场趋势', '检索源头产业带货盘', '核算价格带与利润空间', '生成候选商品清单'],
   },
 };
 
@@ -3417,6 +3559,267 @@ function askJibaoAboutLeads(){
   openChatWith(`帮我跟进 ${markets} 的这批海外买家线索，按 A/B/C 优先级给出开发顺序和首封跟进建议`);
 }
 
+/* ==================================================================
+   AI选品 —— 表单提交后的「推荐商品」结果页
+   字段依据：中国大集线上真实能力（趋势商品 / 跨境趋势榜 / 外贸热销榜、
+   商品趋势指南（报关出口数据）、分销选品中心、源头产业带货盘、站内同款、
+   只看有货、资质认证、多语言视频与 VR 云验厂）
+   ================================================================== */
+const picksScreen = document.getElementById('picksScreen');
+const PK_ICON = {
+  outdoor:'<path d="M3 19h18M5 19l4.5-8 3 4.2 2.5-4.2L20 19"/><circle cx="12" cy="5" r="1.8"/>',
+  tools:'<path d="M14.6 4.4a3.8 3.8 0 0 0-4.8 4.8L4 15v4h4l5.8-5.8a3.8 3.8 0 0 0 4.8-4.8l-2.6 2.6-2.2-2.2z"/>',
+  home:'<path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M9.5 20v-5.5h5V20"/>',
+  digital:'<rect x="5.5" y="3" width="13" height="18" rx="2.2"/><circle cx="12" cy="14.2" r="2.8"/><path d="M10.5 6.6h3"/>',
+  textile:'<path d="M5 8.5h14l-1 11.5H6L5 8.5z"/><path d="M9 8.5V6.4a3 3 0 0 1 6 0v2.1"/>',
+};
+const PRODUCTS = [
+  { id:'p1', cat:'outdoor', name:'折叠露营桌椅套装', en:'Folding Camping Table & Chair Set', color:['#ffd9a8','#e8943c'],
+    score:94, price:'$28.5', moq:'200 件', margin:36, heat:24, sales:3820, tier:'mid', market:['欧美','东南亚'],
+    tags:['有现货','支持定制','可小批量起订'],
+    reason:'欧美露营季备货启动，跨境趋势榜近 30 天搜索 +24%；站内同款供货仅 12 家，供需偏紧，中客单带利润空间足。',
+    src:['跨境趋势榜','平台在售商品','站内同款比对'],
+    belt:'浙江金华 · 户外用品产业带', supply:'自有工厂 · 月产能 8,000 套', cert:'CE / EN 581', lead:'15 天', hs:'9403.20.00', audit:'支持 VR 云验厂' },
+  { id:'p2', cat:'outdoor', name:'太阳能便携露营灯', en:'Solar Portable Camping Lantern', color:['#ffe6a8','#e5b23c'],
+    score:91, price:'$9.8', moq:'500 件', margin:42, heat:38, sales:6140, tier:'low', market:['欧美','东南亚','中东'],
+    tags:['有现货','自有工厂','可小批量起订'],
+    reason:'外贸热销榜小件灯具持续走量，$10 以内低客单带复购高；太阳能款在东南亚离网场景渗透快。',
+    src:['外贸热销榜','报关出口数据','产业带货盘'],
+    belt:'广东中山 · 灯具产业带', supply:'自有工厂 · 月产能 20,000 只', cert:'CE / RoHS / FCC', lead:'12 天', hs:'8513.10.00', audit:'支持 VR 云验厂' },
+  { id:'p3', cat:'tools', name:'铬钒钢家用工具组套', en:'Cr-V Household Tool Kit (24pcs)', color:['#cfe0ff','#6b93e0'],
+    score:92, price:'$21.5', moq:'300 套', margin:31, heat:16, sales:2460, tier:'mid', market:['欧美','中东','拉美'],
+    tags:['有现货','自有工厂','有出口资质'],
+    reason:'临沂五金城源头货盘，工贸一体报价有优势；欧美 DIY 工具组套常年稳销，礼盒装可抬客单。',
+    src:['平台在售商品','产业带货盘','报关出口数据'],
+    belt:'临沂五金城 · 北方五金产业带', supply:'自有工厂 · 月产能 12,000 套', cert:'ISO 9001 / CE', lead:'10 天', hs:'8206.00.00', audit:'支持 VR 云验厂' },
+  { id:'p4', cat:'tools', name:'多功能活动扳手', en:'Adjustable Wrench Set', color:['#cfe6e2','#4fa898'],
+    score:86, price:'$6.4', moq:'1000 件', margin:28, heat:11, sales:8900, tier:'low', market:['东南亚','中东','拉美'],
+    tags:['有现货','可小批量起订','支持定制'],
+    reason:'低客单引流款，近 30 天销量 8,900 件；适合与工具组套搭售，摊薄物流与获客成本。',
+    src:['外贸热销榜','平台在售商品'],
+    belt:'浙江永康 · 五金工具产业带', supply:'合作工厂 · 月产能 30,000 件', cert:'CE / GS', lead:'18 天', hs:'8204.12.00', audit:'可预约线下验厂' },
+  { id:'p5', cat:'home', name:'304 不锈钢保温杯', en:'304 Stainless Steel Tumbler', color:['#ffd6dc','#e2768c'],
+    score:93, price:'$5.9', moq:'500 件', margin:44, heat:29, sales:12300, tier:'low', market:['欧美','日韩','东南亚'],
+    tags:['有现货','支持定制','自有工厂'],
+    reason:'跨境常青款，近 30 天销量 12,300 件；支持 LOGO 定制做差异化，毛利率 44% 高于同类均值。',
+    src:['跨境趋势榜','外贸热销榜','平台在售商品'],
+    belt:'浙江永康 · 杯壶产业带', supply:'自有工厂 · 月产能 50,000 只', cert:'FDA / LFGB', lead:'14 天', hs:'9617.00.00', audit:'支持 VR 云验厂' },
+  { id:'p6', cat:'home', name:'硅胶厨房收纳套装', en:'Silicone Kitchen Storage Set', color:['#dcd0ff','#8c6ee0'],
+    score:89, price:'$12.8', moq:'300 套', margin:39, heat:21, sales:4180, tier:'mid', market:['欧美','日韩'],
+    tags:['有现货','支持定制','可小批量起订'],
+    reason:'欧美厨房收纳搜索回暖，套装组合比单件客单高 2.3 倍；食品级硅胶需备 FDA / LFGB 报告。',
+    src:['跨境趋势榜','报关出口数据','站内同款比对'],
+    belt:'义乌 · 日用百货产业带', supply:'合作工厂 · 月产能 15,000 套', cert:'FDA / LFGB', lead:'12 天', hs:'3924.10.00', audit:'可预约线下验厂' },
+  { id:'p7', cat:'digital', name:'便携蓝牙音箱', en:'Portable Bluetooth Speaker', color:['#c9e6ff','#4b8fd8'],
+    score:90, price:'$16.9', moq:'200 台', margin:35, heat:33, sales:5760, tier:'mid', market:['欧美','拉美','中东'],
+    tags:['有现货','有出口资质','支持定制'],
+    reason:'近 30 天热度 +33%，拉美与中东增量明显；需提前准备 CE / FCC / RoHS 与电池运输文件。',
+    src:['跨境趋势榜','报关出口数据','平台在售商品'],
+    belt:'深圳 · 消费电子产业带', supply:'合作工厂 · 月产能 20,000 台', cert:'CE / FCC / RoHS', lead:'20 天', hs:'8518.22.00', audit:'支持 VR 云验厂' },
+  { id:'p8', cat:'digital', name:'迷你便携榨汁杯', en:'Portable USB Juicer Cup', color:['#d0f0dc','#4fb488'],
+    score:88, price:'$8.6', moq:'500 台', margin:41, heat:26, sales:9200, tier:'low', market:['东南亚','中东','拉美'],
+    tags:['有现货','自有工厂','可小批量起订'],
+    reason:'东南亚小家电热销，轻便易运输、售后率低；低客单带适合做新店铺冲量款。',
+    src:['外贸热销榜','产业带货盘'],
+    belt:'广东佛山 · 小家电产业带', supply:'自有工厂 · 月产能 25,000 台', cert:'CE / RoHS / FDA', lead:'16 天', hs:'8509.40.00', audit:'支持 VR 云验厂' },
+  { id:'p9', cat:'textile', name:'帆布托特包', en:'Canvas Tote Bag', color:['#ffe2c4','#dc9a55'],
+    score:87, price:'$3.8', moq:'1000 件', margin:47, heat:19, sales:15600, tier:'low', market:['欧美','日韩'],
+    tags:['有现货','支持定制','可小批量起订'],
+    reason:'白沟箱包产业带一手货源，近 30 天销量 15,600 件；可印刷定制，毛利率为本批最高。',
+    src:['平台在售商品','产业带货盘','站内同款比对'],
+    belt:'白沟箱包 · 箱包产业带', supply:'合作工厂 · 月产能 60,000 件', cert:'REACH / OEKO-TEX', lead:'12 天', hs:'4202.92.00', audit:'可预约线下验厂' },
+  { id:'p10', cat:'textile', name:'折叠旅行收纳包', en:'Foldable Travel Organizer Set', color:['#e2d6ff','#8f74d8'],
+    score:85, price:'$14.2', moq:'300 套', margin:38, heat:14, sales:3410, tier:'mid', market:['欧美','东南亚'],
+    tags:['有现货','支持定制','自有工厂'],
+    reason:'跨境出行复苏带动收纳需求，套装形式抬客单；与托特包共用产线，可合并下单降本。',
+    src:['跨境趋势榜','平台在售商品'],
+    belt:'白沟箱包 · 箱包产业带', supply:'自有工厂 · 月产能 18,000 套', cert:'REACH', lead:'15 天', hs:'4202.92.00', audit:'支持 VR 云验厂' },
+];
+
+let pickVals = {}, pickFilter = 'all', pickSort = 'score', pickSaved = new Set();
+
+function pickCatOf(txt){
+  const s = String(txt || '');
+  if (/露营|户外|帐篷|野营|登山|折叠桌椅/.test(s)) return 'outdoor';
+  if (/五金|工具|扳手|钳|螺丝|机械|电动工具/.test(s)) return 'tools';
+  if (/家居|厨房|收纳|保温杯|水杯|日用|百货/.test(s)) return 'home';
+  if (/电子|数码|音箱|小家电|电器|3C|蓝牙/.test(s)) return 'digital';
+  if (/服装|箱包|鞋|纺织|面料|包袋|托特/.test(s)) return 'textile';
+  return '';
+}
+function pickTierOf(s){ return /低客单/.test(s) ? 'low' : /高客单/.test(s) ? 'high' : 'mid'; }
+function pickGrade(n){ return n >= 90 ? 'S' : n >= 87 ? 'A' : 'B'; }
+
+function openPicks(v){
+  pickVals = v; pickFilter = 'all'; pickSort = 'score'; pickSaved = new Set();
+  renderPicks();
+  showScreen(picksScreen);
+  document.getElementById('picksBody').scrollTop = 0;
+}
+function renderPicks(){
+  const v = pickVals;
+  const demand = String(v['采购需求'] || '').trim();
+  const market = String(v['目标市场'] || '').trim();
+  const tier = pickTierOf(v['客单价区间'] || '');
+  const tierLabel = tier === 'low' ? '低客单价' : tier === 'high' ? '高客单价' : '中客单价';
+  const reqs = Array.isArray(v['供应商要求']) ? v['供应商要求'] : (v['供应商要求'] ? [v['供应商要求']] : []);
+  const total = (String(v['推荐数量'] || '10个').replace(/[^0-9]/g,'')) || '10';
+  const cat = pickCatOf(demand);
+
+  /* 按「品类 → 目标市场 → 客单价带 → 供应商要求命中数」优先排序，不硬过滤，保证结果不为空 */
+  let list = PRODUCTS.slice();
+  list.sort((a, b) => {
+    if (cat){ const ac = a.cat === cat ? 0 : 1, bc = b.cat === cat ? 0 : 1; if (ac !== bc) return ac - bc; }
+    if (market){ const am = a.market.includes(market) ? 0 : 1, bm = b.market.includes(market) ? 0 : 1; if (am !== bm) return am - bm; }
+    const at = a.tier === tier ? 0 : 1, bt = b.tier === tier ? 0 : 1;
+    if (at !== bt) return at - bt;
+    /* 先按所选排序键排，供应商要求命中数只做同级微调，避免把「热销/利润」排序盖掉 */
+    if (pickSort === 'heat' && b.heat !== a.heat) return b.heat - a.heat;
+    if (pickSort === 'margin' && b.margin !== a.margin) return b.margin - a.margin;
+    if (pickSort === 'score' && b.score !== a.score) return b.score - a.score;
+    const ar = reqs.filter(r => a.tags.includes(r)).length, br = reqs.filter(r => b.tags.includes(r)).length;
+    return br - ar;
+  });
+  if (pickFilter === 's') list = list.filter(p => p.score >= 90);
+  else if (pickFilter === 'saved') list = list.filter(p => pickSaved.has(p.id));
+
+  const shown = list.slice(0, 8);
+  const avg = arr => arr.length ? Math.round(arr.reduce((s, n) => s + n, 0) / arr.length) : 0;
+  const avgMargin = avg(shown.map(p => p.margin));
+  const avgHeat = avg(shown.map(p => p.heat));
+  const stockRate = shown.length ? Math.round(shown.filter(p => p.tags.includes('有现货')).length / shown.length * 100) : 0;
+  const filters = [ ['all','全部'], ['s','S级 ≥90'], ['saved','已收藏'] ];
+  const sortLabel = pickSort === 'score' ? '推荐优先' : pickSort === 'heat' ? '热销优先' : '利润优先';
+  const cards = shown.length
+    ? shown.map((p, i) => pickCardHTML(p, i, reqs)).join('')
+      + `<div class="pk-more">— 本页展示精选 ${shown.length} 款，其余 ${Math.max(0, Number(total) - shown.length)} 款可在导出清单中查看 —</div>`
+    : `<div class="pk-empty">当前筛选下暂无商品<br>换个筛选条件试试</div>`;
+
+  document.getElementById('picksBody').innerHTML = `
+    <div class="ld-meta">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      选品依据：${demand.slice(0, 18)}${demand.length > 18 ? '…' : ''}<br>来源：跨境趋势榜 / 外贸热销榜 · 更新 ${nowStr().slice(5)}
+    </div>
+    <div class="pk-sum">
+      <div class="l1">已推荐 <b>${total}</b> 款候选商品</div>
+      <div class="l2">面向${market || '目标市场'}市场 · ${tierLabel}带 · 已收藏 ${pickSaved.size} 款<br>${reqs.length ? '已优先匹配 ' + reqs.length + ' 项供应商要求' : '按综合推荐分排序'}，建议先测 S 级商品。</div>
+    </div>
+    <div class="rp-stats">
+      <div class="rp-stat"><div class="v ok">${avgMargin}%</div><div class="k">平均毛利率</div></div>
+      <div class="rp-stat"><div class="v">+${avgHeat}%</div><div class="k">近30天热度</div></div>
+      <div class="rp-stat"><div class="v">${stockRate}%</div><div class="k">现货占比</div></div>
+    </div>
+    <div class="ld-tools">
+      <div class="ld-chips">
+        ${filters.map(f => `<button class="ld-chip ${pickFilter === f[0] ? 'on' : ''}" onclick="setPickFilter('${f[0]}')">${f[1]}</button>`).join('')}
+      </div>
+      <span class="ld-sort" onclick="togglePickSort()">
+        ${sortLabel}
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
+      </span>
+    </div>
+    ${cards}
+    <div class="rp-disc">推荐基于跨境趋势榜、外贸热销榜、报关出口数据与平台在售货源；价格、毛利率为近期成交数据估算，采购前请以供应商实盘报价与样品为准。AI 生成内容仅供参考。</div>
+  `;
+  document.getElementById('picksBody').scrollTop = 0;
+}
+function pickCardHTML(p, i, reqs){
+  const g = pickGrade(p.score);
+  const saved = pickSaved.has(p.id);
+  const tags = p.tags.map(t => `<span class="pk-tag ${reqs.includes(t) ? 'hit' : ''}">${t}</span>`).join('');
+  return `
+    <div class="pk-card">
+      <div class="pk-main">
+        <div class="pk-thumb" style="background:linear-gradient(135deg,${p.color[0]},${p.color[1]})">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PK_ICON[p.cat]}</svg>
+          <span class="pk-rank">TOP ${i + 1}</span>
+        </div>
+        <div class="pk-info">
+          <div class="pk-name">${p.name}</div>
+          <div class="pk-en">${p.en}</div>
+          <div class="pk-tags">${tags}</div>
+        </div>
+        <div class="pk-sc">
+          <div class="n ${g === 'S' ? '' : g === 'A' ? 'b' : 'c'}">${p.score}</div>
+          <div class="l">${g}级推荐</div>
+        </div>
+      </div>
+      <div class="pk-nums">
+        <div class="pk-num"><b>${p.price}</b><span>参考售价</span></div>
+        <div class="pk-num"><b>${p.moq}</b><span>起订量</span></div>
+        <div class="pk-num"><b>${p.margin}%</b><span>毛利率</span></div>
+        <div class="pk-num"><b class="up">+${p.heat}%</b><span>近30天热度</span></div>
+      </div>
+      <div class="pk-why"><b>推荐理由：</b>${p.reason}</div>
+      <div class="pk-srcs">${p.src.map(s => `<span class="pk-src">${s}</span>`).join('')}</div>
+      <div class="pk-acts">
+        <button class="pri" onclick="openProductDetail('${p.id}')">查看详情</button>
+        <button class="${saved ? 'on' : ''}" onclick="togglePickSave('${p.id}')">${saved ? '已收藏' : '加入选品清单'}</button>
+      </div>
+    </div>`;
+}
+function openProductDetail(id){
+  const p = PRODUCTS.find(x => x.id === id) || PRODUCTS[0];
+  const g = pickGrade(p.score);
+  const saved = pickSaved.has(p.id);
+  document.getElementById('pdBody').innerHTML = `
+    <div class="pd-hero" style="background:linear-gradient(135deg,${p.color[0]},${p.color[1]})">
+      <span class="pd-badge">推荐分 ${p.score} · ${g}级</span>
+      <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${PK_ICON[p.cat]}</svg>
+    </div>
+    <div class="pd-title">${p.name}</div>
+    <div class="pd-en">${p.en}</div>
+    <div class="pd-grid">
+      <div class="pd-cell"><b>${p.price}</b><span>参考售价</span></div>
+      <div class="pd-cell"><b>${p.moq}</b><span>起订量 MOQ</span></div>
+      <div class="pd-cell"><b>${p.margin}%</b><span>预估毛利率</span></div>
+      <div class="pd-cell"><b class="up">+${p.heat}%</b><span>近30天热度</span></div>
+      <div class="pd-cell"><b>${p.sales.toLocaleString()}</b><span>近30天销量</span></div>
+      <div class="pd-cell"><b>${p.market[0]}</b><span>主力市场</span></div>
+    </div>
+    <div class="pd-sec">
+      <div class="t">供货与合规</div>
+      <div class="pd-kv"><div class="k">源头产业带</div><div class="v">${p.belt}</div></div>
+      <div class="pd-kv"><div class="k">供货能力</div><div class="v">${p.supply}</div></div>
+      <div class="pd-kv"><div class="k">资质认证</div><div class="v">${p.cert}</div></div>
+      <div class="pd-kv"><div class="k">参考交期</div><div class="v">${p.lead}</div></div>
+      <div class="pd-kv"><div class="k">HS 编码</div><div class="v">${p.hs}</div></div>
+      <div class="pd-kv"><div class="k">验厂方式</div><div class="v">${p.audit}</div></div>
+    </div>
+    <div class="pd-sec">
+      <div class="t">AI 推荐理由</div>
+      <div class="pd-why">${p.reason}</div>
+    </div>
+    <div class="pd-sec">
+      <div class="t">数据来源</div>
+      <div class="pk-srcs">${p.src.map(s => `<span class="pk-src">${s}</span>`).join('')}</div>
+      <div class="lm-note">价格与毛利率为平台近期成交数据估算，采购前请以供应商实盘报价与样品为准。</div>
+    </div>
+    <div class="pd-btns">
+      <button onclick="pickSaveFromDetail('${p.id}')">${saved ? '已收藏' : '加入选品清单'}</button>
+      <button class="pri" onclick="toast('已为该商品创建 AI 商品图任务（原型演示）')">生成商品图</button>
+    </div>
+  `;
+  openSheet(document.getElementById('productSheet'));
+}
+function pickSaveFromDetail(id){ togglePickSave(id); openProductDetail(id); }
+function setPickFilter(k){ pickFilter = k; renderPicks(); }
+function togglePickSort(){
+  pickSort = pickSort === 'score' ? 'heat' : pickSort === 'heat' ? 'margin' : 'score';
+  renderPicks();
+}
+function togglePickSave(id){
+  const box = document.getElementById('picksBody'), top = box ? box.scrollTop : 0;
+  pickSaved.has(id) ? pickSaved.delete(id) : pickSaved.add(id);
+  renderPicks();
+  if (box) box.scrollTop = top;
+  toast(pickSaved.has(id) ? '已加入选品清单' : '已移出选品清单');
+}
+function askJibaoAboutPicks(){
+  const cat = String(pickVals['采购需求'] || '这批候选商品').slice(0, 22);
+  openChatWith(`基于「${cat}」这批候选商品，帮我按毛利和热度给出前 3 款测款排序，并说明首单备货量和上架节奏`);
+}
+
 /* ================= 上传弹层 / 图库选择 / 图片调整 ================= */
 const uploadSheet = document.getElementById('uploadSheet');
 const pickSheet = document.getElementById('pickSheet');
@@ -3822,9 +4225,11 @@ function closeOverlays(){
   const up = document.getElementById('uploadSheet');
   const pk = document.getElementById('pickSheet');
   const lm = document.getElementById('leadMailSheet');
+  const pd = document.getElementById('productSheet');
   if (up) up.classList.remove('open');
   if (pk) pk.classList.remove('open');
   if (lm) lm.classList.remove('open');
+  if (pd) pd.classList.remove('open');
   mask.classList.remove('open');
 }
 function claimCredits(){
@@ -4075,6 +4480,9 @@ function replyFor(q){
   }
   if (/店铺|经营|数据|访客|转化/.test(t)) {
     return '近 7 天店铺数据概览（示例）：\n· 访客 1,842（环比 +12.4%）\n· 商详转化 4.8%（环比 -0.6%）\n· 询盘 36 条（环比 +20%）\n\n主要问题：主图风格偏工业、场景图缺失，移动端首屏吸引力不足。\n建议：① 补 3 张场景图；② 卖点图突出"铬钒钢+终身质保"；③ 详情首屏加对比表格。\n需要我直接生成这 3 张图吗？';
+  }
+  if (/候选商品|选品清单|测款|备货|上架节奏|上架排序/.test(t)) {
+    return '这批候选商品建议分 3 步测款：\n① 先上推荐分 ≥90 且「有现货」的 2~3 款，按 MOQ 下限小批量试单，避免压货\n② 主图与卖点图按目标市场语言生成，配 15~30 秒商品短视频，观察 7 天点击率与询盘\n③ 热度 +25% 以上、毛利率 ≥35% 的款追加备货，其余转长期观察\n\n需要我先给 Top 3 各出一张卖点图和一版多语种标题吗？';
   }
   if (/跟进|谈判|话术|开发信|线索/.test(t)) {
     const co = (q.match(/「([^」]+)」/) || [])[1];
