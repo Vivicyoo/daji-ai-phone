@@ -1454,6 +1454,65 @@
   }
   .lm-btns button.pri{background:linear-gradient(135deg,#3f66f2,#544ee0);border-color:transparent;color:#fff}
 
+  /* ============ AI 搜索生成：全屏 loading（步骤条 / 任务条） ============ */
+  .ai-load{
+    position:absolute;inset:0;z-index:15;display:none;
+    flex-direction:column;justify-content:center;
+    padding:calc(28px + env(safe-area-inset-top)) 26px calc(112px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,#f5f7ff 0%,#fff 46%);
+    transition:opacity .2s ease;
+  }
+  .ai-load.open{display:flex}
+  .ai-load.closing{opacity:0}
+  .al-head{text-align:center;margin-bottom:24px}
+  .al-ico{
+    width:52px;height:52px;border-radius:17px;margin:0 auto 14px;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#3f66f2,#544ee0);
+    box-shadow:0 10px 24px rgba(63,102,242,.26);
+    animation:alBreath 2.2s ease-in-out infinite;
+  }
+  @keyframes alBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  .al-ttl{font-size:16.5px;font-weight:700;letter-spacing:-.2px;color:var(--text)}
+  .al-sub{font-size:11.5px;color:var(--text-3);margin-top:6px;line-height:1.5}
+  .al-steps{width:min(272px,100%);margin:0 auto}
+  .al-step{position:relative;display:flex;align-items:center;min-height:44px;padding-left:22px}
+  .al-step::before{
+    content:"";position:absolute;left:3.5px;top:-4px;bottom:-4px;width:1px;background:#e6eaf3;
+  }
+  .al-step:first-child::before{top:50%;bottom:auto;height:calc(50% + 4px)}
+  .al-step:last-child::before{top:auto;bottom:50%;height:calc(50% + 4px)}
+  .al-dot{
+    position:absolute;left:0;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;
+    background:#d3daea;transition:background .14s ease;
+  }
+  .al-step.done .al-dot{background:#4257e9}
+  .al-step.on .al-dot{opacity:0}
+  .al-blink{
+    position:absolute;left:-1px;top:50%;margin-top:-4px;height:8px;
+    display:none;align-items:center;gap:2px;
+  }
+  .al-step.on .al-blink{display:flex}
+  .al-blink i{width:3.5px;height:3.5px;border-radius:50%;background:#4257e9;animation:alBlink 1.05s infinite}
+  .al-blink i:nth-child(2){animation-delay:.15s}
+  .al-blink i:nth-child(3){animation-delay:.3s}
+  @keyframes alBlink{0%,60%,100%{opacity:.4;transform:translateY(1px)}28%{opacity:1;transform:translateY(-1.5px)}}
+  .al-tx{font-size:13px;color:#a9b1c3;line-height:1.4;transition:color .14s ease}
+  .al-step.done .al-tx{color:#39415a}
+  .al-step.on .al-tx{color:var(--text);font-weight:600}
+  .al-prog{
+    width:min(272px,100%);height:3px;border-radius:2px;background:#eceff7;
+    margin:22px auto 9px;overflow:hidden;
+  }
+  .al-prog i{
+    display:block;height:100%;width:0;border-radius:2px;
+    background:linear-gradient(90deg,#3f66f2,#7c6bf0);transition:width .45s ease;
+  }
+  .al-foot{
+    width:min(272px,100%);margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+    font-size:10.5px;color:var(--text-3);
+  }
+
   /* iOS：输入框字号 <16px 会在聚焦时强制缩放页面，触摸端统一抬到 16px */
   @supports (-webkit-touch-callout:none){
     .ask-input,.input-box input,.textarea,.lm-input,.lm-area{font-size:16px}
@@ -1840,6 +1899,20 @@
     </header>
     <div class="records-scroll" id="recordsBody"></div>
   </section>
+
+  <!-- AI 搜索生成：全屏 loading（竖排步骤条） -->
+  <div class="ai-load" id="aiLoad" role="status" aria-live="polite">
+    <div class="al-head">
+      <div class="al-ico">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 2.8l1.75 4.75L17.5 9.3l-4.75 1.75L11 15.8l-1.75-4.75L4.5 9.3l4.75-1.75z"/><path d="M18.3 14.6l.95 2.55 2.55.95-2.55.95-.95 2.55-.95-2.55-2.55-.95 2.55-.95z" opacity=".5"/></svg>
+      </div>
+      <div class="al-ttl" id="alTitle">AI 正在处理</div>
+      <div class="al-sub" id="alSub"></div>
+    </div>
+    <div class="al-steps" id="alSteps"></div>
+    <div class="al-prog"><i id="alBar"></i></div>
+    <div class="al-foot"><span id="alTime">已用 0:00</span><span>演示模式加速</span></div>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -2648,12 +2721,27 @@ function updateChipsSum(group){
 }
 
 /* ---- 表单页说明卡 ---- */
+/* 说明卡步骤：媒体类工具默认「上传 → 生成 → 下载」，
+   商业类工具按各自真实链路给步骤，避免套用素材流程 */
+const HERO_STEPS_DEFAULT = [
+  { t: '上传素材', c: 'linear-gradient(135deg,#a78bfa,#7c6bf0)', i: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 17l5-4 4 3 3-2 4 3"/>' },
+  { t: 'AI 生成', c: 'linear-gradient(135deg,#818cf8,#5b8def)', i: '<path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/>' },
+  { t: '下载使用', c: 'linear-gradient(135deg,#60a5fa,#3b82f6)', i: '<path d="M12 4v10M7.8 10.4L12 14.6l4.2-4.2"/><path d="M5.5 19.5h13"/>' },
+];
+const HERO_STEPS_BY_FLOW = {
+  'AI商机探查': [
+    { t:'填写商机信息', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
+    { t:'AI 多源核查', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<circle cx="10.6" cy="10.6" r="6.3"/><path d="M15.2 15.2L20 20"/>' },
+    { t:'查看探查报告', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<path d="M6 3.6h7.4L18 8.2V20a.9.9 0 0 1-.9.9H6a.9.9 0 0 1-.9-.9V4.5a.9.9 0 0 1 .9-.9z"/><path d="M13.2 3.6v4.8H18"/>' },
+  ],
+  'AI海外获客': [
+    { t:'填写商品市场', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
+    { t:'AI 匹配买家', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="3.6"/>' },
+    { t:'查看线索草稿', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="3.2" y="5.6" width="17.6" height="12.8" rx="2.4"/><path d="M4 7l8 5.8L20 7"/>' },
+  ],
+};
 function heroHTML(f){
-  const steps = [
-    { t: '上传素材', c: 'linear-gradient(135deg,#a78bfa,#7c6bf0)', i: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 17l5-4 4 3 3-2 4 3"/>' },
-    { t: 'AI 生成', c: 'linear-gradient(135deg,#818cf8,#5b8def)', i: '<path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/>' },
-    { t: '下载使用', c: 'linear-gradient(135deg,#60a5fa,#3b82f6)', i: '<path d="M12 4v10M7.8 10.4L12 14.6l4.2-4.2"/><path d="M5.5 19.5h13"/>' },
-  ];
+  const steps = HERO_STEPS_BY_FLOW[flowName] || HERO_STEPS_DEFAULT;
   return `<div class="flow-hero">
     <div class="fh-t">${f.title || flowName}</div>
     <div class="fh-d">${f.intro || ''}</div>
@@ -2792,7 +2880,7 @@ flowCta.addEventListener('click', () => {
     toast('请先上传待调整图片');
     return;
   }
-  /* 商机探查 / 海外获客：提交后进入真实的后续结果页，不再只弹 toast */
+  /* 商机探查 / 海外获客：走全屏 loading 步骤条，完成后进入结果页 */
   if (flowName === 'AI商机探查' || flowName === 'AI海外获客'){
     const vals = flowValues();
     const miss = (currentFlow.fields || []).filter(f => f.required && !hasFlowVal(vals[f.label]));
@@ -2800,15 +2888,81 @@ flowCta.addEventListener('click', () => {
     const old = flowCta.innerHTML;
     flowCta.disabled = true;
     flowCta.textContent = flowName === 'AI商机探查' ? 'AI 探查中…' : 'AI 匹配中…';
-    setTimeout(() => {
+    runAILoading(flowName, () => {
       flowCta.disabled = false;
       flowCta.innerHTML = old;
       if (flowName === 'AI商机探查') openProbe(vals); else openLeads(vals);
-    }, 620);
+    });
     return;
   }
   toast(`「${flowName}」任务已提交（原型演示）`);
 });
+
+/* ---------------- AI 搜索生成：全屏 loading 步骤条 ---------------- */
+const AI_LOAD_CONF = {
+  'AI商机探查': {
+    title: 'AI 正在探查商机',
+    sub: '已接入 6 类数据源，逐项核查中',
+    steps: ['识别对方企业主体', '核查工商与股权信息', '调取海关与贸易记录', '评估信用与司法风险', '汇总商机探查报告'],
+  },
+  'AI海外获客': {
+    title: 'AI 正在匹配海外买家',
+    sub: '正在检索公开贸易数据与平台线索',
+    steps: ['识别目标国家和商品', '匹配 HS Code', '获取贸易信息', '筛选买家与决策人', '生成开发信草稿'],
+  },
+};
+
+let aiLoadTimer = null, aiLoadTick = null;
+
+function runAILoading(name, done){
+  const cfg = AI_LOAD_CONF[name];
+  const box = document.getElementById('aiLoad');
+  if (!cfg || !box){ done(); return; }
+  const stepsEl = document.getElementById('alSteps');
+  const bar = document.getElementById('alBar');
+  const timeEl = document.getElementById('alTime');
+  document.getElementById('alTitle').textContent = cfg.title;
+  document.getElementById('alSub').textContent = cfg.sub;
+  stepsEl.innerHTML = cfg.steps.map((t, i) => `
+    <div class="al-step${i === 0 ? ' on' : ''}">
+      <i class="al-dot"></i>
+      <span class="al-blink"><i></i><i></i><i></i></span>
+      <span class="al-tx">${t}</span>
+    </div>`).join('');
+  bar.style.width = '0%';
+  timeEl.textContent = '已用 0:00';
+  box.classList.add('open');
+  box.classList.remove('closing');
+
+  const t0 = Date.now();
+  const total = cfg.steps.length;
+  let idx = 0;
+  clearInterval(aiLoadTick); clearTimeout(aiLoadTimer);
+  aiLoadTick = setInterval(() => {
+    const s = Math.floor((Date.now() - t0) / 1000);
+    timeEl.textContent = '已用 ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }, 400);
+
+  /* 每 480ms 推进一项：上一项转为已完成，下一项进入「···」加载态 */
+  const tick = () => {
+    const rows = box.querySelectorAll('.al-step');
+    rows[idx].classList.remove('on');
+    rows[idx].classList.add('done');
+    idx++;
+    bar.style.width = Math.round(idx / total * 100) + '%';
+    if (idx < total){
+      rows[idx].classList.add('on');
+      aiLoadTimer = setTimeout(tick, 480);
+    } else {
+      aiLoadTimer = setTimeout(() => {
+        clearInterval(aiLoadTick);
+        box.classList.add('closing');
+        setTimeout(() => { box.classList.remove('open', 'closing'); done(); }, 200);
+      }, 420);
+    }
+  };
+  aiLoadTimer = setTimeout(tick, 460);
+}
 
 /* ==================================================================
    AI商机探查 / AI海外获客 —— 表单提交后的后续功能页面
