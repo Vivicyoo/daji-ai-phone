@@ -1259,9 +1259,193 @@
      5) 可点元素视觉高度不足 44px 时，用 ::after 负 inset 外扩热区，不放大视觉
      ========================================================= */
 
+  /* ============ 商机探查报告 / 海外买家线索（表单提交后的结果页） ============ */
+  .rp-scroll,.ld-scroll{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);
+    padding:var(--gap-sec) var(--pad-x) calc(28px + env(safe-area-inset-bottom));
+  }
+  .rp-scroll::-webkit-scrollbar,.ld-scroll::-webkit-scrollbar{display:none}
+  .cta:disabled{opacity:.68;cursor:default}
+
+  /* 概览英雄卡 */
+  .rp-hero{
+    background:linear-gradient(150deg,#eef3ff 0%,#f6f0ff 100%);
+    border:1px solid #e2e8fb;border-radius:var(--radius);
+    padding:var(--pad-card);margin-bottom:var(--gap-item);
+  }
+  .rh-top{display:flex;align-items:flex-start;gap:10px}
+  .rh-logo{
+    width:42px;height:42px;border-radius:12px;background:#fff;border:1px solid #e2e8fb;
+    display:flex;align-items:center;justify-content:center;flex:none;
+    font-size:12px;font-weight:700;color:#4257e9;letter-spacing:.4px;
+  }
+  .rh-id{flex:1;min-width:0}
+  .rh-name{font-size:15.5px;font-weight:650;line-height:1.35;word-break:break-word}
+  .rh-sub{font-size:11.5px;color:var(--text-2);margin-top:4px;line-height:1.5}
+  .rh-score{flex:none;text-align:right;min-width:52px}
+  .rh-score .n{font-size:27px;font-weight:750;color:#2f6bff;line-height:1;letter-spacing:-1px}
+  .rh-score .u{font-size:10.5px;color:var(--text-3);margin-left:1px}
+  .rh-score .l{font-size:10px;color:var(--text-3);margin-top:4px}
+  .rh-verdict{
+    display:inline-flex;align-items:center;gap:5px;margin-top:12px;padding:5px 10px;
+    border-radius:8px;background:#e6f6ee;color:#1f8a5c;font-size:12px;font-weight:600;
+  }
+  .rh-verdict.mid{background:#fff4e3;color:#b47316}
+  .rh-verdict.low{background:#fdecec;color:#c23c40}
+  .rp-meta,.ld-meta{
+    display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--text-3);
+    margin-bottom:var(--gap-item);line-height:1.55;
+  }
+  .rp-meta svg,.ld-meta svg{flex:none;margin-top:1.5px}
+  .rp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap-item);margin-bottom:var(--gap-sec)}
+  .rp-stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
+  .rp-stat .v{font-size:15px;font-weight:700;line-height:1.2}
+  .rp-stat .v.ok{color:var(--ok)}
+  .rp-stat .v.warn{color:#d98f2b}
+  .rp-stat .k{font-size:10.5px;color:var(--text-3);margin-top:4px}
+
+  /* 数据来源 / 风险提示 */
+  .rp-src{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px var(--pad-card);margin-bottom:var(--gap-sec)}
+  .rp-src .t,.rp-risk .t{
+    display:flex;align-items:center;gap:6px;font-size:12px;font-weight:650;margin-bottom:8px;
+  }
+  .rp-src .t svg{color:var(--accent)}
+  .src-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .src-tag{font-size:10.5px;color:var(--text-2);background:#f4f6fb;border:1px solid var(--line);border-radius:6px;padding:4px 7px}
+  .rp-risk{background:#fffaf2;border:1px solid #f6e3c0;border-radius:12px;padding:11px var(--pad-card);margin-bottom:var(--gap-item)}
+  .rp-risk .t svg{color:#d98f2b}
+  .rp-risk .t{color:#8a6a37}
+  .rp-risk p{font-size:11.5px;color:#8a6a37;line-height:1.65}
+  .rp-disc{font-size:10.5px;color:var(--text-3);line-height:1.6;text-align:center;padding:2px 6px 4px}
+
+  /* 报告章节 */
+  .rp-sec{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:var(--gap-item);overflow:hidden}
+  .rp-sec-h{display:flex;align-items:center;gap:8px;padding:11px var(--pad-card);border-bottom:1px solid var(--line)}
+  .rp-sec-h .idx{
+    width:20px;height:20px;border-radius:6px;background:var(--accent-soft);color:var(--accent);
+    font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .rp-sec-h .t{font-size:13.5px;font-weight:650;flex:1}
+  .rp-sec-h .cnt{font-size:10.5px;color:var(--text-3)}
+  .rp-item{padding:10px var(--pad-card);border-bottom:1px solid #f1f2f6}
+  .rp-item:last-child{border-bottom:none}
+  .rp-item .it{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .rp-item .id{font-size:12px;color:var(--text-2);line-height:1.65;margin-top:4px}
+  .conf{font-size:9.5px;padding:2px 5px;border-radius:4px;flex:none;font-weight:500}
+  .conf.y{background:#e6f6ee;color:#1f8a5c}
+  .conf.n{background:#fff4e3;color:#b47316}
+  .rp-item .isrc{font-size:10.5px;color:var(--text-3);margin-top:6px;display:flex;align-items:center;gap:4px}
+
+  /* 贴底操作条 */
+  .rp-foot,.ld-foot{
+    flex:none;display:flex;gap:var(--gap-item);
+    padding:10px var(--pad-x) calc(12px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line);background:#fff;
+  }
+  .rp-foot .btn,.ld-foot .btn{
+    flex:1;min-height:44px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;
+    border:1px solid var(--line-strong);background:#fff;color:var(--text);
+    transition:transform .12s ease;
+  }
+  .rp-foot .btn:active,.ld-foot .btn:active{transform:scale(.97)}
+  .rp-foot .btn.primary,.ld-foot .btn.primary{
+    background:linear-gradient(135deg,#3f66f2,#544ee0);border-color:transparent;color:#fff;flex:1.25;
+  }
+  .rp-foot .btn.on{border-color:#bfe6d2;background:#e9f8f0;color:#1f8a5c}
+
+  /* ===== 海外买家线索 ===== */
+  .ld-sum{
+    background:linear-gradient(140deg,#eaf2ff,#eef0ff);border:1px solid #dfe7fb;
+    border-radius:var(--radius);padding:12px var(--pad-card);margin-bottom:var(--gap-item);
+  }
+  .ld-sum .l1{font-size:16px;font-weight:700;color:#2f56d8;letter-spacing:-.3px}
+  .ld-sum .l1 b{font-size:22px}
+  .ld-sum .l2{font-size:11.5px;color:var(--text-2);margin-top:6px;line-height:1.6}
+  .ld-tools{display:flex;align-items:center;gap:6px;margin-bottom:var(--gap-item)}
+  .ld-chips{display:flex;align-items:center;gap:6px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+  .ld-chips::-webkit-scrollbar{display:none}
+  .ld-chip{
+    position:relative;flex:none;font-size:11.5px;padding:7px 11px;border-radius:18px;
+    border:1px solid var(--line-strong);background:#fff;color:var(--text-2);
+    cursor:pointer;white-space:nowrap;min-height:32px;
+  }
+  .ld-chip::after{content:"";position:absolute;inset:-5px;border-radius:22px}
+  .ld-chip.on{background:var(--accent-soft);border-color:#bcd0ff;color:var(--accent);font-weight:600}
+  .ld-sort{
+    position:relative;margin-left:auto;flex:none;display:flex;align-items:center;gap:3px;
+    font-size:11.5px;color:var(--text-2);padding:7px 2px 7px 8px;cursor:pointer;white-space:nowrap;
+  }
+  .ld-sort::after{content:"";position:absolute;inset:-5px}
+
+  .ld-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px var(--pad-card);margin-bottom:var(--gap-item);box-shadow:var(--shadow-card);
+  }
+  .ld-ch{display:flex;align-items:flex-start;gap:9px}
+  .ld-flag{
+    width:34px;height:34px;border-radius:10px;flex:none;display:flex;align-items:center;
+    justify-content:center;color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.3px;
+  }
+  .ld-tt{flex:1;min-width:0}
+  .ld-name{font-size:13.5px;font-weight:650;line-height:1.35;word-break:break-word}
+  .ld-loc{font-size:11px;color:var(--text-3);margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .ld-type{font-size:10px;background:#f2f4fa;border-radius:5px;padding:2px 5px;color:var(--text-2)}
+  .ld-sc{flex:none;text-align:center;min-width:46px}
+  .ld-sc .n{font-size:19px;font-weight:750;line-height:1;letter-spacing:-.5px}
+  .ld-sc .n.a{color:#2f6bff}
+  .ld-sc .n.b{color:#d98f2b}
+  .ld-sc .n.c{color:var(--text-3)}
+  .ld-sc .l{font-size:9.5px;color:var(--text-3);margin-top:4px}
+  .ld-sig{
+    display:flex;gap:6px;margin-top:10px;padding:8px 9px;background:#f6f8fd;
+    border-radius:9px;font-size:11px;color:var(--text-2);line-height:1.55;
+  }
+  .ld-sig svg{flex:none;color:var(--accent);margin-top:1px}
+  .ld-why{font-size:11.5px;color:var(--text-2);line-height:1.6;margin-top:8px}
+  .ld-why b{color:var(--text);font-weight:600}
+  .ld-person{
+    display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;
+    border-top:1px dashed var(--line);font-size:11px;color:var(--text-2);flex-wrap:wrap;
+  }
+  .ld-person .pv{color:var(--text);font-weight:600}
+  .mail-tag{font-size:9.5px;padding:2px 5px;border-radius:4px;background:#e6f6ee;color:#1f8a5c}
+  .mail-tag.warn{background:#fff4e3;color:#b47316}
+  .ld-srcs{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .ld-src{font-size:9.5px;color:var(--text-3);border:1px solid var(--line);border-radius:4px;padding:2px 5px}
+  .ld-acts{display:flex;gap:8px;margin-top:10px}
+  .ld-acts button{
+    position:relative;flex:1;min-height:36px;border-radius:9px;font-size:11.5px;font-weight:600;
+    cursor:pointer;border:1px solid var(--line-strong);background:#fff;color:var(--text-2);
+  }
+  .ld-acts button::after{content:"";position:absolute;inset:-4px;border-radius:12px}
+  .ld-acts button.pri{border-color:#bcd0ff;background:var(--accent-soft);color:var(--accent)}
+  .ld-acts button.on{border-color:#bfe6d2;background:#e9f8f0;color:#1f8a5c}
+  .ld-empty{text-align:center;padding:44px 0;font-size:12.5px;color:var(--text-3);line-height:1.7}
+  .ld-more{text-align:center;font-size:11px;color:var(--text-3);padding:6px 0 2px}
+
+  /* 开发信草稿弹层 */
+  #leadMailSheet{max-height:84dvh;overflow-y:auto}
+  .lm-row{margin-top:12px}
+  .lm-lb{font-size:11.5px;color:var(--text-3);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+  .lm-val{font-size:12.5px;color:var(--text);font-weight:600}
+  .lm-lang{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:3px 7px}
+  .lm-input,.lm-area{
+    width:100%;border:1px solid var(--line-strong);border-radius:10px;background:#fafbfe;
+    padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;line-height:1.65;
+  }
+  .lm-input:focus,.lm-area:focus{outline:none;border-color:var(--accent);background:#fff}
+  .lm-area{min-height:176px;resize:vertical}
+  .lm-note{font-size:10.5px;color:var(--text-3);line-height:1.6;margin-top:10px}
+  .lm-btns{display:flex;gap:10px;margin-top:14px}
+  .lm-btns button{
+    flex:1;min-height:44px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;
+    border:1px solid var(--line-strong);background:#fff;color:var(--text);
+  }
+  .lm-btns button.pri{background:linear-gradient(135deg,#3f66f2,#544ee0);border-color:transparent;color:#fff}
+
   /* iOS：输入框字号 <16px 会在聚焦时强制缩放页面，触摸端统一抬到 16px */
   @supports (-webkit-touch-callout:none){
-    .ask-input,.input-box input,.textarea{font-size:16px}
+    .ask-input,.input-box input,.textarea,.lm-input,.lm-area{font-size:16px}
   }
 </style>
 </head>
@@ -1454,6 +1638,39 @@
     <div class="cta-bar" id="flowBar">
       <div class="ff-info" id="ffInfo"></div>
       <button class="cta" id="flowCta">开始生成</button>
+    </div>
+  </section>
+
+  <!-- ================= AI商机探查：后续结果页（商机探查报告） ================= -->
+  <section class="screen" id="probeScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromResult()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">商机探查报告</div>
+      <button class="history-btn" onclick="toast('报告已导出（原型演示）')">导出</button>
+    </header>
+    <div class="rp-scroll" id="probeBody"></div>
+    <div class="rp-foot">
+      <button class="btn" id="probeFollowBtn" onclick="toggleProbeFollow()">加入跟进</button>
+      <button class="btn" onclick="openMailDraft(-1)">开发信</button>
+      <button class="btn primary" onclick="askJibaoAboutProbe()">集宝跟进</button>
+    </div>
+  </section>
+
+  <!-- ================= AI海外获客：后续结果页（海外买家线索） ================= -->
+  <section class="screen" id="leadsScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromResult()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">海外买家线索</div>
+      <button class="history-btn" onclick="toast('线索已导出（原型演示）')">导出</button>
+    </header>
+    <div class="ld-scroll" id="leadsBody"></div>
+    <div class="ld-foot">
+      <button class="btn" onclick="toast('已批量导出线索（原型演示）')">批量导出线索</button>
+      <button class="btn primary" onclick="askJibaoAboutLeads()">让集宝跟进</button>
     </div>
   </section>
 
@@ -1732,6 +1949,18 @@
     <div class="up-title" id="pickTitle">请选择</div>
     <div id="pickList" style="max-height:46vh;overflow-y:auto"></div>
     <button class="gl-btn cancel" style="width:100%;margin-top:10px;height:42px" onclick="closeOverlays()">取消</button>
+  </div>
+
+  <!-- 开发信草稿弹层（商机探查报告 / 买家线索共用） -->
+  <div class="sheet" id="leadMailSheet" aria-label="开发信草稿">
+    <div class="sheet-head">
+      <div class="sh-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>
+        开发信草稿
+      </div>
+      <div class="sh-links"><span class="sh-link" onclick="closeOverlays()">关闭</span></div>
+    </div>
+    <div id="lmBody"></div>
   </div>
 
   <!-- 创作历史页 -->
@@ -2552,8 +2781,448 @@ flowCta.addEventListener('click', () => {
     toast('请先上传待调整图片');
     return;
   }
+  /* 商机探查 / 海外获客：提交后进入真实的后续结果页，不再只弹 toast */
+  if (flowName === 'AI商机探查' || flowName === 'AI海外获客'){
+    const vals = flowValues();
+    const miss = (currentFlow.fields || []).filter(f => f.required && !hasFlowVal(vals[f.label]));
+    if (miss.length){ toast('请填写「' + miss[0].label + '」'); return; }
+    const old = flowCta.innerHTML;
+    flowCta.disabled = true;
+    flowCta.textContent = flowName === 'AI商机探查' ? 'AI 探查中…' : 'AI 匹配中…';
+    setTimeout(() => {
+      flowCta.disabled = false;
+      flowCta.innerHTML = old;
+      if (flowName === 'AI商机探查') openProbe(vals); else openLeads(vals);
+    }, 620);
+    return;
+  }
   toast(`「${flowName}」任务已提交（原型演示）`);
 });
+
+/* ==================================================================
+   AI商机探查 / AI海外获客 —— 表单提交后的后续功能页面
+   字段依据：中国大集公开资料（AI尽调系统、全球风险雷达、AI精准匹配、
+   商机智能推荐 /「三力模型」风控研判、全域供应链商品中台、超级外综服）
+   以及同类 AI 买家情报产品的通用结果结构（匹配分、采购信号、决策人、开发信）
+   ================================================================== */
+const probeScreen = document.getElementById('probeScreen');
+const leadsScreen = document.getElementById('leadsScreen');
+let probeVals = {}, leadVals = {}, probeFollowed = false, mailDraft = { subject:'', body:'' };
+let leadFollow = new Set(), leadFilter = 'all', leadSort = 'score';
+
+/* 读取当前表单值：chips 按 data-label，textarea 按渲染顺序 */
+function flowValues(){
+  const vals = {}, fields = (currentFlow && currentFlow.fields) || [];
+  const tas = [...flowBody.querySelectorAll('textarea.textarea')];
+  const chips = {};
+  flowBody.querySelectorAll('.chips').forEach(g => {
+    chips[g.dataset.label] = [...g.querySelectorAll('.chip.on')].map(c => c.textContent.trim());
+  });
+  let ti = 0;
+  fields.forEach(f => {
+    if (f.type === 'textarea'){ const el = tas[ti++]; vals[f.label] = el ? el.value.trim() : ''; }
+    else if (f.type === 'chips'){
+      const on = chips[f.label] || [];
+      vals[f.label] = f.multi ? on : (on[0] || '');
+    }
+  });
+  return vals;
+}
+function hasFlowVal(v){ return Array.isArray(v) ? v.length > 0 : !!v; }
+function backFromResult(){ showScreen(flowScreen); }
+function escAttr(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+/* 从「对方信息」粗提企业名与国家，仅用于原型演示 */
+function parseCounterparty(txt){
+  const t = (txt || '').trim();
+  const country = (t.match(/(德国|美国|印尼|印度尼西亚|阿联酋|迪拜|日本|韩国|巴西|墨西哥|越南|泰国|马来西亚|沙特|法国|英国|荷兰|西班牙|意大利|澳大利亚|俄罗斯)/) || [])[1] || '海外';
+  let co = '';
+  const m = t.match(/[A-Za-z][A-Za-z0-9&.,\- ]{2,32}(?:GmbH|Ltd|Inc|LLC|Co\.|Corp|S\.A\.|B\.V\.|Pty|Trading|Group)/);
+  if (m) co = m[0].trim();
+  if (!co){
+    const zh = t.match(/[\u4e00-\u9fa5A-Za-z0-9（）()·]{2,20}(?:有限公司|公司|集团|商行|贸易)/);
+    co = zh ? zh[0] : (t.split(/[，,。；;\s]/)[0] || '目标企业');
+  }
+  return { co: co.slice(0, 30) || '目标企业', country };
+}
+function mailLangByCountry(c){
+  if (/德国|美国|法国|英国|荷兰|澳大利亚/.test(c)) return '英语';
+  if (/阿联酋|迪拜|沙特/.test(c)) return '阿拉伯语';
+  if (/印尼|马来|越南|泰国/.test(c)) return '印尼语';
+  if (/巴西|墨西哥|西班牙/.test(c)) return '西班牙语';
+  if (/日本/.test(c)) return '日语';
+  if (/韩国|俄罗斯/.test(c)) return '韩语';
+  return '英语';
+}
+/* 开发信里不使用中文品类词，统一转成英文品类表达 */
+function enCat(zh){
+  const s = String(zh || '');
+  if (/五金|手动工具|扳手|钳|工具|机械/.test(s)) return 'hand tools and hardware accessories';
+  if (/户外|露营|帐篷|运动/.test(s)) return 'outdoor and camping gear';
+  if (/家居|日用|厨房|收纳|百货/.test(s)) return 'household and kitchen goods';
+  if (/服装|纺织|面料|箱包|鞋/.test(s)) return 'textiles, bags and apparel';
+  if (/电子|数码|小家电|电器/.test(s)) return 'consumer electronics and small appliances';
+  if (/食品|零食|茶/.test(s)) return 'food and beverage products';
+  return 'hand tools and hardware accessories';
+}
+
+/* ---------------- 商机探查报告 ---------------- */
+const PROBE_KEYS = ['企业实力','信用评级','采购品类','近期动态','合作建议','谈判要点'];
+const PROBE_SOURCES = ['平台交易数据','全球企业数据库','海关贸易记录','公开信用与司法信息','全球风险雷达','供应商产能档案'];
+
+function probeSections(v, info){
+  const co = info.co, cty = info.country;
+  const side = v['我的角色'] === '采购商' ? '供应商' : '采购商';
+  const bg = v['商机背景（选填）'] || '';
+  return {
+    '企业实力': [
+      { t:'主体信息核验', d:`「${co}」注册于${cty}，公开资料显示主营手工具 / 五金品类，经营状态正常，与我方品类方向一致。`, src:'全球企业数据库 · 工商注册信息', conf:'已核验' },
+      { t:'产能与资质档案', d:'平台产能档案记录的合作工厂具备 ISO 9001、CE 等资质，可承接 5000 套级批量订单；如需验厂可通过平台 VR 云验厂远程查看车间与质检报告。', src:'平台供应商产能档案 / VR 云验厂', conf:'已核验' },
+      { t:'经营规模（估算）', d:'结合海关贸易记录与行业数据，估算年采购规模约 600~900 万美元，区域分销网络覆盖 6 国；具体金额建议以对方确认为准。', src:'海关贸易记录 · 行业数据', conf:'待确认' },
+    ],
+    '信用评级': [
+      { t:'综合信用评级 A-', d:'基于「三力模型」风控研判，综合信用评级 A-，财务健康度与股权结构未见重大异常，属于可开展首单合作的区间。', src:'中国大集 AI 尽调系统', conf:'已核验' },
+      { t:'股权结构与涉诉', d:'已完成两层股权穿透，未见失信被执行与重大司法涉诉记录；建议签约前再核验一次最新工商快照。', src:'公开信用数据 / 司法信息', conf:'已核验' },
+      { t:'交易履约记录', d:'平台内近 12 个月同类目履约记录 8 笔，平均履约周期约 7 天，暂无重大纠纷；该结论基于平台内数据，跨平台记录待补充。', src:'平台交易数据', conf:'待确认' },
+    ],
+    '采购品类': [
+      { t:'主营采购品类', d:'手动工具、扳手 / 钳类、五金配件，与我方供给重合度高；建议以 HS 8204.11 为主推申报编码。', src:'海关贸易记录 / 平台商品中台', conf:'已核验' },
+      { t:'价格带与客单价', d:'同品类近期成交集中在 $18~35 / 套，处于我方报价区间内；5000 套批量可给到阶梯价。', src:'跨境趋势榜 · 外贸热销榜', conf:'待确认' },
+      { t:'认证与准入', d:`出口${cty}需准备 CE / REACH 等合规文件；平台「政策计算器」可自动匹配出口退税与市场采购补贴。`, src:'全球风险雷达 · 政策计算器', conf:'已核验' },
+    ],
+    '近期动态': [
+      { t:'采购信号', d:'近 30 天在平台产生五金类询盘 12 条，官网 Sourcing 页面更新了手动工具供应商招募信息，采购意向较明确。', src:'平台询盘数据 / 企业官网', conf:'已核验' },
+      { t:'供应链岗位变动', d:'近 30 天新增 1 个供应链采购岗位，通常对应供应商扩充窗口期，是当前联系的合适时点。', src:'公开招聘信息', conf:'待确认' },
+      { t:'风险动态', d:'目标市场近期有关税与包装法规调整，全球风险雷达已按小时级更新规则，建议报价前复核。', src:'中国大集全球风险雷达', conf:'已核验' },
+    ],
+    '合作建议': [
+      { t:'切入方式', d:`建议以「${side}」视角发起：先用一封按${cty}当地语言撰写的开发信建立相关性，附 3~5 款主推品与资质清单，再申请线上验厂。`, src:'AI 商机智能推荐', conf:'建议' },
+      { t:'首单策略', d:'建议先以 500~1000 套小单试水，走「下单即通关」的超级外综服链路（关检汇税运仓融保），跨境履约周期约 7 天。', src:'平台超级外综服生态', conf:'建议' },
+      { t:'可复用素材', d:'可先生成多语种商品详情页与卖点图，再用 AI 口播视频转译做本地化介绍，把询盘响应控制在 2 小时内。', src:'AI 矩阵能力联动', conf:'建议' },
+    ],
+    '谈判要点': [
+      { t:'价格与账期', d:'对方历史订单以 30% 定金 + 见提单付尾款为主；首次合作建议坚持定金比例，账期不超过 30 天。', src:'平台交易数据', conf:'待确认' },
+      { t:'交期与验厂', d:'需明确 5000 套交期与验厂安排，可用 VR 云验厂替代部分实地考察，节省约 80% 差旅成本。', src:'平台 VR 云验厂', conf:'已核验' },
+      { t:'合规与争议', d:'合同需约定目标国认证责任、知识产权与争议解决方式；建议通过平台可信交易体系全程留痕。', src:'全球风险雷达 / 合规规则', conf:'建议' },
+      ...(bg ? [{ t:'本次背景补充', d:`已纳入你填写的背景：${bg.slice(0, 76)}${bg.length > 76 ? '…' : ''}。AI 将据此调整报价与谈判优先级。`, src:'本次表单输入', conf:'建议' }] : []),
+    ],
+  };
+}
+
+function openProbe(v){
+  probeVals = v; probeFollowed = false;
+  const info = parseCounterparty(v['对方信息']);
+  const dims = (Array.isArray(v['关注维度']) && v['关注维度'].length) ? v['关注维度'] : PROBE_KEYS;
+  const secs = probeSections(v, info);
+  const score = Math.min(94, 80 + (v['商机背景（选填）'] ? 4 : 0)
+    + Math.min(6, (Array.isArray(v['关注维度']) ? v['关注维度'].length : 0))
+    + (info.co !== '目标企业' ? 2 : 0));
+  const verdict = score >= 88 ? { t:'建议优先跟进 · 高潜商机', c:'' }
+    : score >= 83 ? { t:'建议跟进 · 存在明确机会', c:'mid' }
+    : { t:'建议观察 · 先补充核验资料', c:'low' };
+  const side = v['我的角色'] === '采购商' ? '供应商' : '采购商';
+  const initials = (info.co.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()) || 'AI';
+
+  const secHTML = dims.filter(k => secs[k]).map((k, i) => `
+    <div class="rp-sec">
+      <div class="rp-sec-h"><span class="idx">${i + 1}</span><span class="t">${k}</span><span class="cnt">${secs[k].length} 条结论</span></div>
+      ${secs[k].map(it => `
+        <div class="rp-item">
+          <div class="it">${it.t}<span class="conf ${it.conf === '已核验' ? 'y' : 'n'}">${it.conf}</span></div>
+          <div class="id">${it.d}</div>
+          <div class="isrc">来源：${it.src}</div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  document.getElementById('probeBody').innerHTML = `
+    <div class="rp-meta">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>
+      生成于 ${nowStr()}<br>约 5 分钟生成标准化风险报告
+    </div>
+    <div class="rp-hero">
+      <div class="rh-top">
+        <span class="rh-logo">${initials}</span>
+        <div class="rh-id">
+          <div class="rh-name">${info.co}</div>
+          <div class="rh-sub">${info.country} · ${side} · 我的角色：${v['我的角色'] || '供应商'}</div>
+        </div>
+        <div class="rh-score"><span class="n">${score}</span><span class="u">/100</span><div class="l">商机匹配分</div></div>
+      </div>
+      <div class="rh-verdict ${verdict.c}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        ${verdict.t}
+      </div>
+    </div>
+    <div class="rp-stats">
+      <div class="rp-stat"><div class="v ok">A-</div><div class="k">综合信用评级</div></div>
+      <div class="rp-stat"><div class="v">12 条</div><div class="k">近 30 天询盘</div></div>
+      <div class="rp-stat"><div class="v ok">低</div><div class="k">合作风险</div></div>
+    </div>
+    <div class="rp-src">
+      <div class="t">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        数据来源与核验口径
+      </div>
+      <div class="src-tags">${PROBE_SOURCES.map(s => `<span class="src-tag">${s}</span>`).join('')}</div>
+    </div>
+    ${secHTML}
+    <div class="rp-risk">
+      <div class="t">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2.5 20h19L12 3z"/><path d="M12 9v5M12 17h.01"/></svg>
+        关税与合规提示（全球风险雷达）
+      </div>
+      <p>目标市场近期存在关税调整与包装法规更新，平台已将政策转化为可执行的风险规则并按小时级更新。建议报价前完成合规自查，并通过「政策计算器」测算出口退税与市场采购补贴。</p>
+    </div>
+    <div class="rp-disc">报告由 AI 汇总公开信息与平台数据生成，标注「待确认」「建议」的条目需人工复核；结论仅供决策参考，请以官方核验为准。</div>
+  `;
+  const fb = document.getElementById('probeFollowBtn');
+  fb.textContent = '加入跟进'; fb.classList.remove('on');
+  showScreen(probeScreen);
+  document.getElementById('probeBody').scrollTop = 0;
+}
+function toggleProbeFollow(){
+  probeFollowed = !probeFollowed;
+  const b = document.getElementById('probeFollowBtn');
+  b.textContent = probeFollowed ? '已加入跟进' : '加入跟进';
+  b.classList.toggle('on', probeFollowed);
+  toast(probeFollowed ? '已加入跟进清单' : '已取消跟进');
+}
+
+/* ---------------- 海外买家线索 ---------------- */
+const LEADS = [
+  { co:'Nordwerk Handels GmbH', fc:'DE', fg:'linear-gradient(135deg,#2b3a67,#4a5fa5)', city:'德国 · 汉堡', type:'进口批发商', score:94,
+    sig:'近 30 天发布手工具询价，并新增供应链采购岗位', why:'主营手动工具进口，与我方扳手 / 钳类品类重合度高，历史采购频次稳定',
+    person:'L. Brandt', role:'采购经理', src:['海关记录','企业官网','平台询盘'], market:'欧美', lang:'英语', active:2 },
+  { co:'Al Futtaim Trading Co.', fc:'AE', fg:'linear-gradient(135deg,#0f7a53,#c2443c)', city:'阿联酋 · 迪拜', type:'工程采购', score:91,
+    sig:'海外园区配套项目正在扩充五金与建材供应商', why:'项目型采购批量大、复购稳定，适合提供整套组货与履约方案',
+    person:'M. Hassan', role:'项目采购总监', src:['平台项目需求','海关记录'], market:'中东', lang:'阿拉伯语', active:3 },
+  { co:'Brightline Retail Group', fc:'US', fg:'linear-gradient(135deg,#2f4a8c,#c9454b)', city:'美国 · 芝加哥', type:'连锁零售商', score:88,
+    sig:'官网 Sourcing 页面更新了手动工具供应商招募信息', why:'连锁渠道对认证与交期要求明确，我方 ISO 9001 / CE 资质匹配',
+    person:'S. Miller', role:'品类采购', src:['企业官网','公开招标信息'], market:'欧美', lang:'英语', active:5 },
+  { co:'PT Sinar Niaga Mandiri', fc:'ID', fg:'linear-gradient(135deg,#c0392b,#e74c3c)', city:'印尼 · 雅加达', type:'进口批发商', score:86,
+    sig:'近 30 天在平台产生五金类询盘，需求以小批量试单为主', why:'东南亚需求稳定、客单 $18~35 区间契合，可走海外国家馆本地履约',
+    person:'A. Pratama', role:'采购主管', src:['平台询盘数据','海关记录'], market:'东南亚', lang:'印尼语', active:4 },
+  { co:'Kanto Home & Tool Co.', fc:'JP', fg:'linear-gradient(135deg,#b03a48,#e0656f)', city:'日本 · 大阪', type:'品牌方', score:83,
+    sig:'正在寻找可定制包装与小批量多色款的代工供应方', why:'对工艺细节与质检要求高，适合用 AI 细节图 / 标尺图先建立信任',
+    person:'T. Sato', role:'商品开发', src:['企业官网','行业名录'], market:'日韩', lang:'日语', active:8 },
+  { co:'Mercado Livre Tools BR', fc:'BR', fg:'linear-gradient(135deg,#1b7a4b,#e0b53c)', city:'巴西 · 圣保罗', type:'电商卖家', score:79,
+    sig:'店铺手工具类目近 90 天销量上升，正在补充 SKU', why:'电商卖家起订量灵活，适合先以组合装小单试水拉美市场',
+    person:'R. Costa', role:'店铺选品', src:['平台趋势榜','公开店铺数据'], market:'拉美', lang:'西班牙语', active:6 },
+  { co:'Siam Home Mart Co.', fc:'TH', fg:'linear-gradient(135deg,#2b3a8c,#7a4fb5)', city:'泰国 · 曼谷', type:'连锁零售商', score:76,
+    sig:'门店扩充家居五金货架，季度性补货窗口临近', why:'品类相关但采购意图尚需确认，建议放入长期内容触达',
+    person:'P. Wong', role:'采购专员', src:['行业名录','公开新闻'], market:'东南亚', lang:'泰语', active:12 },
+  { co:'Seoul DIY Market', fc:'KR', fg:'linear-gradient(135deg,#2f4a8c,#c9454b)', city:'韩国 · 首尔', type:'电商卖家', score:72,
+    sig:'公开信息显示近期上架 DIY 工具组合，采购规模待确认', why:'行业相关但联系人与采购量信息不足，建议补充资料后再投入跟进',
+    person:'J. Kim', role:'运营负责人', src:['公开店铺数据'], market:'日韩', lang:'韩语', active:15 },
+];
+
+function leadCardHTML(l, needMail){
+  const grade = l.score >= 85 ? 'a' : l.score >= 78 ? 'b' : 'c';
+  const gl = l.score >= 85 ? 'A类' : l.score >= 78 ? 'B类' : 'C类';
+  const followed = leadFollow.has(l.co);
+  return `
+    <div class="ld-card">
+      <div class="ld-ch">
+        <span class="ld-flag" style="background:${l.fg}">${l.fc}</span>
+        <div class="ld-tt">
+          <div class="ld-name">${l.co}</div>
+          <div class="ld-loc"><span>${l.city}</span><span class="ld-type">${l.type}</span><span>${l.active} 天内有动态</span></div>
+        </div>
+        <div class="ld-sc"><div class="n ${grade}">${l.score}%</div><div class="l">${gl} · 匹配</div></div>
+      </div>
+      <div class="ld-sig">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 7 4-14 3 7h4"/></svg>
+        <span><b>采购信号：</b>${l.sig}</span>
+      </div>
+      <div class="ld-why"><b>匹配理由：</b>${l.why}</div>
+      <div class="ld-person">
+        <span>决策人</span><span class="pv">${l.person}</span><span>· ${l.role}</span><span class="mail-tag">精准邮箱</span>
+      </div>
+      <div class="ld-srcs">${l.src.map(s => `<span class="ld-src">${s}</span>`).join('')}<span class="ld-src">来源可追溯</span></div>
+      <div class="ld-acts">
+        ${needMail
+          ? `<button class="pri" onclick="openMailDraft('${escAttr(l.co)}')">查看开发信</button>`
+          : `<button onclick="toast('本次未生成开发信草稿，可重新发起匹配并开启该选项')">开发信未生成</button>`}
+        <button class="${followed ? 'on' : ''}" onclick="toggleLeadFollow('${escAttr(l.co)}')">${followed ? '已加入跟进' : '加入跟进'}</button>
+      </div>
+    </div>`;
+}
+
+function openLeads(v){
+  leadVals = v; leadFollow = new Set(); leadFilter = 'all'; leadSort = 'score';
+  renderLeads();
+  showScreen(leadsScreen);
+  document.getElementById('leadsBody').scrollTop = 0;
+}
+function renderLeads(){
+  const v = leadVals;
+  const total = (String(v['线索数量'] || '100家').replace(/[^0-9]/g,'')) || '100';
+  const markets = Array.isArray(v['目标市场']) ? v['目标市场'] : (v['目标市场'] ? [v['目标市场']] : []);
+  const types = Array.isArray(v['买家类型']) ? v['买家类型'] : (v['买家类型'] ? [v['买家类型']] : []);
+  const needMail = v['开发信草稿'] !== '暂不需要';
+  const cat = String(v['商品方向'] || '手动工具、五金配件').slice(0, 26);
+
+  let list = LEADS.slice();
+  list.sort((a, b) => {
+    const am = markets.includes(a.market) ? 0 : 1, bm = markets.includes(b.market) ? 0 : 1;
+    if (am !== bm) return am - bm;
+    const at = types.includes(a.type) ? 0 : 1, bt = types.includes(b.type) ? 0 : 1;
+    if (at !== bt) return at - bt;
+    return leadSort === 'active' ? a.active - b.active : b.score - a.score;
+  });
+  if (leadFilter === 'a') list = list.filter(l => l.score >= 85);
+  else if (leadFilter === 'follow') list = list.filter(l => leadFollow.has(l.co));
+
+  const filters = [ ['all','全部'], ['a','A类 ≥85'], ['follow','已跟进'] ];
+  const cards = list.length
+    ? list.map(l => leadCardHTML(l, needMail)).join('') + `<div class="ld-more">— 本页展示高匹配线索 ${list.length} 条，其余可在导出文件中查看 —</div>`
+    : `<div class="ld-empty">当前筛选下暂无线索<br>换个筛选条件试试</div>`;
+
+  document.getElementById('leadsBody').innerHTML = `
+    <div class="ld-meta">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      匹配依据：${cat.slice(0, 18)}${cat.length > 18 ? '…' : ''}<br>按所选市场优先 · 更新于 ${nowStr()}
+    </div>
+    <div class="ld-sum">
+      <div class="l1">已匹配 <b>${total}</b> 家潜在买家</div>
+      <div class="l2">覆盖 ${markets.length || 5} 个市场 · ${types.length || 5} 类买家 · 开发信：${needMail ? '已生成' : '未生成'}<br>优先联系匹配分 ≥85 的 A 类客户，B/C 类建议补充资料或长期触达。</div>
+    </div>
+    <div class="ld-tools">
+      <div class="ld-chips">
+        ${filters.map(f => `<button class="ld-chip ${leadFilter === f[0] ? 'on' : ''}" onclick="setLeadFilter('${f[0]}')">${f[1]}</button>`).join('')}
+      </div>
+      <span class="ld-sort" onclick="toggleLeadSort()">
+        ${leadSort === 'score' ? '匹配度优先' : '近期活跃优先'}
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
+      </span>
+    </div>
+    ${cards}
+    <div class="rp-disc">线索来自公开信息、海关记录与平台数据；联系人与邮箱需核验后再触达，「待确认」信息不应直接写入判断。AI 生成内容仅供参考。</div>
+  `;
+  document.getElementById('leadsBody').scrollTop = 0;
+}
+function setLeadFilter(k){ leadFilter = k; renderLeads(); }
+function toggleLeadSort(){ leadSort = leadSort === 'score' ? 'active' : 'score'; renderLeads(); }
+function toggleLeadFollow(co){
+  const box = document.getElementById('leadsBody'), top = box.scrollTop;
+  leadFollow.has(co) ? leadFollow.delete(co) : leadFollow.add(co);
+  renderLeads();
+  box.scrollTop = top;
+  toast(leadFollow.has(co) ? '已加入跟进清单' : '已取消跟进');
+}
+
+/* ---------------- 开发信草稿（报告页与线索页共用） ---------------- */
+const MAIL_TPL = {
+  '英语': {
+    s:'Supply partnership — hand tools & hardware for {co}',
+    b:'Dear {person},\n\nI noticed {co} has been sourcing {cat} recently. We are a China-based manufacturer of hand tools (wrenches, pliers, hardware accessories) with ISO 9001 / CE certification, and we support small trial orders.\n\nMay I send our catalogue and a quotation for 5,000 sets? A virtual factory audit can be arranged at your convenience.\n\nBest regards,\nChina Market Supplier Team'
+  },
+  '阿拉伯语': {
+    s:'شراكة توريد — أدوات يدوية لشركة {co}',
+    b:'عزيزي {person}،\n\nتابعنا نشاط {co} في توريد {cat}. نحن شركة صينية متخصصة في الأدوات اليدوية (مفاتيح، كماشات، ملحقات) حاصلة على شهادات ISO 9001 و CE، وندعم الطلبات التجريبية الصغيرة.\n\nهل يمكنني إرسال الكتالوج وعرض سعر لـ 5000 مجموعة؟ يمكن ترتيب زيارة افتراضية للمصنع.\n\nمع خالص التحيات،\nفريق الموردين'
+  },
+  '印尼语': {
+    s:'Kemitraan pasokan — perkakas tangan untuk {co}',
+    b:'Yth. {person},\n\nKami melihat {co} tengah mencari pemasok {cat}. Kami produsen perkakas tangan (kunci pas, tang, aksesoris) asal Tiongkok bersertifikat ISO 9001 / CE, dan mendukung pesanan uji coba kecil.\n\nBolehkah kami mengirim katalog dan penawaran untuk 5.000 set? Audit pabrik virtual dapat diatur kapan pun Anda siap.\n\nSalam hangat,\nTim Supplier China Market'
+  },
+  '西班牙语': {
+    s:'Alianza de suministro — herramientas manuales para {co}',
+    b:'Estimado/a {person}:\n\nHemos visto que {co} está buscando proveedores de {cat}. Somos un fabricante chino de herramientas manuales (llaves, alicates, accesorios) con certificaciones ISO 9001 / CE y aceptamos pedidos de prueba pequeños.\n\n¿Podemos enviarle nuestro catálogo y una cotización para 5.000 juegos? También podemos coordinar una auditoría virtual de fábrica.\n\nSaludos cordiales,\nEquipo de Proveedores'
+  },
+  '日语': {
+    s:'供給パートナーシップのご提案 — {co} 様',
+    b:'{person} 様\n\n{co} 様が {cat} の調達を検討されていることを拝見しました。当社は ISO 9001 / CE 認証を取得した中国の手工具メーカー（レンチ・プライヤー・金物部品）で、小ロットの試作注文にも対応しております。\n\n5,000 セットのお見積りとカタログをお送りしてもよろしいでしょうか。オンライン工場審査も手配可能です。\n\nよろしくお願いいたします。\nChina Market サプライヤーチーム'
+  },
+  '韩语': {
+    s:'공급 파트너십 제안 — {co}',
+    b:'{person} 님께,\n\n{co}에서 {cat} 조달을 검토 중인 것을 확인했습니다. 당사는 ISO 9001 / CE 인증을 보유한 중국 수공구 제조사로, 소량 시범 주문도 지원합니다.\n\n5,000세트 견적과 카탈로그를 보내드려도 될까요? 온라인 공장 심사도 가능합니다.\n\n감사합니다.\nChina Market 공급팀'
+  },
+  '泰语': {
+    s:'ข้อเสนอความร่วมมือด้านจัดหา — {co}',
+    b:'เรียน {person}\n\nเราทราบว่า {co} กำลังจัดหา {cat} เราเป็นผู้ผลิตเครื่องมือช่างจากจีน (ประแจ คีม อุปกรณ์ฮาร์ดแวร์) ที่ได้รับการรับรอง ISO 9001 / CE และรองรับออร์เดอร์ทดลองขนาดเล็ก\n\nขออนุญาตส่งแคตตาล็อกและใบเสนอราคาสำหรับ 5,000 ชุด รวมถึงสามารถจัดตรวจโรงงานออนไลน์ได้\n\nขอแสดงความนับถือ\nทีมซัพพลายเออร์'
+  },
+};
+
+/* 报告页还没有具体联系人时，按语言给出通用称呼，避免正文夹中文 */
+const MAIL_PERSON = {
+  '英语':'Purchasing Team', '阿拉伯语':'فريق المشتريات', '印尼语':'Tim Pengadaan',
+  '西班牙语':'Equipo de Compras', '日语':'購買ご担当者', '韩语':'구매 담당자', '泰语':'ทีมจัดซื้อ',
+};
+
+function openMailDraft(co){
+  let l;
+  if (co === -1 || co === undefined){
+    const info = parseCounterparty(probeVals['对方信息']);
+    const lang = mailLangByCountry(info.country);
+    l = { co: info.co, city: info.country, person: MAIL_PERSON[lang] || 'Purchasing Team',
+          personLabel:'采购负责人（待核验）', mailTag:'邮箱待核验', mailTagWarn:true,
+          lang, type:'潜在合作方' };
+  } else {
+    l = LEADS.find(x => x.co === co) || LEADS[0];
+  }
+  const tpl = MAIL_TPL[l.lang] || MAIL_TPL['英语'];
+  const cat = enCat(leadVals['商品方向']);
+  const subject = tpl.s.replace(/\{co\}/g, l.co).replace(/\{cat\}/g, cat);
+  const body = tpl.b.replace(/\{co\}/g, l.co)
+    .replace(/\{person\}/g, l.person).replace(/\{cat\}/g, cat);
+  mailDraft = { subject, body };
+  document.getElementById('lmBody').innerHTML = `
+    <div class="lm-row">
+      <div class="lm-lb">收件人</div>
+      <div class="lm-val">${l.personLabel || (l.person + ' · ' + l.role)} <span class="mail-tag ${l.mailTagWarn ? 'warn' : ''}">${l.mailTag || '精准邮箱'}</span></div>
+    </div>
+    <div class="lm-row">
+      <div class="lm-lb">目标市场 / 草稿语言 <span class="lm-lang">${l.lang}</span></div>
+      <div class="lm-val">${l.city} · ${l.type}</div>
+    </div>
+    <div class="lm-row">
+      <div class="lm-lb">邮件主题</div>
+      <input class="lm-input" id="lmSubject" value="${subject}" dir="auto" aria-label="邮件主题" />
+    </div>
+    <div class="lm-row">
+      <div class="lm-lb">正文（可直接编辑）</div>
+      <textarea class="lm-area" id="lmBodyText" dir="auto" aria-label="开发信正文">${body}</textarea>
+    </div>
+    <div class="lm-note">✦ 由 AI 按买家类型与目标市场语言生成初稿。发送前请核对公司名称、联系人与产品资质，避免过度承诺；第一封邮件建议简短，只争取下一步沟通机会。</div>
+    <div class="lm-btns">
+      <button onclick="copyMailDraft()">复制内容</button>
+      <button class="pri" onclick="saveMailDraft()">保存草稿</button>
+    </div>
+  `;
+  openSheet(document.getElementById('leadMailSheet'));
+}
+function copyMailDraft(){
+  const txt = (document.getElementById('lmSubject').value || '') + '\n\n' + (document.getElementById('lmBodyText').value || '');
+  const done = () => toast('开发信已复制');
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(() => fallbackCopy(txt, done));
+  } else fallbackCopy(txt, done);
+}
+function fallbackCopy(txt, done){
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){ toast('复制失败，请长按选择文本'); }
+  document.body.removeChild(ta);
+}
+function saveMailDraft(){
+  mailDraft = {
+    subject: document.getElementById('lmSubject').value,
+    body: document.getElementById('lmBodyText').value,
+  };
+  closeOverlays();
+  toast('草稿已保存（原型演示）');
+}
+
+/* ---------------- 结果页 → 集宝：带着上下文继续处理 ---------------- */
+function askJibaoAboutProbe(){
+  const info = parseCounterparty(probeVals['对方信息']);
+  openChatWith(`帮我跟进「${info.co}」这个商机：按报告结论给出下一步联系话术和谈判要点`);
+}
+function askJibaoAboutLeads(){
+  const markets = Array.isArray(leadVals['目标市场']) ? leadVals['目标市场'].join('、') : (leadVals['目标市场'] || '目标市场');
+  openChatWith(`帮我跟进 ${markets} 的这批海外买家线索，按 A/B/C 优先级给出开发顺序和首封跟进建议`);
+}
 
 /* ================= 上传弹层 / 图库选择 / 图片调整 ================= */
 const uploadSheet = document.getElementById('uploadSheet');
@@ -2959,8 +3628,10 @@ function closeOverlays(){
   paySheet.classList.remove('open');
   const up = document.getElementById('uploadSheet');
   const pk = document.getElementById('pickSheet');
+  const lm = document.getElementById('leadMailSheet');
   if (up) up.classList.remove('open');
   if (pk) pk.classList.remove('open');
+  if (lm) lm.classList.remove('open');
   mask.classList.remove('open');
 }
 function claimCredits(){
@@ -3211,6 +3882,10 @@ function replyFor(q){
   }
   if (/店铺|经营|数据|访客|转化/.test(t)) {
     return '近 7 天店铺数据概览（示例）：\n· 访客 1,842（环比 +12.4%）\n· 商详转化 4.8%（环比 -0.6%）\n· 询盘 36 条（环比 +20%）\n\n主要问题：主图风格偏工业、场景图缺失，移动端首屏吸引力不足。\n建议：① 补 3 张场景图；② 卖点图突出"铬钒钢+终身质保"；③ 详情首屏加对比表格。\n需要我直接生成这 3 张图吗？';
+  }
+  if (/跟进|谈判|话术|开发信|线索/.test(t)) {
+    const co = (q.match(/「([^」]+)」/) || [])[1];
+    return `针对${co ? '「' + co + '」' : '这个商机'}，建议按 3 步推进：\n① 48 小时内首触：按对方市场语言发一封简短开发信，只讲相关性，附 3 款主推品与资质清单\n② 用证据换信任：提供 ISO 9001 / CE 证书与 VR 云验厂链接，首单报 500~1000 套阶梯价\n③ 谈判守住三条线：定金不低于 30%、账期不超过 30 天、认证责任写进合同\n\n需要我把第 ① 步的开发信按目标语言生成出来吗？`;
   }
   if (/选品|商机|推荐|方向/.test(t)) {
     return '基于近期询盘与平台供给，给你 3 个方向：\n1. 户外露营工具套装｜东南亚需求稳定，客单 $18~35，供给偏少\n2. 家用小五金组合｜中东复购高，适合做礼盒装\n3. 电动工具配件｜欧美备货需求强，注意认证（CE/UL）\n\n要不要我出一份选品报告，含竞品价格带和利润测算？';
