@@ -629,6 +629,47 @@
   .thumbs .chip.on .th-art{border-color:#d5ccfb}
   .thumbs .th-art svg{display:block;width:100%;height:auto}
   .thumbs .th-lb{display:block;padding:0 1px}
+  /* 上传框：说明文字置顶 + 加高（商品图片这类只传 1 张的主素材） */
+  .upload-box.tall{min-height:150px;justify-content:flex-start;padding:11px 12px 12px;gap:0}
+  .upload-box .u-tip{font-size:11px;color:var(--text-3);line-height:1.55;text-align:left;align-self:stretch}
+  .upload-box .u-mid{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    align-self:stretch;color:var(--text-2);font-size:12.5px;
+  }
+  .upload-box .u-plus{font-size:22px;line-height:1;color:var(--text-3);font-weight:300}
+  /* 选项卡：标题 + 说明（标注方式等 2 选 1） */
+  .chips.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .cards .chip{
+    height:auto;padding:10px 11px;border-radius:12px;flex-direction:column;align-items:flex-start;
+    gap:3px;background:#fff;
+  }
+  .cards .chip .co-t{font-size:13px;font-weight:600;color:var(--text)}
+  .cards .chip.on .co-t{color:var(--accent)}
+  .cards .chip .co-d{font-size:10.5px;color:var(--text-3);line-height:1.4;font-weight:400;text-align:left}
+  /* 文本域 + 右侧 AI 按钮 */
+  .ta-split{display:flex;gap:8px;align-items:stretch}
+  .ta-split .ta-wrap{flex:1;min-width:0}
+  .ta-auto{
+    flex:none;width:86px;display:flex;align-items:center;justify-content:center;gap:4px;
+    border:1px solid var(--line-strong);border-radius:10px;background:#fbfbfe;
+    font-size:11.5px;color:var(--text-2);font-family:inherit;cursor:pointer;padding:0 6px;
+  }
+  .ta-auto:active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  /* 长 / 宽 / 高 数值 + 单位 */
+  .dims-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .dim{display:flex;flex-direction:column;gap:5px}
+  .dim .dim-lb{font-size:11.5px;color:var(--text-3)}
+  .dim .dim-in{
+    width:100%;height:38px;border:1px solid var(--line-strong);border-radius:9px;background:#fff;
+    padding:0 10px;font-size:13px;font-family:inherit;color:var(--text);outline:none;box-sizing:border-box;
+  }
+  .dim .dim-in:focus{border-color:var(--accent)}
+  .dim .dim-in::placeholder{color:var(--text-3)}
+  .dim-unit{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .dim-unit .du-lb{flex:none;font-size:12px;color:var(--text-2)}
+  .dim-unit .chips{gap:6px}
+  .dim-unit .chip{height:30px;padding:0 12px;font-size:12px}
+  .f-cnt{font-size:11.5px;font-weight:400;color:var(--text-3);margin-left:5px}
   .f-note{font-size:11px;color:var(--text-3);margin-top:6px}
   .f-note.warn{color:#b06c22;font-size:11px;margin:-2px 0 9px}
 
@@ -2518,14 +2559,22 @@ const FLOWS = {
     { type:'chips', label:'输出比例', options:['1:1','4:3','9:16'], default:0 },
     { type:'chips', label:'多色预览版式', options:['单色单图','多色拼图','单图 + 色卡'], default:0, note:'多色拼图会把所选颜色合成 1 张对比图，便于内部选款' },
   ]},
-  'AI标尺图': { intro:'自动识别商品轮廓并标注真实尺寸，生成专业标尺图，减少买家反复问尺寸', cta:'开始标注',
+  'AI标尺图': { title:'AI 商品标尺图', intro:'尺寸自动标注，直观展示商品真实大小', cta:'开始标注',
     pricing:{ price:8, unit:'张', source:'生成张数' },
     fields:[
-    { type:'upload', label:'商品正视图', required:true, hint:'正视角、无透视变形的白底图标注最准确' },
-    { type:'textarea', label:'商品实际尺寸', required:true, placeholder:'例：长 25cm × 宽 8cm × 高 4cm；多部件请分行填写' },
-    { type:'chips', label:'标注方式', required:true, options:['智能标注','手动标尺'], default:0, note:'智能标注按填写的实际尺寸自动定位并标注；手动标尺可在生成图上拖动调整标尺位置' },
-    { type:'chips', label:'计量单位', options:['厘米 cm','英寸 inch','cm + inch 双单位'], default:0, note:'出口商品建议使用双单位，避免买家换算' },
-    { type:'chips', label:'标注语种', options:['中文','英语','中英双语','阿拉伯语'], default:0 },
+    { type:'upload', label:'商品图片', required:true, count:'（0/1张）', tall:true,
+      hint:'支持上传 JPG/JPEG/PNG 格式图片，单张大小 25MB 以内，尺寸不小于 300px' },
+    { type:'cards', label:'标注方式', required:true, default:0, options:[
+      { name:'智能生成', desc:'按标尺类型与实测数值由 AI 自动标注' },
+      { name:'手绘标尺', desc:'在右侧画面手动添加标尺线与刻度文字' },
+    ], note:'智能生成：按标尺类型与实测数值由 AI 自动标注；手绘标尺：在右侧画面手动添加标尺线与刻度文字' },
+    { type:'measure', label:'标尺类型', required:true, max:120,
+      placeholder:'例：这款收纳箱长 32 厘米、宽 18、高 24，加上轮子再高 3 厘米，整体适合床底收纳',
+      autoText:'长 32 厘米 × 宽 18 厘米 × 高 24 厘米（含轮子高 27 厘米）',
+      note:'长 × 宽 × 高：立体商品；长 × 宽：平面商品；高度 / 厚度：单边尺寸或薄型商品；直径 / 周长：圆形商品；重量：仅标注重量；长 × 宽 × 高 + 重量：完整规格',
+      types:['长 × 宽 × 高','长 × 宽','高度 / 厚度','直径 / 周长','重量','长 × 宽 × 高 + 重量'], defaultTypes:[] },
+    { type:'dims', label:'参数数值（选填）', units:['cm','mm','inch'], unitDefault:0,
+      note:'按实物测量填写，AI 会把数值直接标在图上对应位置；留空则由 AI 按商品比例估算' },
     { type:'chips', label:'输出比例', options:['原素材比例','1:1','4:3'], default:0, note:'默认保持原素材比例，不裁切画面；需要平台主图时可切换为 1:1' },
     { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
   ]},
@@ -2793,8 +2842,18 @@ const MEDIA_TOOLS = new Set([...SCENES.video.items, ...SCENES.image.items].map(i
 function stepHead(f, i, extra){
   return `<div class="f-head">
     <span class="f-no">${String(i + 1).padStart(2, '0')}</span>
-    <span class="f-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}</span>
+    <span class="f-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}${f.count ? `<span class="f-cnt">${f.count}</span>` : ''}</span>
     ${extra || ''}
+  </div>`;
+}
+/* 说明置顶 + 加高的上传框（主素材只传 1 张时用） */
+function uploadBoxTall(key, text, tip){
+  return `<div class="upload-box tall" data-u="${key}" onclick="openUpload('${key}')">
+    <span class="u-tip">${tip || ''}</span>
+    <span class="u-mid">
+      <span class="u-plus">+</span>
+      <span>${text || '上传图片'}</span>
+    </span>
   </div>`;
 }
 function uploadBox(key, text, hint, sm){
@@ -2827,7 +2886,62 @@ function fieldHTML(f, i){
     return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${note}
-      ${uploadBox(String(i), f.uploadText || '上传图片', f.hint)}
+      ${f.tall ? uploadBoxTall(String(i), f.uploadText || '上传图片', f.hint)
+               : uploadBox(String(i), f.uploadText || '上传图片', f.hint)}
+    </div>`;
+  }
+  /* 选项卡：标题 + 说明的 2 选 1 */
+  if (f.type === 'cards'){
+    return `${groupOpen(f, i)}
+      ${stepHead(f, i)}
+      ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
+      <div class="chips cards" data-multi="0" data-label="${f.label}"${f.id ? ` data-fid="${f.id}"` : ''}>
+        ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">
+          <span class="co-t">${o.name}</span>
+          ${o.desc ? `<span class="co-d">${o.desc}</span>` : ''}
+        </span>`).join('')}
+      </div>
+    </div>`;
+  }
+  /* 标尺类型：自由描述 + AI 自动识别 + 类型多选 */
+  if (f.type === 'measure'){
+    const max = f.max || 120;
+    return `${groupOpen(f, i)}
+      ${stepHead(f, i)}
+      <div class="ta-split">
+        <div class="ta-wrap">
+          <textarea class="textarea" id="ta${i}" maxlength="${max}" placeholder="${f.placeholder || ''}"
+            oninput="taCount(${i},${max})"></textarea>
+          <span class="ta-count" id="tac${i}">0/${max}</span>
+        </div>
+        <button class="ta-auto" onclick="taAutoFill(${i})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2l1.6 4.4 4.4 1.6-4.4 1.6L12 15.2l-1.6-4.4L6 9.2l4.4-1.6z"/></svg>
+          自动识别
+        </button>
+      </div>
+      ${f.note ? `<div class="f-note">${f.note}</div>` : ''}
+      <div class="chips" style="margin-top:10px" data-multi="1" data-label="${f.label}">
+        ${(f.types || []).map((o, j) => `<span class="chip ${(f.defaultTypes || []).includes(j) ? 'on' : ''}">${o}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+  /* 长 / 宽 / 高 数值 + 尺寸单位 */
+  if (f.type === 'dims'){
+    return `${groupOpen(f, i)}
+      ${stepHead(f, i)}
+      ${f.note ? `<div class="f-note">${f.note}</div>` : ''}
+      <div class="dims-row">
+        ${['长','宽','高'].map((lb, j) => `<div class="dim">
+          <span class="dim-lb">${lb}</span>
+          <input class="dim-in" type="text" inputmode="decimal" placeholder="如 32" aria-label="${lb}度" />
+        </div>`).join('')}
+      </div>
+      <div class="dim-unit">
+        <span class="du-lb">尺寸单位</span>
+        <div class="chips" data-multi="0" data-label="尺寸单位">
+          ${(f.units || ['cm','mm','inch']).map((u, j) => `<span class="chip ${j === (f.unitDefault ?? 0) ? 'on' : ''}">${u}</span>`).join('')}
+        </div>
+      </div>
     </div>`;
   }
   if (f.type === 'upload2'){
@@ -2950,6 +3064,21 @@ function toggleSw(el){
   const item = el.closest('.sw-item');
   const sub = item && item.querySelector('.sw-sub');
   if (sub) sub.hidden = !on;
+}
+
+/* ---- 标尺类型：从描述里识别尺寸类型并回填 ---- */
+function taAutoFill(i){
+  const f = currentFlow && currentFlow.fields[i];
+  const el = document.getElementById('ta' + i);
+  if (!el) return;
+  el.value = (f && f.autoText) || '长 32 厘米 × 宽 18 厘米 × 高 24 厘米';
+  taCount(i, (f && f.max) || 120);
+  const g = flowBody.querySelector(`.chips[data-label="${f.label}"]`);
+  if (g){
+    const hit = (f && f.autoPick) || '长 × 宽 × 高';
+    g.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.textContent.trim() === hit));
+  }
+  toast('已识别：' + ((f && f.autoPick) || '长 × 宽 × 高'));
 }
 
 /* ---- 三选一字段：按控制胶囊的选中项显隐，并重排可见字段序号 ---- */
@@ -4012,6 +4141,10 @@ function markUpload(count){
   }).join('');
   box.innerHTML = `<span class="u-thumbs">${thumbs}</span>
     <span class="u-more">已选 ${count} 张 · 点击重新选择</span>`;
+  /* 字段标题上的数量角标（如「（0/1张）」）跟着上传结果更新 */
+  const g = box.closest('.f-group');
+  const cnt = g && g.querySelector('.f-cnt');
+  if (cnt) cnt.textContent = cnt.textContent.replace(/\d+(?=\/)/, Math.min(count, 99));
 }
 function goCropIfNeeded(){
   if (currentFlow && currentFlow.tabs && flowTabIdx === 0) openCrop();
