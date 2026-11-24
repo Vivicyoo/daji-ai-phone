@@ -3425,8 +3425,19 @@ function bindFlowChips(){
       }
       if (group.dataset.summary === '1') updateChipsSum(group);
       if (group.dataset.fid) applyConds();
-      /* 标注方式切到「手绘标尺」→ 进入独立的手绘子页面 */
+      /* 标注方式切到「手绘标尺」→ 先校验商品图，再进入独立的手绘子页面 */
       if (group.dataset.fid === 'rulerMode' && chipOnLabel('rulerMode') === '手绘标尺'){
+        if (!rulerUploadedThumb()){
+          /* 未上传：退回「智能生成」恢复下方字段，提示并定位到上传框 */
+          group.querySelectorAll('.chip').forEach((c, j) => c.classList.toggle('on', j === 0));
+          applyConds();
+          if (updateFooter) updateFooter();
+          toast('请先上传待标尺的商品图');
+          const box = flowBody.querySelector('.upload-box.tall') || flowBody.querySelector('.upload-box');
+          const g = box && box.closest('.f-group');
+          if (g) flowBody.scrollTop = g.offsetTop - 60;
+          return;
+        }
         openRulerDraw();
         return;
       }
@@ -3533,12 +3544,16 @@ function rdUnit(){
 function rdPrice(){
   return (currentFlow && currentFlow.pricing && currentFlow.pricing.price) || 8;
 }
-function openRulerDraw(){
-  /* 沿用 AI 商品标尺图表单里已上传的商品图；未上传则显示示意画面 */
+/* 手绘标尺依赖表单里已上传的商品图：校验与画布取图共用同一判断 */
+function rulerUploadedThumb(){
   const box = flowBody.querySelector('.upload-box.tall') || flowBody.querySelector('.upload-box');
-  const th = box && box.querySelector('.u-thumbs');
+  return box ? box.querySelector('.u-thumbs') : null;
+}
+function openRulerDraw(){
+  /* 进入前已在「标注方式」处校验上传；画布沿用已上传的商品图 */
+  const th = rulerUploadedThumb();
   document.getElementById('rdPh').innerHTML = `<div class="rd-thumbs">${th ? th.innerHTML : RD_PH}</div>`
-    + `<span class="rd-ph-note">${th ? '已沿用上传的商品图' : '尚未上传商品图，当前为示意画面'}</span>`;
+    + `<span class="rd-ph-note">${th ? '已沿用上传的商品图' : '未检测到商品图，请返回上传'}</span>`;
   /* 首次进入给两条示例标尺；清空后回来保持空态，不自动补 */
   if (!rdSeeded){
     rdSeeded = true;
