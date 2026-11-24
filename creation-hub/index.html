@@ -211,6 +211,11 @@
     .tile-grid{flex-wrap:wrap;gap:2px}
     .tile{flex:0 0 calc(33.333% - 1.34px);padding:5px 2px 4px}
     .tile .t-name{font-size:11px}
+    /* 窄屏：示例图选项文字缩一号，避免「仅译文（透明底）」被拆行 */
+    .chips.thumbs .chip{font-size:10.5px;padding:6px 5px 8px;gap:6px}
+  }
+  @media (max-width:340px){
+    .chips.thumbs .chip{font-size:10px;padding:6px 3px 8px}
   }
 
   /* 当前分类标题条 */
@@ -613,6 +618,17 @@
   .chip.on{
     border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:600;
   }
+  /* 带示例图的胶囊：输出形式这类「需要看见效果差异」的选项 */
+  .chips.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .thumbs .chip{
+    height:auto;padding:7px 7px 9px;border-radius:12px;flex-direction:column;align-items:stretch;
+    gap:7px;font-size:11.5px;line-height:1.3;text-align:center;background:#fbfbfe;
+  }
+  .thumbs .chip.on{background:var(--accent-soft);border-color:var(--accent);font-weight:600}
+  .thumbs .th-art{display:block;border-radius:8px;overflow:hidden;background:#fff;border:1px solid #e9eaf3;line-height:0}
+  .thumbs .chip.on .th-art{border-color:#d5ccfb}
+  .thumbs .th-art svg{display:block;width:100%;height:auto}
+  .thumbs .th-lb{display:block;padding:0 1px}
   .f-note{font-size:11px;color:var(--text-3);margin-top:6px}
   .f-note.warn{color:#b06c22;font-size:11px;margin:-2px 0 9px}
 
@@ -2525,14 +2541,39 @@ const FLOWS = {
     { type:'chips', label:'源语种', options:['自动识别','中文','英语','日语','韩语'], default:0, note:'默认自动识别；小语种或中英混排建议手动指定' },
     { type:'chips', label:'目标语种', required:true, multi:true, default:0, options:['英语','阿拉伯语','西班牙语','葡萄牙语','俄语','日语','韩语','泰语','越南语','印尼语'], note:'可多选，每个语种输出 1 张，按语种数计费' },
     { type:'chips', label:'翻译风格', options:['直译准确','本地化表达','营销化改写'], default:1, note:'参数与认证信息用直译；主图卖点建议本地化或营销化' },
-    { type:'chips', label:'输出形式', options:['覆盖原图','译文 + 原图对照','仅译文（透明底）'], default:0 },
-    { type:'chips', label:'输出比例', options:['保持原图比例','1:1','3:4'], default:0 },
-    { type:'chips', label:'输出格式', options:['JPG','PNG','JPG + PSD 分层'], default:0, note:'PSD 分层便于设计二次调整文字' },
-    { type:'rows', label:'排版控制', items:[
-      { kind:'switch', label:'保留原排版与字体风格', desc:'按原文位置替换，字号与行距自动适配译文长度', on:true },
-      { kind:'switch', label:'自动擦除原文并补全背景', desc:'去除原文后修复背景，避免残留字影', on:true },
-      { kind:'switch', label:'专业术语复核提醒', desc:'认证、材质、型号等术语单独列出待确认清单', on:true },
+    { type:'thumbChips', label:'输出形式', default:0, note:'三种结果形态的差异见示例缩略图，同为 1 个语种计 1 张', options:[
+      { name:'覆盖原图', art:`<svg viewBox="0 0 100 66" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="覆盖原图示例">
+        <rect width="100" height="66" fill="#eef0f7"/>
+        <rect x="7" y="8" width="86" height="50" rx="5" fill="#fff" stroke="#dfe2ee"/>
+        <circle cx="22" cy="26" r="6" fill="#c8d2ea"/>
+        <path d="M11 54l15-14 10 9 8-6 16 11z" fill="#d7def0"/>
+        <rect x="42" y="15" width="44" height="5" rx="2.5" fill="#7c6bf0"/>
+        <rect x="42" y="25" width="33" height="5" rx="2.5" fill="#b3a7f7"/>
+        <rect x="42" y="35" width="38" height="5" rx="2.5" fill="#d8d2fb"/>
+      </svg>` },
+      { name:'译文 + 原图对照', art:`<svg viewBox="0 0 100 66" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="对照图示例">
+        <rect width="100" height="66" fill="#eef0f7"/>
+        <rect x="6" y="9" width="41" height="48" rx="5" fill="#fff" stroke="#dfe2ee"/>
+        <circle cx="18" cy="23" r="4.6" fill="#d3daeb"/>
+        <rect x="11" y="34" width="28" height="4" rx="2" fill="#dfe3ef"/>
+        <rect x="11" y="42" width="20" height="4" rx="2" fill="#dfe3ef"/>
+        <rect x="53" y="9" width="41" height="48" rx="5" fill="#fff" stroke="#7c6bf0"/>
+        <circle cx="65" cy="23" r="4.6" fill="#d3daeb"/>
+        <rect x="58" y="34" width="28" height="4" rx="2" fill="#7c6bf0"/>
+        <rect x="58" y="42" width="20" height="4" rx="2" fill="#b3a7f7"/>
+      </svg>` },
+      { name:'仅译文（透明底）', art:`<svg viewBox="0 0 100 66" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="透明底译文示例">
+        <defs><pattern id="thCk" width="10" height="10" patternUnits="userSpaceOnUse">
+          <rect width="10" height="10" fill="#f8f8fc"/><rect width="5" height="5" fill="#e6e7f0"/>
+          <rect x="5" y="5" width="5" height="5" fill="#e6e7f0"/>
+        </pattern></defs>
+        <rect width="100" height="66" fill="url(#thCk)"/>
+        <rect x="16" y="20" width="68" height="6" rx="3" fill="#7c6bf0"/>
+        <rect x="16" y="32" width="52" height="6" rx="3" fill="#b3a7f7"/>
+        <rect x="16" y="44" width="60" height="6" rx="3" fill="#d8d2fb"/>
+      </svg>` },
     ]},
+    { type:'chips', label:'输出比例', options:['保持原图比例','1:1','3:4'], default:0, note:'默认保持原图比例，不裁切画面' },
   ]},
   '文本翻译': { intro:'输入或粘贴文本即译，10+ 通用语种，专业商贸术语库确保翻译精准', cta:'开始翻译', fields:[
     { type:'textarea', label:'原文', required:true, placeholder:'输入需要翻译的文本' },
@@ -2828,6 +2869,18 @@ function fieldHTML(f, i){
         ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
       </div>
       ${f.summary ? '<div class="chips-sum"></div>' : ''}
+    </div>`;
+  }
+  if (f.type === 'thumbChips'){
+    return `${groupOpen(f, i)}
+      ${stepHead(f, i)}
+      ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
+      <div class="chips thumbs" data-multi="0" data-label="${f.label}">
+        ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">
+          <span class="th-art">${o.art}</span>
+          <span class="th-lb">${o.name}</span>
+        </span>`).join('')}
+      </div>
     </div>`;
   }
   if (f.type === 'rows'){
