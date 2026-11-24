@@ -580,6 +580,7 @@
     padding:7px 10px;margin:0 0 16px;line-height:1.5;
   }
   .f-group{margin-bottom:18px;animation:cardIn .35s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 40ms)}
+  .f-group.is-hide{display:none}
   .f-group > label{
     display:block;font-size:13.5px;font-weight:600;margin-bottom:8px;
   }
@@ -2473,47 +2474,44 @@ const FLOWS = {
       { t:'人物图', hint:'正面或半身，光线均匀' },
       { t:'商品平铺图', hint:'完整展示版型，白底最佳' },
     ], note:'人物图请确保已获得本人肖像授权' },
+    { type:'chips', label:'输出比例', options:['1:1','3:4','9:16'], default:0, note:'默认 1:1 平台主图 · 3:4 服装上身图 · 9:16 竖版详情' },
     { type:'chips', label:'试用类型', required:true, options:['服装试穿','鞋靴试穿','配饰试用','眼镜佩戴','家居摆放'], default:0, note:'单选，决定 AI 的人体建模与贴合方式' },
     { type:'chips', label:'模特体型', options:['标准体型','偏瘦','偏丰满','高个','娇小'], default:0, note:'选填，用于校准版型松紧与身材比例；默认标准体型' },
-    { type:'chips', label:'拍摄场景', options:['纯色棚拍','街拍外景','家居室内','户外自然','电商主图'], default:0 },
-    { type:'chips', label:'输出比例', options:['3:4','1:1','9:16'], default:0, note:'3:4 服装上身图 · 1:1 平台主图 · 9:16 竖版详情' },
     { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 12 积分' },
-    { type:'rows', label:'画面控制', items:[
-      { kind:'switch', label:'保留人物原始姿态', desc:'关闭后 AI 可微调姿态，让服装版型更自然', on:true },
-      { kind:'switch', label:'自动匹配光影与肤色', desc:'按场景光源统一人物与商品的光影色调', on:true },
-    ]},
   ]},
   '商品智能换色': { intro:'保留商品结构与材质纹理，按指定颜色生成多色款效果图，快速验证配色方案', cta:'开始换色',
-    pricing:{ price:6, unit:'个颜色', source:'目标颜色' },
+    pricing:{ price:6, unit:'个颜色', source:'目标颜色',
+      count(){
+        const mode = chipOnLabel('colorMode') || '预设颜色';
+        if (mode === '参考色卡') return 1;
+        if (mode === '自定义色值'){
+          const ta = flowBody.querySelector('.f-group[data-label="自定义色值"] textarea');
+          const n = (ta ? ta.value : '').split(/[,，、;；\n]/).filter(s => s.trim()).length;
+          return n || 1;
+        }
+        const g = flowBody.querySelector('.chips[data-label="目标颜色"]');
+        return g ? g.querySelectorAll('.chip.on').length : 1;
+      } },
     fields:[
     { type:'upload', label:'商品图', required:true, hint:'需清晰展示待换色部位，避免大面积阴影遮挡' },
-    { type:'upload', label:'参考色卡（选填）', hint:'可上传色卡或目标色参考图，颜色还原更准确' },
     { type:'chips', label:'换色部位', required:true, multi:true, default:-1, options:['主体','配件','包装','背景'], note:'可多选，AI 只更换所选部位；不选则默认仅更换商品主体' },
-    { type:'chips', label:'目标颜色', required:true, multi:true, default:0, options:['经典黑','奶油白','商务蓝','活力橙','中国红','军绿色','莫兰迪灰'], note:'可多选，每个颜色输出 1 张，按颜色数计费' },
-    { type:'textarea', label:'自定义色值（选填）', placeholder:'例：#1B4F9C、Pantone 286C；填写后优先于预设颜色' },
+    { type:'chips', label:'颜色来源', required:true, id:'colorMode', options:['预设颜色','参考色卡','自定义色值'], default:0, note:'三选一，都是指定「要换成的目标颜色」：选预设色、上传色卡取色，或填写色值' },
+    { type:'chips', label:'目标颜色', required:true, multi:true, default:0, cond:{ id:'colorMode', is:'预设颜色' }, options:['经典黑','奶油白','商务蓝','活力橙','中国红','军绿色','莫兰迪灰'], note:'可多选，每个颜色输出 1 张，按颜色数计费' },
+    { type:'upload', label:'参考色卡', cond:{ id:'colorMode', is:'参考色卡' }, hint:'上传色卡图或目标色参考图，AI 按图中色值取色' },
+    { type:'textarea', label:'自定义色值', cond:{ id:'colorMode', is:'自定义色值' }, placeholder:'例：#1B4F9C、Pantone 286C；多个色值用逗号分隔，按色值个数计费' },
     { type:'chips', label:'输出比例', options:['1:1','4:3','9:16'], default:0 },
     { type:'chips', label:'多色预览版式', options:['单色单图','多色拼图','单图 + 色卡'], default:0, note:'多色拼图会把所选颜色合成 1 张对比图，便于内部选款' },
-    { type:'rows', label:'还原控制', items:[
-      { kind:'switch', label:'保留材质纹理与光泽', desc:'金属、皮革、布料的质感不会被颜色覆盖', on:true },
-      { kind:'switch', label:'保持原背景不变', desc:'关闭后按目标颜色生成同色系背景', on:true },
-      { kind:'switch', label:'输出色差提示条', desc:'图片底部标注「屏幕色与实物存在色差」', on:false },
-    ]},
   ]},
   'AI标尺图': { intro:'自动识别商品轮廓并标注真实尺寸，生成专业标尺图，减少买家反复问尺寸', cta:'开始标注',
     pricing:{ price:8, unit:'张', source:'生成张数' },
     fields:[
     { type:'upload', label:'商品正视图', required:true, hint:'正视角、无透视变形的白底图标注最准确' },
     { type:'textarea', label:'商品实际尺寸', required:true, placeholder:'例：长 25cm × 宽 8cm × 高 4cm；多部件请分行填写' },
+    { type:'chips', label:'标注方式', required:true, options:['智能标注','手动标尺'], default:0, note:'智能标注按填写的实际尺寸自动定位并标注；手动标尺可在生成图上拖动调整标尺位置' },
     { type:'chips', label:'计量单位', options:['厘米 cm','英寸 inch','cm + inch 双单位'], default:0, note:'出口商品建议使用双单位，避免买家换算' },
-    { type:'chips', label:'标注样式', options:['尺寸线','等比参照','标注 + 参照'], default:0, note:'尺寸线为纯数值标注；等比参照会加入参照物' },
-    { type:'chips', label:'参照物', options:['A4 纸','手持对比','硬币','不显示'], default:0, note:'仅「等比参照 / 标注 + 参照」样式生效' },
     { type:'chips', label:'标注语种', options:['中文','英语','中英双语','阿拉伯语'], default:0 },
-    { type:'chips', label:'输出比例', options:['1:1','4:3','9:16'], default:0 },
+    { type:'chips', label:'输出比例', options:['原素材比例','1:1','4:3'], default:0, note:'默认保持原素材比例，不裁切画面；需要平台主图时可切换为 1:1' },
     { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
-    { type:'rows', label:'标注细节', items:[
-      { kind:'switch', label:'标注关键部位尺寸', desc:'自动补充肩宽、袖长、口径等二级尺寸', on:true },
-      { kind:'switch', label:'添加尺寸公差说明', desc:'角落标注 ±0.5cm 手工测量误差提示', on:false },
-    ]},
   ]},
   /* ---- 多语言翻译 ---- */
   '多语言翻译': { intro:'将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', cta:'开始翻译', fields:[
@@ -2777,10 +2775,15 @@ function pickRow(key, title, options, value, placeholder){
   </div>`;
 }
 
+/* 字段容器：cond = 由某个「单选胶囊」字段控制显隐（三选一互斥字段用） */
+function groupOpen(f, i){
+  const cond = f.cond ? ` data-cond-id="${f.cond.id}" data-cond-is="${f.cond.is}"` : '';
+  return `<div class="f-group" style="--i:${i}" data-label="${f.label || ''}"${cond}>`;
+}
 function fieldHTML(f, i){
   if (f.type === 'upload'){
     const note = f.note ? `<div class="f-note warn">${f.note}</div>` : '';
-    return `<div class="f-group" style="--i:${i}">
+    return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${note}
       ${uploadBox(String(i), f.uploadText || '上传图片', f.hint)}
@@ -2788,7 +2791,7 @@ function fieldHTML(f, i){
   }
   if (f.type === 'upload2'){
     const note = f.note ? `<div class="f-note warn">${f.note}</div>` : '';
-    return `<div class="f-group" style="--i:${i}">
+    return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${note}
       <div class="upload-row">
@@ -2808,20 +2811,20 @@ function fieldHTML(f, i){
          </span>`
       : (f.sample ? `<span class="f-link" onclick="toast('示例文案（原型演示）')">查看示例</span>` : '');
     const max = f.max || 500;
-    return `<div class="f-group" style="--i:${i}">
+    return `${groupOpen(f, i)}
       ${stepHead(f, i, extra)}
       <div class="ta-wrap">
         <textarea class="textarea" id="ta${i}" maxlength="${max}" placeholder="${f.placeholder || ''}"
-          oninput="taCount(${i},${max})"></textarea>
+          oninput="taCount(${i},${max});if(updateFooter)updateFooter()"></textarea>
         <span class="ta-count" id="tac${i}">0/${max}</span>
       </div>
     </div>`;
   }
   if (f.type === 'chips'){
-    return `<div class="f-group" style="--i:${i}">
+    return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
-      <div class="chips" data-multi="${f.multi ? 1 : 0}" data-label="${f.label}"${f.summary ? ` data-summary="1" data-sum-tpl="${f.summary}"` : ''}>
+      <div class="chips" data-multi="${f.multi ? 1 : 0}" data-label="${f.label}"${f.id ? ` data-fid="${f.id}"` : ''}${f.summary ? ` data-summary="1" data-sum-tpl="${f.summary}"` : ''}>
         ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
       </div>
       ${f.summary ? '<div class="chips-sum"></div>' : ''}
@@ -2857,13 +2860,13 @@ function fieldHTML(f, i){
       }
       return pickRow(`p${i}_${j}`, it.label, it.options, it.value, it.placeholder);
     }).join('');
-    return `<div class="f-group" style="--i:${i}">
+    return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${rows}
     </div>`;
   }
   if (f.type === 'select'){
-    return `<div class="f-group" style="--i:${i}">
+    return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${pickRow(`s${i}`, f.label, f.options, f.value, f.placeholder || '请选择' + f.label)}
     </div>`;
@@ -2894,6 +2897,27 @@ function toggleSw(el){
   const item = el.closest('.sw-item');
   const sub = item && item.querySelector('.sw-sub');
   if (sub) sub.hidden = !on;
+}
+
+/* ---- 三选一字段：按控制胶囊的选中项显隐，并重排可见字段序号 ---- */
+function chipOnLabel(id){
+  const g = flowBody.querySelector(`.chips[data-fid="${id}"]`);
+  const on = g && g.querySelector('.chip.on');
+  return on ? on.textContent.trim() : '';
+}
+function applyConds(){
+  let has = false;
+  flowBody.querySelectorAll('.f-group[data-cond-id]').forEach(g => {
+    has = true;
+    g.classList.toggle('is-hide', chipOnLabel(g.dataset.condId) !== g.dataset.condIs);
+  });
+  if (!has) return;
+  let n = 0;
+  flowBody.querySelectorAll('.f-group').forEach(g => {
+    const no = g.querySelector('.f-head .f-no');
+    if (!no) return;
+    if (!g.classList.contains('is-hide')) no.textContent = String(++n).padStart(2, '0');
+  });
 }
 
 /* ---- 多选胶囊：结果提示条（如「将生成 1 个语言版本 · 英语」） ---- */
@@ -2985,7 +3009,8 @@ function openFlow(name){
       updateFooter = () => {
         const group = flowBody.querySelector(`.chips[data-label="${p.source}"]`);
         let count = 1;
-        if (group){
+        if (p.count){ count = p.count() || 1; }
+        else if (group){
           if (group.dataset.multi === '1'){
             count = group.querySelectorAll('.chip.on').length;
           } else {
@@ -3015,10 +3040,12 @@ function openFlow(name){
         chip.classList.add('on');
       }
       if (group.dataset.summary === '1') updateChipsSum(group);
+      if (group.dataset.fid) applyConds();
       if (updateFooter) updateFooter();
     });
     if (group.dataset.summary === '1') updateChipsSum(group);
   });
+  applyConds();
   showScreen(flowScreen);
   flowBody.scrollTop = 0;
 }
