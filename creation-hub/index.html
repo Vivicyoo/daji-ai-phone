@@ -2226,6 +2226,7 @@ const ICONS = {
   sparkle:'<path d="M12 4l1.5 4.5L18 10l-4.5 1.5L12 16l-1.5-4.5L6 10l4.5-1.5z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
   palette:'<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-.9 2-1.9 0-1.1-.6-1.6-1.6-1.6-.7 0-1.4-.6-1.4-1.4 0-.8.7-1.5 1.5-1.5h2.1A5.4 5.4 0 0 0 21 9.2C21 5.8 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.2"/><circle cx="10" cy="7.5" r="1.2"/>',
   ruler:'<path d="M3 17L17 3l4 4L7 21z"/><path d="M8 16l1.5 1.5M11 13l1.5 1.5M14 10l1.5 1.5"/>',
+  tryon:'<path d="M8.6 3.6L12 2l3.4 1.6L20 6.6l-2 3.2-2-1.2V21H8V8.6L6 9.8 4 6.6z"/><path d="M9.6 3.2c.6 1 1.4 1.5 2.4 1.5s1.8-.5 2.4-1.5"/>',
   magnify:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5M8 11h6M11 8v6"/>',
   image1:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-4 4 3 4-3 5 4"/>',
   image2:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 15l5-4 4 3 4-3 5 4"/><circle cx="15.5" cy="9.5" r="1.8"/>',
@@ -2262,7 +2263,7 @@ const SCENES = {
   },
   image: {
     title: 'AI图片创作', cta: '开始图片创作', unit: '图片',
-    intro: '商品视觉素材一站式智能生成，从白底图到场景图，全面提升商品视觉表现力',
+    intro: '商品视觉素材一站式智能生成，覆盖白底图、场景图、试穿试用、商品换色、标尺图与图片翻译',
     items: [
       { name: '图片调整',     tag: 'NEW', desc: '剪切旋转、抠图、变清晰、无损放大', theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'adjust' },
       { name: '生成白底图',   desc: '一键去背景，生成平台规范白底图', theme: ['#f2f4f7','#c3c9d6','#8f97a6'], icon: 'cutout' },
@@ -2271,8 +2272,10 @@ const SCENES = {
       { name: '商品图换背景', desc: '智能替换背景，适配不同平台',     theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'image3' },
       { name: 'AI细节图',     desc: '自动生成细节放大图，突出工艺',   theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'magnify' },
       { name: 'AI卖点图',     desc: '智能生成卖点信息图，提升转化',   theme: ['#ffd9a8','#f5b06c','#c9853b'], icon: 'image6' },
-      { name: '商品智能换色', desc: '一键更换商品颜色，预览多色效果', theme: ['#fff3c2','#e8d478','#c9ae3b'], icon: 'palette' },
-      { name: 'AI标尺图',     desc: '自动标注商品尺寸，生成标尺图',   theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'ruler' },
+      { name: '试穿试用',     tag: 'NEW', desc: '一键生成真人上身效果图', theme: ['#d6ecff','#9dc6f0','#5b8cc9'], icon: 'tryon' },
+      { name: '商品智能换色', desc: '保留结构纹理，一键预览多色款', theme: ['#fff3c2','#e8d478','#c9ae3b'], icon: 'palette' },
+      { name: 'AI标尺图',     desc: '自动标注尺寸，减少咨询', theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'ruler' },
+      { name: '图片翻译',     tag: 'NEW', desc: '图中文字一键译多语种', theme: ['#d8f2e6','#93d6b5','#3f9b74'], icon: 'translate' },
     ]
   }
 };
@@ -2463,23 +2466,75 @@ const FLOWS = {
     { type:'chips', label:'生图比例', required:true, options:['1:1','4:3','9:16'], default:0, note:'1:1 平台主图 · 4:3 详情页横图 · 9:16 竖版主图 / 详情长图；默认 1:1' },
     { type:'chips', label:'文案语种', required:true, multi:true, default:0, options:['中文','英语','阿拉伯语','泰语','印尼语','越南语','韩语','马来语','蒙古语'], note:'按所选语言输出整套卖点图，每个语种 1 张，按语种数计' },
   ]},
-  '商品智能换色': { intro:'保留商品结构并调整指定颜色，一键生成多色款效果图', cta:'开始生成', fields:[
-    { type:'upload', label:'上传商品图', required:true, hint:'需清晰展示要换色的部位' },
-    { type:'chips', label:'目标颜色', required:true, options:['经典黑','商务蓝','活力橙','中国红','军绿色'], default:0 },
+  '试穿试用': { intro:'上传人物图与商品图，AI 自动完成上身试穿与场景融合，快速产出真人试用效果图', cta:'开始试穿',
+    pricing:{ price:12, unit:'张', source:'生成张数' },
+    fields:[
+    { type:'upload2', label:'人物图 + 商品图', required:true, labels:[
+      { t:'人物图', hint:'正面或半身，光线均匀' },
+      { t:'商品平铺图', hint:'完整展示版型，白底最佳' },
+    ], note:'人物图请确保已获得本人肖像授权' },
+    { type:'chips', label:'试用类型', required:true, options:['服装试穿','鞋靴试穿','配饰试用','眼镜佩戴','家居摆放'], default:0, note:'单选，决定 AI 的人体建模与贴合方式' },
+    { type:'chips', label:'模特体型', options:['标准体型','偏瘦','偏丰满','高个','娇小'], default:0, note:'选填，用于校准版型松紧与身材比例；默认标准体型' },
+    { type:'chips', label:'拍摄场景', options:['纯色棚拍','街拍外景','家居室内','户外自然','电商主图'], default:0 },
+    { type:'chips', label:'输出比例', options:['3:4','1:1','9:16'], default:0, note:'3:4 服装上身图 · 1:1 平台主图 · 9:16 竖版详情' },
+    { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 12 积分' },
+    { type:'rows', label:'画面控制', items:[
+      { kind:'switch', label:'保留人物原始姿态', desc:'关闭后 AI 可微调姿态，让服装版型更自然', on:true },
+      { kind:'switch', label:'自动匹配光影与肤色', desc:'按场景光源统一人物与商品的光影色调', on:true },
+    ]},
   ]},
-  'AI标尺图': { intro:'自动标注商品尺寸比例，生成专业标尺图，减少买家咨询', cta:'开始生成', fields:[
-    { type:'upload', label:'上传商品图', required:true, hint:'正视角商品图标注更准确' },
-    { type:'textarea', label:'商品实际尺寸', required:true, placeholder:'例：长 25cm × 宽 8cm × 高 4cm' },
-    { type:'chips', label:'标注样式', options:['尺寸线','等比参照','标注+参照'], default:0 },
+  '商品智能换色': { intro:'保留商品结构与材质纹理，按指定颜色生成多色款效果图，快速验证配色方案', cta:'开始换色',
+    pricing:{ price:6, unit:'个颜色', source:'目标颜色' },
+    fields:[
+    { type:'upload', label:'商品图', required:true, hint:'需清晰展示待换色部位，避免大面积阴影遮挡' },
+    { type:'upload', label:'参考色卡（选填）', hint:'可上传色卡或目标色参考图，颜色还原更准确' },
+    { type:'chips', label:'换色部位', required:true, multi:true, default:-1, options:['主体','配件','包装','背景'], note:'可多选，AI 只更换所选部位；不选则默认仅更换商品主体' },
+    { type:'chips', label:'目标颜色', required:true, multi:true, default:0, options:['经典黑','奶油白','商务蓝','活力橙','中国红','军绿色','莫兰迪灰'], note:'可多选，每个颜色输出 1 张，按颜色数计费' },
+    { type:'textarea', label:'自定义色值（选填）', placeholder:'例：#1B4F9C、Pantone 286C；填写后优先于预设颜色' },
+    { type:'chips', label:'输出比例', options:['1:1','4:3','9:16'], default:0 },
+    { type:'chips', label:'多色预览版式', options:['单色单图','多色拼图','单图 + 色卡'], default:0, note:'多色拼图会把所选颜色合成 1 张对比图，便于内部选款' },
+    { type:'rows', label:'还原控制', items:[
+      { kind:'switch', label:'保留材质纹理与光泽', desc:'金属、皮革、布料的质感不会被颜色覆盖', on:true },
+      { kind:'switch', label:'保持原背景不变', desc:'关闭后按目标颜色生成同色系背景', on:true },
+      { kind:'switch', label:'输出色差提示条', desc:'图片底部标注「屏幕色与实物存在色差」', on:false },
+    ]},
+  ]},
+  'AI标尺图': { intro:'自动识别商品轮廓并标注真实尺寸，生成专业标尺图，减少买家反复问尺寸', cta:'开始标注',
+    pricing:{ price:8, unit:'张', source:'生成张数' },
+    fields:[
+    { type:'upload', label:'商品正视图', required:true, hint:'正视角、无透视变形的白底图标注最准确' },
+    { type:'textarea', label:'商品实际尺寸', required:true, placeholder:'例：长 25cm × 宽 8cm × 高 4cm；多部件请分行填写' },
+    { type:'chips', label:'计量单位', options:['厘米 cm','英寸 inch','cm + inch 双单位'], default:0, note:'出口商品建议使用双单位，避免买家换算' },
+    { type:'chips', label:'标注样式', options:['尺寸线','等比参照','标注 + 参照'], default:0, note:'尺寸线为纯数值标注；等比参照会加入参照物' },
+    { type:'chips', label:'参照物', options:['A4 纸','手持对比','硬币','不显示'], default:0, note:'仅「等比参照 / 标注 + 参照」样式生效' },
+    { type:'chips', label:'标注语种', options:['中文','英语','中英双语','阿拉伯语'], default:0 },
+    { type:'chips', label:'输出比例', options:['1:1','4:3','9:16'], default:0 },
+    { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
+    { type:'rows', label:'标注细节', items:[
+      { kind:'switch', label:'标注关键部位尺寸', desc:'自动补充肩宽、袖长、口径等二级尺寸', on:true },
+      { kind:'switch', label:'添加尺寸公差说明', desc:'角落标注 ±0.5cm 手工测量误差提示', on:false },
+    ]},
   ]},
   /* ---- 多语言翻译 ---- */
   '多语言翻译': { intro:'将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', cta:'开始翻译', fields:[
     { type:'textarea', label:'商品内容', required:true, placeholder:'粘贴商品标题、详情、关键词等内容' },
     { type:'chips', label:'目标语种', required:true, options:['英语','日语','韩语','西班牙语','阿拉伯语'], default:0, multi:true },
   ]},
-  '图片翻译': { intro:'识别图片文字并翻译为目标语言，保留原图排版布局，适用于说明书、包装等场景', cta:'开始翻译', fields:[
-    { type:'upload', label:'上传图片', required:true, hint:'支持 JPG/PNG，文字清晰即可' },
-    LANG_CHIPS,
+  '图片翻译': { intro:'识别图片中的文字并翻译成目标语言，保留原排版与字体风格，适用于主图、详情页、包装与说明书', cta:'开始翻译',
+    pricing:{ price:6, unit:'个语种', source:'目标语种' },
+    fields:[
+    { type:'upload', label:'待翻译图片', required:true, hint:'主图、详情页长图、包装图均可；文字清晰、少倾斜效果最好' },
+    { type:'chips', label:'源语种', options:['自动识别','中文','英语','日语','韩语'], default:0, note:'默认自动识别；小语种或中英混排建议手动指定' },
+    { type:'chips', label:'目标语种', required:true, multi:true, default:0, options:['英语','阿拉伯语','西班牙语','葡萄牙语','俄语','日语','韩语','泰语','越南语','印尼语'], note:'可多选，每个语种输出 1 张，按语种数计费' },
+    { type:'chips', label:'翻译风格', options:['直译准确','本地化表达','营销化改写'], default:1, note:'参数与认证信息用直译；主图卖点建议本地化或营销化' },
+    { type:'chips', label:'输出形式', options:['覆盖原图','译文 + 原图对照','仅译文（透明底）'], default:0 },
+    { type:'chips', label:'输出比例', options:['保持原图比例','1:1','3:4'], default:0 },
+    { type:'chips', label:'输出格式', options:['JPG','PNG','JPG + PSD 分层'], default:0, note:'PSD 分层便于设计二次调整文字' },
+    { type:'rows', label:'排版控制', items:[
+      { kind:'switch', label:'保留原排版与字体风格', desc:'按原文位置替换，字号与行距自动适配译文长度', on:true },
+      { kind:'switch', label:'自动擦除原文并补全背景', desc:'去除原文后修复背景，避免残留字影', on:true },
+      { kind:'switch', label:'专业术语复核提醒', desc:'认证、材质、型号等术语单独列出待确认清单', on:true },
+    ]},
   ]},
   '文本翻译': { intro:'输入或粘贴文本即译，10+ 通用语种，专业商贸术语库确保翻译精准', cta:'开始翻译', fields:[
     { type:'textarea', label:'原文', required:true, placeholder:'输入需要翻译的文本' },
@@ -2737,7 +2792,10 @@ function fieldHTML(f, i){
       ${stepHead(f, i)}
       ${note}
       <div class="upload-row">
-        ${f.labels.map((l, j) => uploadBox(`${i}-${j}`, l, f.hint || '', true)).join('')}
+        ${f.labels.map((l, j) => {
+          const o = typeof l === 'string' ? { t: l, hint: f.hint || '' } : l;
+          return uploadBox(`${i}-${j}`, o.t, o.hint || f.hint || '', true);
+        }).join('')}
       </div>
     </div>`;
   }
@@ -4495,7 +4553,7 @@ function replyFor(q){
     return '出海三步走：\n① 资质与合规：出口资质、目标国认证（CE/FCC/SASO）、商标先行\n② 获客：AI海外获客按品类匹配进口批发商与连锁零售，先小单试水\n③ 内容本地化：详情页与视频做多语种版本，询盘响应控制在 2 小时内\n\n我可以先帮你跑一轮买家线索，按目标市场筛选，你要哪个市场？';
   }
   if (/图片|白底|场景|卖点|抠图|换色/.test(t)) {
-    return '没问题。图片创作支持白底图、场景图、卖点图、细节图、换色、标尺图等 8 项能力。\n给我商品图 + 想要的风格（如"户外场景、暖色调"），我先出 2 张 1:1 主图给你挑。\n也可以直接说"给这款扳手做一张卖点图，中文文案"。';
+    return '没问题。图片创作支持白底图、场景图、卖点图、细节图、试穿试用、商品换色、标尺图、图片翻译等 11 项能力。\n给我商品图 + 想要的风格（如"户外场景、暖色调"），我先出 2 张 1:1 主图给你挑。\n也可以直接说"给这款扳手做一张卖点图，中文文案"。';
   }
   if (/视频|口播|数字人|宣传片|字幕/.test(t)) {
     return '视频创作有 5 项能力：产品宣传视频、数字人口播、真人口播视频、视频翻译（口播配音 / 字幕翻译）、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
