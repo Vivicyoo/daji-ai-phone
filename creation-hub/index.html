@@ -586,6 +586,14 @@
   }
   .f-group{margin-bottom:18px;animation:cardIn .35s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 40ms)}
   .f-group.is-hide{display:none}
+  /* 关联项：隶属于上一个字段，不单独占步骤编号 */
+  .f-group.is-sub{margin:-6px 0 18px;padding-left:12px;border-left:2px solid #e6e1f7}
+  .f-group.is-sub .f-label{font-size:12.5px;color:var(--text-2)}
+  .f-group.is-sub .f-head{margin-bottom:6px}
+  .f-sub-tag{
+    display:inline-block;margin-left:6px;padding:1px 6px;border-radius:5px;
+    background:#f3f0ff;color:#8b7bd8;font-size:10px;font-weight:500;vertical-align:middle;
+  }
   .f-group > label{
     display:block;font-size:13.5px;font-weight:600;margin-bottom:8px;
   }
@@ -1676,6 +1684,106 @@
   @supports (-webkit-touch-callout:none){
     .ask-input,.input-box input,.textarea,.lm-input,.lm-area{font-size:16px}
   }
+
+  /* ============ 手绘标尺：独立编辑子页面 ============ */
+  .rd-scroll{
+    flex:1;overflow-y:auto;padding:14px var(--pad-x) calc(96px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling:touch;
+  }
+  .rd-scroll::-webkit-scrollbar{display:none}
+  .rd-tip{
+    border-radius:12px;padding:11px 12px;margin-bottom:14px;
+    background:linear-gradient(135deg,#f6f1ff,#eff4ff);border:1px solid #efe7fb;
+  }
+  .rd-tip .t{font-size:12.5px;font-weight:600;color:#3f3a55}
+  .rd-tip .d{font-size:11px;color:var(--text-2);line-height:1.55;margin-top:4px}
+  .rd-canvas{
+    position:relative;width:100%;aspect-ratio:1/1;border-radius:14px;overflow:hidden;
+    border:1px solid var(--line);
+    background:
+      linear-gradient(45deg,#f2f3f9 25%,transparent 25%,transparent 75%,#f2f3f9 75%),
+      linear-gradient(45deg,#f2f3f9 25%,transparent 25%,transparent 75%,#f2f3f9 75%) 8px 8px,
+      #fafbfe;
+    background-size:16px 16px;
+  }
+  .rd-ph{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:9px;color:var(--text-3);
+  }
+  .rd-thumbs{display:flex;gap:8px;justify-content:center;align-items:center;width:100%;padding:0 16%}
+  .rd-thumbs > svg{width:64%;height:auto;opacity:.9}
+  .rd-thumbs .u-thumb{
+    flex:1;min-width:0;width:auto;height:auto;aspect-ratio:1/1;
+    border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(30,36,60,.10);
+  }
+  .rd-thumbs .u-thumb svg{width:100%;height:100%;opacity:1;display:block}
+  .rd-ph-note{
+    font-size:10.5px;color:var(--text-3);background:rgba(255,255,255,.88);
+    padding:3px 8px;border-radius:8px;
+  }
+  .rd-lines{position:absolute;inset:0}
+  .rd-line{position:absolute;background:var(--accent);touch-action:none;cursor:grab;z-index:2}
+  .rd-line.h{left:7%;right:7%;height:2px;transform:translateY(-1px)}
+  .rd-line.v{top:7%;bottom:7%;width:2px;transform:translateX(-1px)}
+  .rd-line::before,.rd-line::after{content:"";position:absolute;background:var(--accent)}
+  .rd-line.h::before,.rd-line.h::after{top:-5px;width:2px;height:12px}
+  .rd-line.h::before{left:0}
+  .rd-line.h::after{right:0}
+  .rd-line.v::before,.rd-line.v::after{left:-5px;height:2px;width:12px}
+  .rd-line.v::before{top:0}
+  .rd-line.v::after{bottom:0}
+  .rd-lb{
+    position:absolute;left:50%;top:-12px;transform:translate(-50%,-100%);
+    background:var(--accent);color:#fff;border-radius:6px;padding:2px 7px;
+    font-size:10.5px;font-weight:600;white-space:nowrap;
+    box-shadow:0 2px 6px rgba(124,58,237,.3);pointer-events:none;
+  }
+  .rd-line.v .rd-lb{top:14px;left:-4px;transform:translate(-100%,0)}
+  .rd-add{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+  .rd-add button{
+    height:40px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;
+    font-size:12.5px;font-weight:600;color:var(--text-2);font-family:inherit;cursor:pointer;
+  }
+  .rd-add button:active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .rd-sec-t{
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:12.5px;font-weight:600;margin:18px 0 9px;
+  }
+  .rd-sec-t span{font-size:11px;font-weight:400;color:var(--text-3)}
+  .rd-empty{
+    border:1px dashed var(--line-strong);border-radius:10px;padding:16px;text-align:center;
+    font-size:11.5px;color:var(--text-3);background:#fafbfd;
+  }
+  .rd-item{
+    display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;
+    background:#fff;border:1px solid var(--line);margin-bottom:8px;
+  }
+  .rd-ix{
+    flex:none;width:20px;height:20px;border-radius:6px;background:#f3eeff;color:#7c3aed;
+    font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  }
+  .rd-dir{flex:none;font-size:11.5px;color:var(--text-2)}
+  .rd-in{
+    flex:1;min-width:0;height:32px;border:1px solid var(--line-strong);border-radius:8px;
+    padding:0 8px;font-size:13px;font-family:inherit;color:var(--text);outline:none;box-sizing:border-box;
+  }
+  .rd-in:focus{border-color:var(--accent)}
+  .rd-unit{flex:none;font-size:11px;color:var(--text-3)}
+  .rd-del{
+    flex:none;width:26px;height:26px;border:none;border-radius:8px;background:#f6f7fb;
+    color:var(--text-3);font-size:16px;line-height:1;cursor:pointer;font-family:inherit;
+  }
+  .rd-del:active{background:#ffecec;color:var(--danger)}
+  .rd-out{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+  .rd-unit-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .rd-unit-row .du-lb{flex:none;font-size:12px;color:var(--text-2)}
+  .rd-unit-row .chips{gap:6px}
+  .rd-unit-row .chip{height:30px;padding:0 12px;font-size:12px}
+  @media (max-width:360px){
+    .rd-item{gap:6px;padding:8px}
+    .rd-dir{font-size:11px}
+    .rd-add button{font-size:11.5px}
+  }
 </style>
 </head>
 <body>
@@ -1794,7 +1902,7 @@
           </div>
           <div class="cc-txt">
             <div class="cc-t1">这里全是 AI 能力</div>
-            <div class="cc-t2">对话即可调用 26 项工具</div>
+            <div class="cc-t2" id="ccToolCount">对话即可调用 26 项工具</div>
           </div>
         </div>
         <div class="cc-side">
@@ -1867,6 +1975,50 @@
     <div class="cta-bar" id="flowBar">
       <div class="ff-info" id="ffInfo"></div>
       <button class="cta" id="flowCta">开始生成</button>
+    </div>
+  </section>
+
+  <!-- ================= 手绘标尺：独立编辑子页面 ================= -->
+  <section class="screen" id="drawScreen">
+    <header class="topbar">
+      <button class="icon-btn" aria-label="返回" onclick="backFromDraw()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="title">手绘标尺</div>
+      <button class="icon-btn ghost" onclick="resetRulerDraw()" aria-label="清空重画">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>
+      </button>
+    </header>
+
+    <div class="rd-scroll" id="rdBody">
+      <div class="rd-tip">
+        <div class="rd-tip-t">✦ 在画面上手动添加标尺线</div>
+        <div class="rd-tip-d">点下方按钮添加水平 / 垂直标尺，按住线条拖动位置，在列表中填写刻度数值与单位。</div>
+      </div>
+      <div class="rd-canvas" id="rdCanvas">
+        <div class="rd-ph" id="rdPh"></div>
+        <div class="rd-lines" id="rdLines"></div>
+      </div>
+      <div class="rd-add">
+        <button onclick="addRulerLine('h')">＋ 水平标尺</button>
+        <button onclick="addRulerLine('v')">＋ 垂直标尺</button>
+      </div>
+      <div class="rd-sec-t">标尺线 <span id="rdCount">0 条</span></div>
+      <div class="rd-list" id="rdList"></div>
+      <div class="rd-out">
+        <div class="f-head"><span class="f-no">01</span><span class="f-label">尺寸单位</span></div>
+        <div class="rd-unit-row">
+          <span class="du-lb">刻度单位</span>
+          <div class="chips" data-multi="0" data-label="尺寸单位">
+            <span class="chip on">cm</span><span class="chip">mm</span><span class="chip">inch</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-bar has-info" id="rdBar">
+      <div class="ff-info" id="rdInfo"></div>
+      <button class="cta" id="rdCta" onclick="submitRulerDraw()">生成标尺图<span class="cta-cost">✦8</span></button>
     </div>
   </section>
 
@@ -2294,6 +2446,7 @@ const ICONS = {
   image6:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M12 8.5l1.2 2.5 2.8.4-2 2 .5 2.8-2.5-1.3-2.5 1.3.5-2.8-2-2 2.8-.4z"/>',
   box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
   doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>',
+  chat:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13.5h5"/>',
 };
 
 /* ================= 首页数据：六大分类 ================= */
@@ -2385,6 +2538,7 @@ const TOOL_PAGES = {
     intro: '10+通用语种，专业商贸术语库，让商品内容一键说全球语言',
     tools: [
       { name: '多语言翻译',   desc: '将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
+      { name: '在线翻译',     tag: 'NEW', desc: '在线实时互译，文字与语音即说即译，适用于外商洽谈与询盘沟通', theme: ['#d8f2e6','#8fd6b5','#3f9b74'], icon: 'chat' },
       { name: '图片翻译',     desc: '识别图片文字并翻译为目标语言，保留原图排版布局，适用于说明书、包装', theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'image3' },
       { name: '文本翻译',     desc: '输入或粘贴文本即译，支持10+通用语种，商贸术语库确保翻译精准',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'doc' },
       { name: '视频音频翻译', desc: '识别视频或音频中的语音并翻译，生成多语种字幕和配音',            theme: ['#ffd9a8','#f5b06c','#c9853b'], icon: 'video' },
@@ -2598,24 +2752,36 @@ const FLOWS = {
     fields:[
     { type:'upload', label:'商品图片', required:true, count:'（0/1张）', tall:true,
       hint:'支持上传 JPG/JPEG/PNG 格式图片，单张大小 25MB 以内，尺寸不小于 300px' },
-    { type:'cards', label:'标注方式', required:true, default:0, options:[
+    { type:'cards', id:'rulerMode', label:'标注方式', required:true, default:0, options:[
       { name:'智能生成', desc:'按标尺类型与实测数值由 AI 自动标注' },
-      { name:'手绘标尺', desc:'在右侧画面手动添加标尺线与刻度文字' },
-    ], note:'智能生成：按标尺类型与实测数值由 AI 自动标注；手绘标尺：在右侧画面手动添加标尺线与刻度文字' },
-    { type:'measure', label:'标尺类型', required:true, max:120,
+      { name:'手绘标尺', desc:'进入手绘画面，手动添加标尺线与刻度文字' },
+    ], note:'智能生成：按标尺类型与实测数值由 AI 自动标注；手绘标尺：进入独立画面手动添加标尺线与刻度文字' },
+    { type:'measure', label:'标尺类型', required:true, numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, max:120,
       placeholder:'例：这款收纳箱长 32 厘米、宽 18、高 24，加上轮子再高 3 厘米，整体适合床底收纳',
       autoText:'长 32 厘米 × 宽 18 厘米 × 高 24 厘米（含轮子高 27 厘米）',
       note:'长 × 宽 × 高：立体商品；长 × 宽：平面商品；高度 / 厚度：单边尺寸或薄型商品；直径 / 周长：圆形商品；重量：仅标注重量；长 × 宽 × 高 + 重量：完整规格',
       types:['长 × 宽 × 高','长 × 宽','高度 / 厚度','直径 / 周长','重量','长 × 宽 × 高 + 重量'], defaultTypes:[] },
-    { type:'dims', label:'参数数值（选填）', units:['cm','mm','inch'], unitDefault:0,
-      note:'按实物测量填写，AI 会把数值直接标在图上对应位置；留空则由 AI 按商品比例估算' },
-    { type:'chips', label:'输出比例', options:['原素材比例','1:1','4:3'], default:0, note:'默认保持原素材比例，不裁切画面；需要平台主图时可切换为 1:1' },
-    { type:'chips', label:'生成张数', options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
+    { type:'dims', label:'参数数值（选填）', sub:true, cond:{ id:'rulerMode', is:'智能生成' }, units:['cm','mm','inch'], unitDefault:0,
+      note:'随上方「标尺类型」填写实测数值，AI 会标在图上对应位置；留空则由 AI 按商品比例估算' },
+    { type:'chips', label:'输出比例', numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, options:['原素材比例','1:1','4:3'], default:0, note:'默认保持原素材比例，不裁切画面；需要平台主图时可切换为 1:1' },
+    { type:'chips', label:'生成张数', numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
   ]},
   /* ---- 多语言翻译 ---- */
   '多语言翻译': { intro:'将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', cta:'开始翻译', fields:[
     { type:'textarea', label:'商品内容', required:true, placeholder:'粘贴商品标题、详情、关键词等内容' },
     { type:'chips', label:'目标语种', required:true, options:['英语','日语','韩语','西班牙语','阿拉伯语'], default:0, multi:true },
+  ]},
+  '在线翻译': { intro:'在线实时互译，输入或说出内容即刻得到目标语言译文，适用于外商洽谈、询盘回复与现场沟通', cta:'开始翻译',
+    pricing:{ price:3, unit:'个语种', source:'目标语种' },
+    fields:[
+    { type:'textarea', label:'待翻译内容', required:true, placeholder:'输入或粘贴外商询盘、洽谈对话，例：这款保温杯最小起订量是多少？' },
+    { type:'chips', label:'源语种', options:['自动识别','中文','英语','阿拉伯语','俄语','西班牙语'], default:0, note:'默认自动识别；口音较重或小语种建议手动指定' },
+    { type:'chips', label:'目标语种', required:true, multi:true, default:0, options:['英语','阿拉伯语','俄语','西班牙语','法语','葡萄牙语','日语','韩语','印尼语','越南语','泰语'], note:'可多选，每个语种实时生成 1 版译文，按语种数计费' },
+    { type:'chips', label:'沟通场景', options:['商务洽谈','询盘报价','商品介绍','售后沟通'], default:0, note:'按场景调用对应商贸术语库，语气更贴合现场沟通' },
+    { type:'rows', label:'实时输出', items:[
+      { kind:'switch', label:'双语对照显示', desc:'译文下方保留原文，方便现场核对', on:true },
+      { kind:'switch', label:'译文朗读', desc:'生成目标语言语音，可直接播放给对方听', on:false },
+    ]},
   ]},
   '图片翻译': { intro:'识别图片中的文字并翻译成目标语言，保留原排版与字体风格，适用于主图、详情页、包装与说明书', cta:'开始翻译',
     pricing:{ price:6, unit:'个语种', source:'目标语种' },
@@ -2756,6 +2922,11 @@ const CATS = {
   shop:      TOOL_PAGES.shop,
 };
 
+/* 首页「对话即可调用 N 项工具」按实际工具数渲染，避免手写数字与分类脱节 */
+const totalTools = Object.values(CATS).reduce((n, c) => n + (c.tools ? c.tools.length : 0), 0);
+const ccCountEl = document.getElementById('ccToolCount');
+if (ccCountEl) ccCountEl.textContent = `对话即可调用 ${totalTools} 项工具`;
+
 /* ================= 屏幕切换 ================= */
 const homeScreen = document.getElementById('homeScreen');
 const flowScreen = document.getElementById('flowScreen');
@@ -2874,11 +3045,13 @@ const MEDIA_TOOLS = new Set([...SCENES.video.items, ...SCENES.image.items].map(i
 
 /* ---- 表单原子组件 ---- */
 function stepHead(f, i, extra){
-  /* cond 字段是上一项选项的附属内容，不参与编号 */
-  const no = f.cond ? '' : `<span class="f-no">${String(i + 1).padStart(2, '0')}</span>`;
+  /* cond 字段默认是上一项的附属内容、不参与编号；
+     numbered:true 表示虽受条件显隐控制，但仍是独立步骤 */
+  const no = (f.cond && !f.numbered) ? '' : `<span class="f-no">${String(i + 1).padStart(2, '0')}</span>`;
+  const tag = f.sub ? '<span class="f-sub-tag">关联项</span>' : '';
   return `<div class="f-head">
     ${no}
-    <span class="f-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}${f.count ? `<span class="f-cnt">${f.count}</span>` : ''}</span>
+    <span class="f-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}${f.count ? `<span class="f-cnt">${f.count}</span>` : ''}${tag}</span>
     ${extra || ''}
   </div>`;
 }
@@ -2914,7 +3087,8 @@ function pickRow(key, title, options, value, placeholder){
 /* 字段容器：cond = 由某个「单选胶囊」字段控制显隐（三选一互斥字段用） */
 function groupOpen(f, i){
   const cond = f.cond ? ` data-cond-id="${f.cond.id}" data-cond-is="${f.cond.is}"` : '';
-  return `<div class="f-group" style="--i:${i}" data-label="${f.label || ''}"${cond}>`;
+  const cls = f.sub ? ' is-sub' : '';
+  return `<div class="f-group${cls}" style="--i:${i}" data-label="${f.label || ''}"${cond}>`;
 }
 function fieldHTML(f, i){
   if (f.type === 'upload'){
@@ -3121,7 +3295,10 @@ function taAutoFill(i){
 function chipOnLabel(id){
   const g = flowBody.querySelector(`.chips[data-fid="${id}"]`);
   const on = g && g.querySelector('.chip.on');
-  return on ? on.textContent.trim() : '';
+  if (!on) return '';
+  /* 选项卡 chip 内含「标题 + 说明」，条件判断只取标题 */
+  const t = on.querySelector('.co-t');
+  return (t ? t.textContent : on.textContent).trim();
 }
 function applyConds(){
   let has = false;
@@ -3172,6 +3349,11 @@ const HERO_STEPS_BY_FLOW = {
     { t:'填写采购需求', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
     { t:'AI 匹配商品', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5M12 12v9"/>' },
     { t:'查看推荐清单', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.2" cy="6" r="1.1"/><circle cx="4.2" cy="12" r="1.1"/><circle cx="4.2" cy="18" r="1.1"/>' },
+  ],
+  '在线翻译': [
+    { t:'输入待译内容', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
+    { t:'实时互译', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<path d="M4 5h8"/><path d="M8 3v2c0 4-2 7-5 8"/><path d="M5 9c1.5 3 4 5 7 5"/><path d="M13 21l4.5-11L22 21"/><path d="M14.8 17h5.4"/>' },
+    { t:'复制或朗读', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>' },
   ],
 };
 function heroHTML(f){
@@ -3243,6 +3425,11 @@ function bindFlowChips(){
       }
       if (group.dataset.summary === '1') updateChipsSum(group);
       if (group.dataset.fid) applyConds();
+      /* 标注方式切到「手绘标尺」→ 进入独立的手绘子页面 */
+      if (group.dataset.fid === 'rulerMode' && chipOnLabel('rulerMode') === '手绘标尺'){
+        openRulerDraw();
+        return;
+      }
       if (updateFooter) updateFooter();
     });
     if (group.dataset.summary === '1') updateChipsSum(group);
@@ -3324,6 +3511,145 @@ function renderEditor(){
 function backFromFlow(){
   flowTabs.style.display = 'none';
   showScreen(homeScreen);
+}
+
+/* ---------------- 手绘标尺：独立编辑子页面 ---------------- */
+const drawScreen = document.getElementById('drawScreen');
+let rdLines = [], rdSeq = 0, rdSeeded = false;
+const RD_PH = `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="商品示意图">
+  <rect x="18" y="36" width="84" height="60" rx="6" fill="#fff" stroke="#d9dced"/>
+  <path d="M18 48h84" stroke="#d9dced"/>
+  <path d="M18 36l14-12h56l14 12" fill="#f1f2fa" stroke="#d9dced"/>
+  <rect x="34" y="60" width="32" height="5" rx="2.5" fill="#d8d2fb"/>
+  <rect x="34" y="72" width="48" height="5" rx="2.5" fill="#e7e9f3"/>
+  <rect x="34" y="84" width="38" height="5" rx="2.5" fill="#e7e9f3"/>
+</svg>`;
+
+function rdUnit(){
+  const on = document.querySelector('#drawScreen .chips[data-label="尺寸单位"] .chip.on');
+  return on ? on.textContent.trim() : 'cm';
+}
+/* 手绘输出按张计费，单价跟随「AI 商品标尺图」的定价配置 */
+function rdPrice(){
+  return (currentFlow && currentFlow.pricing && currentFlow.pricing.price) || 8;
+}
+function openRulerDraw(){
+  /* 沿用 AI 商品标尺图表单里已上传的商品图；未上传则显示示意画面 */
+  const box = flowBody.querySelector('.upload-box.tall') || flowBody.querySelector('.upload-box');
+  const th = box && box.querySelector('.u-thumbs');
+  document.getElementById('rdPh').innerHTML = `<div class="rd-thumbs">${th ? th.innerHTML : RD_PH}</div>`
+    + `<span class="rd-ph-note">${th ? '已沿用上传的商品图' : '尚未上传商品图，当前为示意画面'}</span>`;
+  /* 首次进入给两条示例标尺；清空后回来保持空态，不自动补 */
+  if (!rdSeeded){
+    rdSeeded = true;
+    rdLines = [
+      { id: ++rdSeq, dir:'h', pos:34, text:'32' },
+      { id: ++rdSeq, dir:'v', pos:36, text:'24' },
+    ];
+  }
+  bindRulerUnit();
+  renderRulerDraw();
+  showScreen(drawScreen);
+  document.getElementById('rdBody').scrollTop = 0;
+}
+function bindRulerUnit(){
+  const g = document.querySelector('#drawScreen .chips[data-label="尺寸单位"]');
+  if (!g || g.dataset.bound === '1') return;
+  g.dataset.bound = '1';
+  g.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    g.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    chip.classList.add('on');
+    renderRulerDraw();
+  });
+}
+function backFromDraw(){
+  /* 手绘流程在子页面独立完成，返回表单时恢复到「智能生成」 */
+  const g = flowBody.querySelector('.chips[data-fid="rulerMode"]');
+  if (g){
+    g.querySelectorAll('.chip').forEach((c, j) => c.classList.toggle('on', j === 0));
+    applyConds();
+    if (updateFooter) updateFooter();
+  }
+  showScreen(flowScreen);
+}
+function renderRulerDraw(){
+  const unit = rdUnit();
+  document.getElementById('rdLines').innerHTML = rdLines.map(l => `
+    <div class="rd-line ${l.dir}" data-id="${l.id}" style="${l.dir === 'h' ? 'top' : 'left'}:${l.pos}%">
+      <span class="rd-lb">${(l.text || '—') + ' ' + unit}</span>
+    </div>`).join('');
+  document.getElementById('rdList').innerHTML = rdLines.length
+    ? rdLines.map((l, i) => `
+      <div class="rd-item" data-id="${l.id}">
+        <span class="rd-ix">${String(i + 1).padStart(2, '0')}</span>
+        <span class="rd-dir">${l.dir === 'h' ? '水平' : '垂直'}</span>
+        <input class="rd-in" type="text" inputmode="decimal" value="${l.text}" placeholder="刻度数值"
+          oninput="rdSetText(${l.id}, this.value)" aria-label="标尺 ${i + 1} 刻度数值" />
+        <span class="rd-unit">${unit}</span>
+        <button class="rd-del" onclick="rdDel(${l.id})" aria-label="删除标尺 ${i + 1}">×</button>
+      </div>`).join('')
+    : '<div class="rd-empty">还没有标尺线，点上方按钮添加一条</div>';
+  const price = rdPrice();
+  document.getElementById('rdCount').textContent = rdLines.length + ' 条';
+  document.getElementById('rdInfo').innerHTML = `标尺线 <b>${rdLines.length} 条 · 输出 1 张 · 共 ${price} 积分</b>`;
+  const cta = document.getElementById('rdCta');
+  if (cta) cta.innerHTML = `生成标尺图<span class="cta-cost">✦${price}</span>`;
+  rdBindDrag();
+}
+function rdSetText(id, v){
+  const l = rdLines.find(x => x.id === id);
+  if (!l) return;
+  l.text = v;
+  const lb = document.querySelector(`.rd-line[data-id="${id}"] .rd-lb`);
+  if (lb) lb.textContent = (v || '—') + ' ' + rdUnit();
+}
+function rdDel(id){
+  rdLines = rdLines.filter(x => x.id !== id);
+  renderRulerDraw();
+}
+function addRulerLine(dir){
+  if (rdLines.length >= 6){ toast('最多添加 6 条标尺线'); return; }
+  const n = rdLines.filter(l => l.dir === dir).length;
+  const pos = dir === 'h' ? 26 + (n % 3) * 20 : 26 + (n % 3) * 22;
+  rdLines.push({ id: ++rdSeq, dir, pos, text: dir === 'h' ? '32' : '24' });
+  renderRulerDraw();
+}
+function resetRulerDraw(){
+  rdLines = [];
+  renderRulerDraw();
+  toast('已清空，可重新添加标尺线');
+}
+function rdBindDrag(){
+  const canvas = document.getElementById('rdCanvas');
+  document.querySelectorAll('#rdLines .rd-line').forEach(el => {
+    el.addEventListener('pointerdown', e => {
+      const line = rdLines.find(x => x.id === +el.dataset.id);
+      if (!line) return;
+      const rect = canvas.getBoundingClientRect();
+      try { el.setPointerCapture(e.pointerId); } catch (_) {}
+      const move = ev => {
+        const p = line.dir === 'h'
+          ? (ev.clientY - rect.top) / rect.height * 100
+          : (ev.clientX - rect.left) / rect.width * 100;
+        line.pos = Math.max(8, Math.min(92, Math.round(p * 10) / 10));
+        el.style[line.dir === 'h' ? 'top' : 'left'] = line.pos + '%';
+      };
+      const up = () => {
+        el.removeEventListener('pointermove', move);
+        el.removeEventListener('pointerup', up);
+        el.removeEventListener('pointercancel', up);
+      };
+      el.addEventListener('pointermove', move);
+      el.addEventListener('pointerup', up);
+      el.addEventListener('pointercancel', up);
+    });
+  });
+}
+function submitRulerDraw(){
+  if (!rdLines.length){ toast('请先添加至少 1 条标尺线'); return; }
+  toast('手绘标尺任务已提交（原型演示）');
 }
 
 flowCta.addEventListener('click', () => {
@@ -4835,7 +5161,7 @@ function replyFor(q){
     return '视频创作有 5 项能力：产品宣传视频、数字人口播、真人口播视频、视频翻译（音频翻译 / 字幕翻译 / 口型对齐）、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
   }
   if (/翻译|多语言|英文|阿拉伯/.test(t)) {
-    return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
+    return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕；「在线翻译」还能做外商洽谈的实时互译。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
   }
   return '收到。我先按这个需求梳理一下思路，给出可执行的建议。\n你可以补充：目标市场、商品品类、期望产出（图/视频/数据报告），我就能直接调用对应工具开工。';
 }
