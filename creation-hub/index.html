@@ -2315,7 +2315,7 @@ const SCENES = {
       { name: '产品宣传视频', tag: '热门', desc: '上传产品图+描述，AI生成专业展示短片', theme: ['#ffd9a8','#ff9d6c','#c96f3b'], icon: 'megaphone' },
       { name: '数字人口播',   tag: '',      desc: '虚拟形象+文案，一键生成播报视频',       theme: ['#ffd6e0','#f39ab4','#c9648a'], icon: 'avatar' },
       { name: '真人口播视频', tag: 'NEW',  desc: '真人素材+新文案，智能生成全新内容',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'user' },
-      { name: '视频翻译', tag: '',      desc: '翻译视频语音与字幕，一键生成多语种版本', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
+      { name: '视频翻译', tag: '',      desc: '音频翻译 / 字幕翻译 / 口型对齐，一键生成多语种版本', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
       { name: '首尾帧生视频', tag: '新',    desc: '首尾两张图，AI生成流畅过渡视频',       theme: ['#d6f0ff','#93cdef','#4f8fc9'], icon: 'film' },
     ]
   },
@@ -2452,27 +2452,63 @@ const FLOWS = {
         options:['原始比例 | 原始分辨率','1:1 | 720p','16:9 | 1080p','9:16 | 720p'] },
     ]},
   ]},
-  '视频翻译': { title:'视频翻译', intro:'翻译视频的语音与字幕，一键生成多语种版本', cta:'开始翻译',
-    cost:25, pricing:{ price:25, unit:'个语言版本', source:'目标语言' },
-    fields:[
+  '视频翻译': { title:'视频翻译', intro:'音频翻译、字幕翻译、口型对齐，一键生成多语种视频版本',
+    tabs:[
+    { name:'音频翻译', intro:'把视频里的人声翻译并重新配音，保留原画面与背景音', cta:'开始翻译',
+      pricing:{ price:25, unit:'个语言版本', source:'目标语言' },
+      fields:[
       { type:'upload', label:'上传视频', required:true, uploadText:'点击上传视频',
-        note:'请勿上传裸露、暴力、血腥或其他包含非法信息视频。',
-        hint:'支持 MP4、MOV，50M 以内' },
+        note:'请勿上传裸露、暴力、血腥或其他包含非法信息视频。', hint:'支持 MP4、MOV，50M 以内' },
       { type:'chips', label:'目标语言', required:true, multi:true, default:1,
-        note:'可多选，每种语言生成独立版本',
-        summary:'将生成 {n} 个语言版本 · {list}',
+        note:'可多选，每种语言生成独立版本', summary:'将生成 {n} 个语言版本 · {list}',
         options:['中文','英语','阿拉伯语','泰语','印尼语','越南语','韩语','马来语','蒙古语'] },
-      { type:'rows', label:'翻译设置', items:[
-        { kind:'switch', label:'口型翻译', desc:'对齐人物口型；关闭仅替换音频', on:true },
-        { kind:'switch', label:'添加字幕', desc:'生成目标语言字幕并烧入画面', on:true,
-          sub:{ label:'字幕位置', options:['底部居中','顶部居中','跟随原片'], default:0 } },
+      { type:'chips', label:'配音音色', options:['原声克隆','标准男声','标准女声','商务中性'], default:0, note:'原声克隆保留说话人音色，仅切换语言' },
+      { type:'chips', label:'语速', options:['0.8x 慢速','1.0x 原速','1.2x 快速'], default:1 },
+      { type:'rows', label:'音频设置', items:[
+        { kind:'switch', label:'保留原始背景音', desc:'仅替换人声，保留音乐与环境音', on:true },
+        { kind:'switch', label:'人声降噪与增强', desc:'去除底噪，让配音更清晰', on:true },
+      ]},
+      { type:'chips', label:'输出格式', options:['MP4 视频','MOV 视频','仅音频 MP3'], default:0 },
+    ]},
+    { name:'字幕翻译', intro:'识别原视频语音并译成目标语言字幕，可烧入画面或导出字幕文件', cta:'开始翻译',
+      pricing:{ price:10, unit:'个语言版本', source:'目标语言' },
+      fields:[
+      { type:'upload', label:'上传视频', required:true, uploadText:'点击上传视频',
+        note:'请勿上传裸露、暴力、血腥或其他包含非法信息视频。', hint:'支持 MP4、MOV，50M 以内' },
+      { type:'chips', label:'目标语言', required:true, multi:true, default:1,
+        note:'可多选，每种语言生成独立字幕', summary:'将生成 {n} 个语言版本 · {list}',
+        options:['中文','英语','阿拉伯语','泰语','印尼语','越南语','韩语','马来语','蒙古语'] },
+      { type:'chips', label:'字幕形式', options:['烧入画面','外挂 SRT','双语对照'], default:0, note:'外挂 SRT 便于后续编辑与上架复用' },
+      { type:'chips', label:'字幕位置', options:['底部居中','顶部居中','跟随原片'], default:0 },
+      { type:'chips', label:'字幕样式', options:['原片样式','白字黑边','品牌配色'], default:0 },
+      { type:'rows', label:'字幕设置', items:[
+        { kind:'switch', label:'自动校对时间轴', desc:'按语义断句，避免字幕与语音错位', on:true },
+        { kind:'switch', label:'专业术语复核提醒', desc:'认证、型号、材质等术语单独列出待确认', on:true },
+        { kind:'switch', label:'保留原始人声', desc:'不配音，只叠加译文', on:true },
+      ]},
+    ]},
+    { name:'口型对齐', intro:'翻译配音的同时对齐人物口型，让多语种口播视频更自然', cta:'开始对齐',
+      pricing:{ price:40, unit:'个语言版本', source:'目标语言' },
+      fields:[
+      { type:'upload', label:'上传视频', required:true, uploadText:'点击上传视频',
+        note:'请勿上传裸露、暴力、血腥或其他包含非法信息视频。', hint:'人物正面、口型清晰的视频效果最佳；支持 MP4、MOV，50M 以内' },
+      { type:'chips', label:'目标语言', required:true, multi:true, default:1,
+        note:'可多选，每种语言生成独立版本', summary:'将生成 {n} 个语言版本 · {list}',
+        options:['中文','英语','阿拉伯语','泰语','印尼语','越南语','韩语','马来语','蒙古语'] },
+      { type:'chips', label:'口型模式', options:['精准对齐','自然流畅','快速生成'], default:0, note:'精准对齐耗时更长；快速生成适合内部预览' },
+      { type:'chips', label:'配音音色', options:['原声克隆','标准男声','标准女声'], default:0 },
+      { type:'rows', label:'画面设置', items:[
         { kind:'switch', label:'保留原始背景音', desc:'仅替换人声部分', on:true },
+        { kind:'switch', label:'智能补帧', desc:'口型过渡更顺滑，减少卡顿', on:true },
+        { kind:'switch', label:'添加目标语言字幕', desc:'生成字幕并烧入画面', on:false,
+          sub:{ label:'字幕位置', options:['底部居中','顶部居中','跟随原片'], default:0 } },
       ]},
       { type:'rows', label:'输出规格', items:[
         { kind:'group', label:'画面比例', options:['原始','16:9','9:16','1:1'], default:0 },
         { kind:'group', label:'输出分辨率', options:['720p','1080p'], default:0 },
       ]},
     ]},
+  ]},
   '首尾帧生视频': { intro:'提供首尾两张图片，AI自动生成流畅自然的过渡视频', cta:'开始生成视频', fields:[
     { type:'upload2', label:'首尾帧图片', required:true, labels:['首帧图片','尾帧图片'] },
     { type:'textarea', label:'过渡描述（选填）', placeholder:'例：镜头缓慢环绕商品，光影渐变' },
@@ -2550,14 +2586,12 @@ const FLOWS = {
         return g ? g.querySelectorAll('.chip.on').length : 1;
       } },
     fields:[
-    { type:'upload', label:'商品图', required:true, hint:'需清晰展示待换色部位，避免大面积阴影遮挡' },
-    { type:'chips', label:'换色部位', required:true, multi:true, default:-1, options:['主体','配件','包装','背景'], note:'可多选，AI 只更换所选部位；不选则默认仅更换商品主体' },
+    { type:'upload', label:'商品图', required:true, hint:'商品主体清晰、无大面积阴影遮挡，效果最佳' },
     { type:'chips', label:'颜色来源', required:true, id:'colorMode', options:['预设颜色','参考色卡','自定义色值'], default:0, note:'三选一，都是指定「要换成的目标颜色」：选预设色、上传色卡取色，或填写色值' },
     { type:'chips', label:'目标颜色', required:true, multi:true, default:0, cond:{ id:'colorMode', is:'预设颜色' }, options:['经典黑','奶油白','商务蓝','活力橙','中国红','军绿色','莫兰迪灰'], note:'可多选，每个颜色输出 1 张，按颜色数计费' },
     { type:'upload', label:'参考色卡', cond:{ id:'colorMode', is:'参考色卡' }, hint:'上传色卡图或目标色参考图，AI 按图中色值取色' },
     { type:'textarea', label:'自定义色值', cond:{ id:'colorMode', is:'自定义色值' }, placeholder:'例：#1B4F9C、Pantone 286C；多个色值用逗号分隔，按色值个数计费' },
-    { type:'chips', label:'输出比例', options:['1:1','4:3','9:16'], default:0 },
-    { type:'chips', label:'多色预览版式', options:['单色单图','多色拼图','单图 + 色卡'], default:0, note:'多色拼图会把所选颜色合成 1 张对比图，便于内部选款' },
+    { type:'chips', label:'输出比例', options:['原图比例','1:1','4:3'], default:0, note:'默认保持原图比例，不裁切画面；需要平台主图时可切换为 1:1' },
   ]},
   'AI标尺图': { title:'AI 商品标尺图', intro:'尺寸自动标注，直观展示商品真实大小', cta:'开始标注',
     pricing:{ price:8, unit:'张', source:'生成张数' },
@@ -2840,8 +2874,10 @@ const MEDIA_TOOLS = new Set([...SCENES.video.items, ...SCENES.image.items].map(i
 
 /* ---- 表单原子组件 ---- */
 function stepHead(f, i, extra){
+  /* cond 字段是上一项选项的附属内容，不参与编号 */
+  const no = f.cond ? '' : `<span class="f-no">${String(i + 1).padStart(2, '0')}</span>`;
   return `<div class="f-head">
-    <span class="f-no">${String(i + 1).padStart(2, '0')}</span>
+    ${no}
     <span class="f-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}${f.count ? `<span class="f-cnt">${f.count}</span>` : ''}</span>
     ${extra || ''}
   </div>`;
@@ -3162,57 +3198,41 @@ function consentHTML(){
   </div>`;
 }
 
-/* ---- 打开表单 ---- */
-function openFlow(name){
-  const f = FLOWS[name];
-  if (!f){ toast(`「${name}」流程建设中（原型演示）`); return; }
-  flowName = name; currentFlow = f; flowTabIdx = 0;
-  document.getElementById('flowTitleTxt').textContent = f.title || name;
-  flowTabs.style.display = f.tabs ? 'flex' : 'none';
-  if (f.tabs){
-    flowTabs.innerHTML = f.tabs.map((t, i) =>
-      `<div class="ed-tab ${i === 0 ? 'on' : ''}" onclick="switchFlowTab(${i})">${t.name}</div>`).join('');
-  }
+/* ---- 计费底栏：普通表单与带子功能的表单共用 ---- */
+function setupPricing(p, cta){
   const bar = document.getElementById('flowBar');
   bar.classList.remove('has-info');
   updateFooter = null;
-
-  if (f.tabs){ renderEditor(); }
-  else {
-    flowCost = f.cost || 5;
-    flowBody.innerHTML = heroHTML(f)
-      + (f.out ? `<p class="flow-out">${f.out}</p>` : '')
-      + f.fields.map(fieldHTML).join('')
-      + (f.consent !== false && MEDIA_TOOLS.has(name) ? consentHTML() : '');
-
-    if (f.pricing){
-      const p = f.pricing;
-      bar.classList.add('has-info');
-      updateFooter = () => {
-        const group = flowBody.querySelector(`.chips[data-label="${p.source}"]`);
-        let count = 1;
-        if (p.count){ count = p.count() || 1; }
-        else if (group){
-          if (group.dataset.multi === '1'){
-            count = group.querySelectorAll('.chip.on').length;
-          } else {
-            const on = group.querySelector('.chip.on');
-            const m = on && on.textContent.match(/\d+/);
-            count = m ? +m[0] : 1;
-          }
-        }
-        const total = count * p.price;
-        flowCost = total;
-        document.getElementById('ffInfo').innerHTML = `处理内容 <b>${count} ${p.unit} · 共 ${total} 积分</b>`;
-        flowCta.innerHTML = `${f.cta || '开始处理'}<span class="cta-cost">✦${total}</span>`;
-      };
-      updateFooter();
-    } else {
-      flowCta.innerHTML = `${f.cta || '开始生成'}<span class="cta-cost">✦${flowCost}</span>`;
-    }
+  if (!p){
+    flowCta.innerHTML = `${cta}<span class="cta-cost">✦${flowCost}</span>`;
+    return;
   }
-
+  bar.classList.add('has-info');
+  updateFooter = () => {
+    const group = flowBody.querySelector(`.chips[data-label="${p.source}"]`);
+    let count = 1;
+    if (p.count){ count = p.count() || 1; }
+    else if (group){
+      if (group.dataset.multi === '1'){
+        count = group.querySelectorAll('.chip.on').length;
+      } else {
+        const on = group.querySelector('.chip.on');
+        const m = on && on.textContent.match(/\d+/);
+        count = m ? +m[0] : 1;
+      }
+    }
+    const total = count * p.price;
+    flowCost = total;
+    document.getElementById('ffInfo').innerHTML = `处理内容 <b>${count} ${p.unit} · 共 ${total} 积分</b>`;
+    flowCta.innerHTML = `${cta}<span class="cta-cost">✦${total}</span>`;
+  };
+  updateFooter();
+}
+/* ---- 胶囊联动：可重复调用，data-bound 防止重复绑定 ---- */
+function bindFlowChips(){
   flowBody.querySelectorAll('.chips').forEach(group => {
+    if (group.dataset.bound === '1') return;
+    group.dataset.bound = '1';
     group.addEventListener('click', e => {
       const chip = e.target.closest('.chip');
       if (!chip) return;
@@ -3228,11 +3248,36 @@ function openFlow(name){
     if (group.dataset.summary === '1') updateChipsSum(group);
   });
   applyConds();
+}
+
+/* ---- 打开表单 ---- */
+function openFlow(name){
+  const f = FLOWS[name];
+  if (!f){ toast(`「${name}」流程建设中（原型演示）`); return; }
+  flowName = name; currentFlow = f; flowTabIdx = 0;
+  document.getElementById('flowTitleTxt').textContent = f.title || name;
+  flowTabs.style.display = f.tabs ? 'flex' : 'none';
+  if (f.tabs){
+    flowTabs.innerHTML = f.tabs.map((t, i) =>
+      `<div class="ed-tab ${i === 0 ? 'on' : ''}" onclick="switchFlowTab(${i})">${t.name}</div>`).join('');
+  }
+
+  if (f.tabs){ renderEditor(); }
+  else {
+    flowCost = f.cost || 5;
+    flowBody.innerHTML = heroHTML(f)
+      + (f.out ? `<p class="flow-out">${f.out}</p>` : '')
+      + f.fields.map(fieldHTML).join('')
+      + (f.consent !== false && MEDIA_TOOLS.has(name) ? consentHTML() : '');
+    setupPricing(f.pricing, f.cta || '开始生成');
+  }
+
+  bindFlowChips();
   showScreen(flowScreen);
   flowBody.scrollTop = 0;
 }
 
-/* ---- 图片调整：子功能 + 编辑器 ---- */
+/* ---- 子功能 + 编辑器（图片调整 / 视频翻译） ---- */
 function switchFlowTab(i){
   flowTabIdx = i;
   flowTabs.querySelectorAll('.ed-tab').forEach((t, j) => t.classList.toggle('on', j === i));
@@ -3241,6 +3286,18 @@ function switchFlowTab(i){
 function renderEditor(){
   const f = currentFlow;
   const tab = f.tabs[flowTabIdx];
+  /* 带独立字段的子功能：复用标准表单引擎（视频翻译三个子功能） */
+  if (tab.fields){
+    flowCost = tab.cost || 5;
+    flowBody.innerHTML = heroHTML({ ...f, intro: tab.intro || f.intro })
+      + tab.fields.map(fieldHTML).join('')
+      + (f.consent !== false && MEDIA_TOOLS.has(flowName) ? consentHTML() : '');
+    setupPricing(tab.pricing, tab.cta || f.cta || '开始生成');
+    bindFlowChips();
+    flowBody.scrollTop = 0;
+    return;
+  }
+  /* 图片调整：固定「待调整图片 + 子功能上传 + 输出选项」结构 */
   flowCost = tab.cost || 5;
   const chips = tab.chips ? `<div class="f-group" style="--i:2">
       ${stepHead({ label: tab.chipLabel || '输出选项' }, 1)}
@@ -3277,8 +3334,14 @@ flowCta.addEventListener('click', () => {
     toast('请先确认素材版权与肖像授权');
     return;
   }
-  if (currentFlow && currentFlow.tabs && flowTabIdx === 0 && !flowBody.querySelector('.u-thumbs')){
+  const activeTab = currentFlow && currentFlow.tabs && currentFlow.tabs[flowTabIdx];
+  if (activeTab && !activeTab.fields && flowTabIdx === 0 && !flowBody.querySelector('.u-thumbs')){
     toast('请先上传待调整图片');
+    return;
+  }
+  /* 带独立字段的子功能（视频翻译等）：需先上传视频 */
+  if (activeTab && activeTab.fields && !flowBody.querySelector('.u-thumbs')){
+    toast('请先上传视频');
     return;
   }
   /* 商机探查 / 海外获客 / AI选品：走全屏 loading 步骤条，完成后进入结果页 */
@@ -4769,7 +4832,7 @@ function replyFor(q){
     return '没问题。图片创作支持白底图、场景图、卖点图、细节图、试穿试用、商品换色、标尺图、图片翻译等 11 项能力。\n给我商品图 + 想要的风格（如"户外场景、暖色调"），我先出 2 张 1:1 主图给你挑。\n也可以直接说"给这款扳手做一张卖点图，中文文案"。';
   }
   if (/视频|口播|数字人|宣传片|字幕/.test(t)) {
-    return '视频创作有 5 项能力：产品宣传视频、数字人口播、真人口播视频、视频翻译（口播配音 / 字幕翻译）、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
+    return '视频创作有 5 项能力：产品宣传视频、数字人口播、真人口播视频、视频翻译（音频翻译 / 字幕翻译 / 口型对齐）、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
   }
   if (/翻译|多语言|英文|阿拉伯/.test(t)) {
     return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
