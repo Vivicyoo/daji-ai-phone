@@ -654,6 +654,38 @@
   .cards .chip .co-t{font-size:13px;font-weight:600;color:var(--text)}
   .cards .chip.on .co-t{color:var(--accent)}
   .cards .chip .co-d{font-size:10.5px;color:var(--text-3);line-height:1.4;font-weight:400;text-align:left}
+  /* 单行文本：只接受一个值的短字段（如色值） */
+  .text-in{
+    width:100%;height:44px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;
+    padding:0 12px;font-size:13px;font-family:inherit;color:var(--text);outline:none;
+    transition:border-color .15s ease;box-sizing:border-box;
+  }
+  .text-in:focus{border-color:var(--accent)}
+  .text-in::placeholder{color:var(--text-3)}
+  /* 数字人形象：4 列正方形头像，选中紫框 */
+  .chips.avatars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .avatars .chip{
+    height:auto;padding:0;border-radius:10px;border:1.5px solid transparent;background:#eef0f7;
+    overflow:hidden;display:block;line-height:0;
+  }
+  .avatars .chip.on{background:#fff;border-color:var(--accent);border-width:2px;box-shadow:0 0 0 2px rgba(124,107,240,.14)}
+  .avatars .av-art{display:block}
+  .avatars .av-art svg{display:block;width:100%;height:auto}
+  /* 按钮组：播报语言 / 声音 / 画面比例 / 分辨率 */
+  .chips.btns{gap:8px}
+  .chips.btns .chip{
+    height:42px;min-width:106px;padding:0 16px;border-radius:10px;border:1px solid transparent;
+    background:#f4f5fa;font-size:13px;color:var(--text-2);gap:7px;justify-content:center;
+  }
+  .chips.btns .chip.on{
+    border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600;
+  }
+  .chips.btns .chip .bt-lb{line-height:1}
+  .chips.btns .chip .bt-ico{display:flex;flex:none;color:currentColor;opacity:.55}
+  .chips.btns .chip .bt-ico svg{display:block;width:14px;height:14px}
+  .chips.btns.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .chips.btns.cols3 .chip{min-width:0;padding:0 10px;justify-content:space-between;font-size:12px;gap:5px}
+  .chips.btns.cols3 .chip .bt-lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   /* 文本域 + 右侧 AI 按钮 */
   .ta-split{display:flex;gap:8px;align-items:stretch}
   .ta-split .ta-wrap{flex:1;min-width:0}
@@ -2574,6 +2606,10 @@ const TOOL_PAGES = {
 
 /* ================= 工具表单配置（点击卡片直接进入） ================= */
 const LANG_CHIPS = { type:'chips', label:'目标语种', required:true, options:['英语','日语','韩语','西班牙语','阿拉伯语'], default:0 };
+/* 数字人口播的按钮组图标 */
+const VOC_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 10v4M8 7v10M12 4.5v15M16 8v8M20 10.5v3"/></svg>';
+const RATIO_V = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="7.5" y="2.5" width="9" height="19" rx="2"/><path d="M10.5 5.6h3"/></svg>';
+const RATIO_H = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="7.5" width="19" height="9" rx="2"/><path d="M5.6 10.5v3"/></svg>';
 
 const FLOWS = {
   /* ---- AI视频创作 ---- */
@@ -2589,11 +2625,32 @@ const FLOWS = {
         options:['1:1 | 720 | 5s','16:9 | 1080 | 5s','9:16 | 720 | 10s','4:3 | 720 | 5s'] },
     ]},
   ]},
-  '数字人口播': { intro:'虚拟形象 + 文案，一键生成专业播报视频，支持多语种配音', cta:'开始生成视频', fields:[
-    { type:'chips', label:'数字人形象', required:true, options:['商务男士','商务女士','亲和力讲解','科技感主播'], default:0 },
-    { type:'textarea', label:'口播文案', required:true, placeholder:'输入数字人需要播报的文案，约 100~500 字' },
-    { type:'chips', label:'播报语种', options:['中文','英语','日语','韩语','阿拉伯语'], default:0 },
-    { type:'chips', label:'视频时长', options:['30s','60s','90s'], default:0 },
+  '数字人口播': { title:'数字人口播', intro:'虚拟形象真人口播，一键生成产品介绍', cta:'开始生成视频', fields:[
+    { type:'avatars', label:'选择数字人形象', required:true, default:0, options:[
+      { name:'商务男士',  skin:'#e8b9a0', hair:'#22252e', cloth:'#2f3542', hairStyle:'short', collar:'suit' },
+      { name:'休闲男声',  skin:'#e3b096', hair:'#2b2f3a', cloth:'#3c4f76', hairStyle:'short', collar:'tee' },
+      { name:'商务男声',  skin:'#ecc0a6', hair:'#1f222a', cloth:'#4a4f5c', hairStyle:'side',  collar:'suit' },
+      { name:'成熟男声',  skin:'#e6b596', hair:'#a8763f', cloth:'#8a7460', hairStyle:'short', collar:'suit' },
+      { name:'商务女士',  skin:'#f0c6ac', hair:'#23262e', cloth:'#3a3f4c', hairStyle:'long',  collar:'suit' },
+      { name:'活力女声',  skin:'#f2cbb1', hair:'#d9b271', cloth:'#6f93bd', hairStyle:'long',  collar:'denim' },
+      { name:'节日女声',  skin:'#f3cdb4', hair:'#8a4a3a', cloth:'#c8394a', hairStyle:'long',  hat:true },
+      { name:'知性女声',  skin:'#eec4a9', hair:'#7a5334', cloth:'#d9cdb6', hairStyle:'bun',   glasses:true },
+    ]},
+    { type:'textarea', label:'口播文案', required:true, max:500,
+      placeholder:'请输入字幕内容，若开启配音，配音也参考字幕生成……' },
+    { type:'rows', label:'音频配置', required:true, items:[
+      { kind:'group', label:'播报语言', cls:'btns', options:['中文','英文'], default:0 },
+      { kind:'group', label:'声音', cls:'btns cols3', iconRight:true, default:0, options:[
+        { t:'热情主播', icon:VOC_ICO }, { t:'智慧男孩', icon:VOC_ICO }, { t:'真诚男孩', icon:VOC_ICO },
+        { t:'播音男孩', icon:VOC_ICO }, { t:'磁性噪音', icon:VOC_ICO }, { t:'豪爽音色', icon:VOC_ICO },
+        { t:'慧海男声', icon:VOC_ICO }, { t:'活力男孩', icon:VOC_ICO },
+      ]},
+    ]},
+    { type:'rows', label:'视频与参数', required:true, items:[
+      { kind:'group', label:'画面比例', cls:'btns', default:0, options:[
+        { t:'9:16', icon:RATIO_V }, { t:'16:9', icon:RATIO_H } ]},
+      { kind:'group', label:'分辨率', cls:'btns', options:['720P','1080P'], default:0 },
+    ]},
   ]},
   '真人口播视频': { title:'真人口播视频', intro:'根据上传人像，生成对应人像的口播视频。', cta:'生成视频', cost:55, fields:[
     { type:'upload', label:'上传人物素材', required:true, note:'请勿上传裸露、暴力、血腥或其他包含非法信息图片。',
@@ -2731,11 +2788,8 @@ const FLOWS = {
       count(){
         const mode = chipOnLabel('colorMode') || '预设颜色';
         if (mode === '参考色卡') return 1;
-        if (mode === '自定义色值'){
-          const ta = flowBody.querySelector('.f-group[data-label="自定义色值"] textarea');
-          const n = (ta ? ta.value : '').split(/[,，、;；\n]/).filter(s => s.trim()).length;
-          return n || 1;
-        }
+        /* 自定义色值一次只支持一个色值 */
+        if (mode === '自定义色值') return 1;
         const g = flowBody.querySelector('.chips[data-label="目标颜色"]');
         return g ? g.querySelectorAll('.chip.on').length : 1;
       } },
@@ -2744,7 +2798,8 @@ const FLOWS = {
     { type:'chips', label:'颜色来源', required:true, id:'colorMode', options:['预设颜色','参考色卡','自定义色值'], default:0, note:'三选一，都是指定「要换成的目标颜色」：选预设色、上传色卡取色，或填写色值' },
     { type:'chips', label:'目标颜色', required:true, multi:true, default:0, cond:{ id:'colorMode', is:'预设颜色' }, options:['经典黑','奶油白','商务蓝','活力橙','中国红','军绿色','莫兰迪灰'], note:'可多选，每个颜色输出 1 张，按颜色数计费' },
     { type:'upload', label:'参考色卡', cond:{ id:'colorMode', is:'参考色卡' }, hint:'上传色卡图或目标色参考图，AI 按图中色值取色' },
-    { type:'textarea', label:'自定义色值', cond:{ id:'colorMode', is:'自定义色值' }, placeholder:'例：#1B4F9C、Pantone 286C；多个色值用逗号分隔，按色值个数计费' },
+    { type:'text', label:'自定义色值', cond:{ id:'colorMode', is:'自定义色值' }, max:30,
+      placeholder:'例：#1B4F9C 或 Pantone 286C' },
     { type:'chips', label:'输出比例', options:['原图比例','1:1','4:3'], default:0, note:'默认保持原图比例，不裁切画面；需要平台主图时可切换为 1:1' },
   ]},
   'AI标尺图': { title:'AI 商品标尺图', intro:'尺寸自动标注，直观展示商品真实大小', cta:'开始标注',
@@ -3084,6 +3139,65 @@ function pickRow(key, title, options, value, placeholder){
   </div>`;
 }
 
+/* 按钮组选项：字符串或 { t, icon }；iconRight 时图标排在文字右侧（声音列表） */
+function chipOptHTML(o, iconRight){
+  if (typeof o === 'string') return o;
+  const ico = o.icon ? `<span class="bt-ico">${o.icon}</span>` : '';
+  const lb = `<span class="bt-lb">${o.t}</span>`;
+  return iconRight ? lb + ico : ico + lb;
+}
+/* 数字人形象缩略图：纯 SVG 半身像，按发型 / 发色 / 服装区分 */
+function avatarSVG(a){
+  const long = a.hairStyle === 'long';
+  const bun = a.hairStyle === 'bun';
+  const collar = a.collar === 'suit'
+    ? `<path d="M39 63l11 12 11-12" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+       <path d="M50 75v25" stroke="#fff" stroke-width="2.4" opacity=".92"/>`
+    : a.collar === 'denim'
+      ? `<path d="M39 61l11 9 11-9" stroke="#eaf1fb" stroke-width="2.4" fill="none"/>
+         <path d="M50 70v30" stroke="#eaf1fb" stroke-width="1.8" opacity=".6"/>`
+      : `<path d="M43 61q7 7 14 0" stroke="#000" stroke-opacity=".16" stroke-width="2.4" fill="none"/>`;
+  /* 脑后轮廓：露出头顶与两鬓，形成自然发际 */
+  const backHair = `<ellipse cx="50" cy="36" rx="${long || bun ? 25 : 23}" ry="${long || bun ? 24 : 22}" fill="${a.hair}"/>`;
+  const fringe = a.hairStyle === 'side'
+    ? `<path d="M28.5 35C30.5 21 38.5 12.5 50 12.5c7.8 0 14.4 3.6 18 9.2-5.8-2.6-11.2-3.4-17.4-2.4-9.2 1.5-16.4 7.4-22.1 15.7z" fill="${a.hair}"/>`
+    : `<path d="M28 34C30 21 38 13 50 13s20 8 22 21c-5.5-6.5-11.5-9.6-22-9.6S33.5 27.5 28 34z" fill="${a.hair}"/>`;
+  const sideHair = long
+    ? `<path d="M25 36c0-6 1.5-11 4.5-13.5v53c-2.5 2-4.5 0-4.5-3.5z" fill="${a.hair}"/>
+       <path d="M75 36c0-6-1.5-11-4.5-13.5v53c2.5 2 4.5 0 4.5-3.5z" fill="${a.hair}"/>`
+    : '';
+  const bunTop = bun ? `<circle cx="50" cy="13.5" r="7.5" fill="${a.hair}"/>` : '';
+  const hat = a.hat
+    ? `<path d="M29 28c1-13 9-21 21-21s20 8 21 21z" fill="#d93a4a"/>
+       <path d="M26 28h48" stroke="#fff" stroke-width="6.5" stroke-linecap="round"/>
+       <circle cx="71" cy="10" r="6.5" fill="#fff"/>`
+    : '';
+  const glasses = a.glasses
+    ? `<g stroke="#3b4152" stroke-width="1.7" fill="none">
+         <rect x="29.5" y="36.5" width="15" height="12" rx="5"/>
+         <rect x="55.5" y="36.5" width="15" height="12" rx="5"/>
+         <path d="M44.5 41.5h11"/>
+       </g>`
+    : '';
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${a.name}">
+    <rect width="100" height="100" fill="${a.bg || '#eef0f7'}"/>
+    ${backHair}
+    ${bunTop}
+    <path d="M2 100c0-24 22-38 48-38s48 14 48 38z" fill="${a.cloth}"/>
+    ${collar}
+    ${sideHair}
+    <rect x="44.5" y="52" width="11" height="13" rx="4" fill="${a.skin}"/>
+    <ellipse cx="28.6" cy="41" rx="2.9" ry="3.8" fill="${a.skin}"/>
+    <ellipse cx="71.4" cy="41" rx="2.9" ry="3.8" fill="${a.skin}"/>
+    <ellipse cx="50" cy="40" rx="21" ry="22" fill="${a.skin}"/>
+    ${fringe}
+    ${hat}
+    <g fill="#3b4152"><circle cx="42" cy="41" r="2.4"/><circle cx="58" cy="41" r="2.4"/></g>
+    <path d="M44 51q6 4.2 12 0" stroke="#c98d7e" stroke-width="1.9" fill="none" stroke-linecap="round"/>
+    ${glasses}
+  </svg>`;
+}
+
 /* 字段容器：cond = 由某个「单选胶囊」字段控制显隐（三选一互斥字段用） */
 function groupOpen(f, i){
   const cond = f.cond ? ` data-cond-id="${f.cond.id}" data-cond-is="${f.cond.is}"` : '';
@@ -3167,6 +3281,25 @@ function fieldHTML(f, i){
       </div>
     </div>`;
   }
+  if (f.type === 'text'){
+    return `${groupOpen(f, i)}
+      ${stepHead(f, i)}
+      ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
+      <input class="text-in" type="text" maxlength="${f.max || 80}" placeholder="${f.placeholder || ''}"
+        oninput="if(updateFooter)updateFooter()">
+    </div>`;
+  }
+  if (f.type === 'avatars'){
+    return `${groupOpen(f, i)}
+      ${stepHead(f, i)}
+      ${f.note ? `<div class="f-note warn">${f.note}</div>` : ''}
+      <div class="chips avatars" data-multi="0" data-label="${f.label}">
+        ${f.options.map((o, j) => `<span class="chip ${j === (f.default ?? 0) ? 'on' : ''}" title="${o.name}" aria-label="${o.name}">
+          <span class="av-art">${avatarSVG(o)}</span>
+        </span>`).join('')}
+      </div>
+    </div>`;
+  }
   if (f.type === 'textarea'){
     const extra = f.ai
       ? `<span class="f-ai">
@@ -3230,8 +3363,8 @@ function fieldHTML(f, i){
       if (it.kind === 'group'){
         return `<div class="f-grp">
           <div class="g-lb">${it.label}</div>
-          <div class="chips" data-multi="0" data-label="${it.label}">
-            ${it.options.map((o, k) => `<span class="chip ${k === (it.default ?? 0) ? 'on' : ''}">${o}</span>`).join('')}
+          <div class="chips${it.cls ? ' ' + it.cls : ''}" data-multi="0" data-label="${it.label}">
+            ${it.options.map((o, k) => `<span class="chip ${k === (it.default ?? 0) ? 'on' : ''}">${chipOptHTML(o, it.iconRight)}</span>`).join('')}
           </div>
         </div>`;
       }
@@ -3349,6 +3482,11 @@ const HERO_STEPS_BY_FLOW = {
     { t:'填写采购需求', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
     { t:'AI 匹配商品', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5M12 12v9"/>' },
     { t:'查看推荐清单', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.2" cy="6" r="1.1"/><circle cx="4.2" cy="12" r="1.1"/><circle cx="4.2" cy="18" r="1.1"/>' },
+  ],
+  '数字人口播': [
+    { t:'选择数字人形象', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<circle cx="12" cy="8.2" r="4.2"/><path d="M4.6 20c0-4 3.4-6.6 7.4-6.6s7.4 2.6 7.4 6.6"/>' },
+    { t:'填写口播文案', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
+    { t:'生成播报视频', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="3" y="6" width="12" height="12" rx="2.4"/><path d="M15 11l6-3.4v8.8L15 13z"/>' },
   ],
   '在线翻译': [
     { t:'输入待译内容', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
@@ -3801,6 +3939,14 @@ function flowValues(){
   let ti = 0;
   fields.forEach(f => {
     if (f.type === 'textarea'){ const el = tas[ti++]; vals[f.label] = el ? el.value.trim() : ''; }
+    else if (f.type === 'text'){
+      const el = flowBody.querySelector(`.f-group[data-label="${f.label}"] .text-in`);
+      vals[f.label] = el ? el.value.trim() : '';
+    }
+    else if (f.type === 'avatars'){
+      const on = flowBody.querySelector(`.chips.avatars[data-label="${f.label}"] .chip.on`);
+      vals[f.label] = on ? (on.getAttribute('aria-label') || '') : '';
+    }
     else if (f.type === 'chips'){
       const on = chips[f.label] || [];
       vals[f.label] = f.multi ? on : (on[0] || '');
