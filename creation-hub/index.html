@@ -706,6 +706,7 @@
   .dim .dim-in:focus{border-color:var(--accent)}
   .dim .dim-in::placeholder{color:var(--text-3)}
   .dim-unit{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .dim-unit + .dim-unit{margin-top:8px}
   .dim-unit .du-lb{flex:none;font-size:12px;color:var(--text-2)}
   .dim-unit .chips{gap:6px}
   .dim-unit .chip{height:30px;padding:0 12px;font-size:12px}
@@ -2816,8 +2817,8 @@ const FLOWS = {
       autoText:'长 32 厘米 × 宽 18 厘米 × 高 24 厘米（含轮子高 27 厘米）',
       note:'长 × 宽 × 高：立体商品；长 × 宽：平面商品；高度 / 厚度：单边尺寸或薄型商品；直径 / 周长：圆形商品；重量：仅标注重量；长 × 宽 × 高 + 重量：完整规格',
       types:['长 × 宽 × 高','长 × 宽','高度 / 厚度','直径 / 周长','重量','长 × 宽 × 高 + 重量'], defaultTypes:[] },
-    { type:'dims', label:'参数数值（选填）', sub:true, cond:{ id:'rulerMode', is:'智能生成' }, units:['cm','mm','inch'], unitDefault:0,
-      note:'随上方「标尺类型」填写实测数值，AI 会标在图上对应位置；留空则由 AI 按商品比例估算' },
+    { type:'dims', label:'参数数值（选填）', sub:true, cond:{ id:'rulerMode', is:'智能生成' },
+      note:'参数输入框与单位随上方「标尺类型」自动调整；填写实测数值后 AI 会标在图上对应位置，留空则由 AI 按商品比例估算' },
     { type:'chips', label:'输出比例', numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, options:['原素材比例','1:1','4:3'], default:0, note:'默认保持原素材比例，不裁切画面；需要平台主图时可切换为 1:1' },
     { type:'chips', label:'生成张数', numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
   ]},
@@ -2944,6 +2945,24 @@ const FLOWS = {
     { type:'chips', label:'名片语种', options:['中英双语','仅中文','仅英文'], default:0 },
   ]},
 };
+
+/* ---- 标尺类型 → 参数输入框 + 单位组（多选时合并去重） ----
+   size 用尺寸单位 cm/mm/inch，weight 用重量单位 kg/g/lb；
+   混合类型同时出现两行单位，参数框随所选类型动态增减。 */
+const RULER_DIM_MAP = {
+  '长 × 宽 × 高':        [['长','size'],['宽','size'],['高','size']],
+  '长 × 宽':            [['长','size'],['宽','size']],
+  '高度 / 厚度':        [['高度 / 厚度','size']],
+  '直径 / 周长':        [['直径','size'],['周长','size']],
+  '重量':               [['重量','weight']],
+  '长 × 宽 × 高 + 重量': [['长','size'],['宽','size'],['高','size'],['重量','weight']],
+};
+const RULER_UNITS = {
+  size:   { label:'尺寸单位', options:['cm','mm','inch'] },
+  weight: { label:'重量单位', options:['kg','g','lb'] },
+};
+/* 记住各组单位的选择，单位行因类型切换隐藏后再出现也不丢 */
+let rulerUnitSel = { size:0, weight:0 };
 
 /* ================= 封面 SVG ================= */
 function coverSVG(theme, icon, horizontal){
@@ -3244,28 +3263,17 @@ function fieldHTML(f, i){
         </button>
       </div>
       ${f.note ? `<div class="f-note">${f.note}</div>` : ''}
-      <div class="chips" style="margin-top:10px" data-multi="1" data-label="${f.label}">
+      <div class="chips" style="margin-top:10px" data-multi="1" data-label="${f.label}" data-ruler-types="1">
         ${(f.types || []).map((o, j) => `<span class="chip ${(f.defaultTypes || []).includes(j) ? 'on' : ''}">${o}</span>`).join('')}
       </div>
     </div>`;
   }
-  /* 长 / 宽 / 高 数值 + 尺寸单位 */
+  /* 参数数值：输入框与单位由 syncRulerDims() 按标尺类型动态渲染 */
   if (f.type === 'dims'){
     return `${groupOpen(f, i)}
       ${stepHead(f, i)}
       ${f.note ? `<div class="f-note">${f.note}</div>` : ''}
-      <div class="dims-row">
-        ${['长','宽','高'].map((lb, j) => `<div class="dim">
-          <span class="dim-lb">${lb}</span>
-          <input class="dim-in" type="text" inputmode="decimal" placeholder="如 32" aria-label="${lb}度" />
-        </div>`).join('')}
-      </div>
-      <div class="dim-unit">
-        <span class="du-lb">尺寸单位</span>
-        <div class="chips" data-multi="0" data-label="尺寸单位">
-          ${(f.units || ['cm','mm','inch']).map((u, j) => `<span class="chip ${j === (f.unitDefault ?? 0) ? 'on' : ''}">${u}</span>`).join('')}
-        </div>
-      </div>
+      <div class="dims-box"></div>
     </div>`;
   }
   if (f.type === 'upload2'){
@@ -3422,6 +3430,69 @@ function taAutoFill(i){
     g.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.textContent.trim() === hit));
   }
   toast('已识别：' + ((f && f.autoPick) || '长 × 宽 × 高'));
+  syncRulerDims();
+}
+
+/* ---- 参数数值（选填）：随「标尺类型」联动调整输入框与单位 ----
+   多选时把各类型所需的参数合并去重；未选时按「长 × 宽 × 高」默认展示。
+   切换类型会保留已填数值与已选单位，避免重复输入。 */
+function syncRulerDims(){
+  const box = flowBody.querySelector('.dims-box');
+  if (!box) return;
+  const typeGroup = flowBody.querySelector('.chips[data-ruler-types="1"]');
+  const picked = typeGroup
+    ? [...typeGroup.querySelectorAll('.chip.on')].map(c => c.textContent.trim())
+    : [];
+  const dims = [];
+  (picked.length ? picked : ['长 × 宽 × 高']).forEach(t => {
+    (RULER_DIM_MAP[t] || []).forEach(([lb, g]) => {
+      if (!dims.some(d => d.lb === lb)) dims.push({ lb, g });
+    });
+  });
+  /* 保留已有输入，切换类型后同名参数不丢值 */
+  const prevVal = {};
+  box.querySelectorAll('.dim-in').forEach(inp => { prevVal[inp.dataset.dimKey] = inp.value; });
+  box.querySelectorAll('.dim-unit').forEach(u => {
+    const on = u.querySelector('.chip.on');
+    if (on) rulerUnitSel[u.dataset.unitGroup] = [...u.querySelectorAll('.chip')].indexOf(on);
+  });
+  const groups = [...new Set(dims.map(d => d.g))];
+  const cols = Math.min(dims.length, 3);
+  box.innerHTML = `
+    <div class="dims-row" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">
+      ${dims.map(d => `<div class="dim">
+        <span class="dim-lb">${d.lb}</span>
+        <input class="dim-in" type="text" inputmode="decimal" data-dim-key="${d.lb}" data-unit-group="${d.g}"
+          placeholder="如 ${d.g === 'weight' ? '1.2' : '32'}" aria-label="${d.lb}" />
+      </div>`).join('')}
+    </div>
+    ${groups.map(g => {
+      const u = RULER_UNITS[g], sel = rulerUnitSel[g] ?? 0;
+      return `<div class="dim-unit" data-unit-group="${g}">
+        <span class="du-lb">${u.label}</span>
+        <div class="chips" data-multi="0" data-label="${u.label}">
+          ${u.options.map((o, j) => `<span class="chip ${j === sel ? 'on' : ''}">${o}</span>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+  box.querySelectorAll('.dim-in').forEach(inp => {
+    const v = prevVal[inp.dataset.dimKey];
+    if (v) inp.value = v;
+  });
+  /* 新生成的单位胶囊单独绑定，不重跑 bindFlowChips 以免递归 */
+  box.querySelectorAll('.dim-unit .chips').forEach(g => {
+    if (g.dataset.bound === '1') return;
+    g.dataset.bound = '1';
+    g.addEventListener('click', e => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      g.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+      chip.classList.add('on');
+      const ug = g.closest('.dim-unit');
+      if (ug) rulerUnitSel[ug.dataset.unitGroup] = [...g.querySelectorAll('.chip')].indexOf(chip);
+    });
+  });
 }
 
 /* ---- 三选一字段：按控制胶囊的选中项显隐，并重排可见字段序号 ---- */
@@ -3562,6 +3633,7 @@ function bindFlowChips(){
         chip.classList.add('on');
       }
       if (group.dataset.summary === '1') updateChipsSum(group);
+      if (group.dataset.rulerTypes === '1') syncRulerDims();
       if (group.dataset.fid) applyConds();
       /* 标注方式切到「手绘标尺」→ 先校验商品图，再进入独立的手绘子页面 */
       if (group.dataset.fid === 'rulerMode' && chipOnLabel('rulerMode') === '手绘标尺'){
@@ -3584,12 +3656,15 @@ function bindFlowChips(){
     if (group.dataset.summary === '1') updateChipsSum(group);
   });
   applyConds();
+  /* 首次渲染时按当前标尺类型生成参数输入框与单位 */
+  if (flowBody.querySelector('.dims-box')) syncRulerDims();
 }
 
 /* ---- 打开表单 ---- */
 function openFlow(name){
   const f = FLOWS[name];
   if (!f){ toast(`「${name}」流程建设中（原型演示）`); return; }
+  if (name === 'AI标尺图') rulerUnitSel = { size:0, weight:0 };
   flowName = name; currentFlow = f; flowTabIdx = 0;
   document.getElementById('flowTitleTxt').textContent = f.title || name;
   flowTabs.style.display = f.tabs ? 'flex' : 'none';
