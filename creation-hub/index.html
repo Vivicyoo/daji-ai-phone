@@ -1754,7 +1754,15 @@
     font-size:10.5px;color:var(--text-3);background:rgba(255,255,255,.88);
     padding:3px 8px;border-radius:8px;
   }
-  .rd-lines{position:absolute;inset:0}
+  .rd-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+  .rd-lines{position:absolute;inset:0;z-index:2;pointer-events:none}
+  /* 首尾端点：透明大热区，圆点由 SVG 绘制，便于手指拖动 */
+  .rd-seg{position:absolute;inset:0;pointer-events:none}
+  .rd-handle{
+    position:absolute;width:26px;height:26px;border-radius:50%;transform:translate(-50%,-50%);
+    pointer-events:auto;touch-action:none;cursor:grab;background:transparent;
+  }
+  .rd-handle:active{cursor:grabbing}
   .rd-line{position:absolute;background:var(--accent);touch-action:none;cursor:grab;z-index:2}
   .rd-line.h{left:7%;right:7%;height:2px;transform:translateY(-1px)}
   .rd-line.v{top:7%;bottom:7%;width:2px;transform:translateX(-1px)}
@@ -1766,18 +1774,20 @@
   .rd-line.v::before{top:0}
   .rd-line.v::after{bottom:0}
   .rd-lb{
-    position:absolute;left:50%;top:-12px;transform:translate(-50%,-100%);
-    background:var(--accent);color:#fff;border-radius:6px;padding:2px 7px;
-    font-size:10.5px;font-weight:600;white-space:nowrap;
-    box-shadow:0 2px 6px rgba(124,58,237,.3);pointer-events:none;
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:7px;padding:3px 8px;
+    font-size:10.5px;font-weight:600;white-space:nowrap;font-family:inherit;
+    box-shadow:0 2px 6px rgba(47,107,255,.28);pointer-events:auto;cursor:pointer;
   }
-  .rd-line.v .rd-lb{top:14px;left:-4px;transform:translate(-100%,0)}
+  .rd-lb.todo{background:#fffaf0;color:#b06c22;border:1px dashed #e0b070;box-shadow:none}
+  .rd-in.is-todo{border-color:#e0b070;background:#fffaf0}
   .rd-add{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
   .rd-add button{
     height:40px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;
     font-size:12.5px;font-weight:600;color:var(--text-2);font-family:inherit;cursor:pointer;
   }
   .rd-add button:active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .rd-add button.free{grid-column:1/-1;color:var(--accent);background:var(--accent-soft);border-color:#cdd9ff}
   .rd-sec-t{
     display:flex;align-items:center;justify-content:space-between;
     font-size:12.5px;font-weight:600;margin:18px 0 9px;
@@ -1816,6 +1826,66 @@
     .rd-item{gap:6px;padding:8px}
     .rd-dir{font-size:11px}
     .rd-add button{font-size:11.5px}
+  }
+
+  /* ============ 现场实时传译（在线翻译） ============ */
+  .screen.is-live .cta-bar{display:none}
+  .screen.is-live .flow-scroll{padding-bottom:84px}
+  .live-bar{
+    position:absolute;left:0;right:0;bottom:0;z-index:8;display:none;
+    align-items:center;gap:8px;padding:9px var(--pad-x) calc(10px + env(safe-area-inset-bottom));
+    background:#fff;border-top:1px solid var(--line);
+  }
+  .live-bar.on{display:flex}
+  .lv-who{flex:none;height:36px;padding:0 10px;border-radius:18px;border:1px solid var(--line-strong);background:#f6f7fb;color:var(--text-2);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap}
+  .lv-who.them{background:var(--accent-soft);border-color:#cdd9ff;color:var(--accent)}
+  .lv-mic{flex:none;width:36px;height:36px;border-radius:50%;border:none;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .lv-mic.listening{background:#ffe9ec;color:#e5484d;animation:lvPulse .7s infinite alternate}
+  @keyframes lvPulse{from{transform:scale(1)}to{transform:scale(1.13)}}
+  .lv-text{flex:1;min-width:0;height:36px;border:1px solid var(--line-strong);border-radius:18px;padding:0 12px;font-size:13px;font-family:inherit;color:var(--text);outline:none;box-sizing:border-box}
+  .lv-text:focus{border-color:var(--accent)}
+  .lv-send{flex:none;height:36px;padding:0 14px;border:none;border-radius:18px;background:linear-gradient(90deg,#a855f7,#7c3aed);color:#fff;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
+  .lv-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+  .lv-panel-t{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  .lv-cost{font-size:11px;color:var(--accent);font-weight:600}
+  .lv-chips{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;flex-wrap:nowrap}
+  .lv-chips::-webkit-scrollbar{display:none}
+  .lv-chips .chip{flex:none;height:30px;padding:0 12px;font-size:11.5px;white-space:nowrap}
+  .lv-toggles{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--text-2);flex-wrap:wrap}
+  .lv-toggles label{display:flex;align-items:center;gap:5px;cursor:pointer}
+  .lv-toggles input{accent-color:var(--accent);width:14px;height:14px}
+  .lv-log{display:flex;flex-direction:column;gap:10px}
+  .lv-log.no-bilingual .lv-src{display:none}
+  .lv-msg{border-radius:14px;padding:10px 12px;border:1px solid var(--line);background:#fff}
+  .lv-msg.me{background:#f5f8ff;border-color:#dbe6ff}
+  .lv-msg.them{background:#f2fbf7;border-color:#cfeddf}
+  .lv-meta{font-size:10.5px;color:var(--text-3);margin-bottom:6px;display:flex;justify-content:space-between}
+  .lv-src{font-size:11.5px;color:var(--text-2);line-height:1.5;margin-bottom:6px}
+  .lv-trans{font-size:17px;font-weight:600;line-height:1.45;color:var(--text);word-break:break-word}
+  .lv-msg.them .lv-trans{color:#116b4f}
+  .lv-ops{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .lv-ops button{
+    height:28px;padding:0 10px;border:1px solid var(--line-strong);border-radius:14px;background:#fff;
+    color:var(--text-2);font-size:11px;font-family:inherit;cursor:pointer;
+    display:inline-flex;align-items:center;gap:4px;
+  }
+  .lv-ops button.pri{background:var(--accent-soft);border-color:#cdd9ff;color:var(--accent);font-weight:600}
+  .lv-hint{font-size:11px;color:var(--text-3);line-height:1.6;margin:12px 2px 4px}
+  .live-show{
+    position:absolute;inset:0;z-index:20;display:none;flex-direction:column;
+    align-items:center;justify-content:center;gap:18px;padding:28px;
+    background:linear-gradient(160deg,#132247,#27407f);color:#fff;text-align:center;
+  }
+  .live-show.on{display:flex}
+  .ls-top{font-size:11.5px;color:#a9bcf0;letter-spacing:1px}
+  .ls-trans{font-size:30px;font-weight:700;line-height:1.4;word-break:break-word}
+  .ls-src{font-size:13px;color:#c3d0f2;line-height:1.6}
+  .ls-lang{font-size:11.5px;color:#8fa5de;margin-top:6px}
+  @media (max-width:360px){
+    .lv-who{font-size:11px;padding:0 8px}
+    .lv-text{font-size:12px;padding:0 9px}
+    .lv-send{padding:0 11px;font-size:12px}
+    .ls-trans{font-size:26px}
   }
 </style>
 </head>
@@ -2009,6 +2079,24 @@
       <div class="ff-info" id="ffInfo"></div>
       <button class="cta" id="flowCta">开始生成</button>
     </div>
+
+    <!-- 现场实时传译：常驻输入条（替换普通表单的底部 CTA） -->
+    <div class="live-bar" id="liveBar">
+      <button class="lv-who" id="lvWho" onclick="liveToggleWho()">我说</button>
+      <button class="lv-mic" id="lvMic" onclick="liveVoice()" aria-label="语音输入" title="语音输入">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg>
+      </button>
+      <input class="lv-text" id="lvText" type="text" placeholder="输入中文，译文即时给对方看" />
+      <button class="lv-send" onclick="liveSend()">发送</button>
+    </div>
+
+    <!-- 译文大字全屏：把手机递过去 / 转向对方，对方直接看 -->
+    <div class="live-show" id="liveShow" onclick="liveHideShow()">
+      <div class="ls-top">请对方看这里 · 点按收起</div>
+      <div class="ls-trans" id="lsTrans"></div>
+      <div class="ls-src" id="lsSrc"></div>
+      <div class="ls-lang" id="lsLang"></div>
+    </div>
   </section>
 
   <!-- ================= 手绘标尺：独立编辑子页面 ================= -->
@@ -2025,16 +2113,18 @@
 
     <div class="rd-scroll" id="rdBody">
       <div class="rd-tip">
-        <div class="rd-tip-t">✦ 在画面上手动添加标尺线</div>
-        <div class="rd-tip-d">点下方按钮添加水平 / 垂直标尺，按住线条拖动位置，在列表中填写刻度数值与单位。</div>
+        <div class="rd-tip-t">✦ 自定义首尾标尺线并标注数值</div>
+        <div class="rd-tip-d">添加标尺线后，拖动线段两端的圆点对齐商品尺寸的起点与终点，再在下方列表填写该段实际数值。</div>
       </div>
       <div class="rd-canvas" id="rdCanvas">
         <div class="rd-ph" id="rdPh"></div>
+        <svg class="rd-svg" id="rdSvg" aria-hidden="true"></svg>
         <div class="rd-lines" id="rdLines"></div>
       </div>
       <div class="rd-add">
         <button onclick="addRulerLine('h')">＋ 水平标尺</button>
         <button onclick="addRulerLine('v')">＋ 垂直标尺</button>
+        <button class="free" onclick="addRulerLine('free')">＋ 自定义标尺（任意首尾）</button>
       </div>
       <div class="rd-sec-t">标尺线 <span id="rdCount">0 条</span></div>
       <div class="rd-list" id="rdList"></div>
@@ -2571,7 +2661,7 @@ const TOOL_PAGES = {
     intro: '10+通用语种，专业商贸术语库，让商品内容一键说全球语言',
     tools: [
       { name: '多语言翻译',   desc: '将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', theme: ['#cdeedd','#93d6b5','#4f9b74'], icon: 'translate' },
-      { name: '在线翻译',     tag: 'NEW', desc: '在线实时互译，文字与语音即说即译，适用于外商洽谈与询盘沟通', theme: ['#d8f2e6','#8fd6b5','#3f9b74'], icon: 'chat' },
+      { name: '在线翻译',     tag: 'NEW', desc: '现场面对面实时传译，说话或打字即译，译文大字给对方看', theme: ['#d8f2e6','#8fd6b5','#3f9b74'], icon: 'chat' },
       { name: '图片翻译',     desc: '识别图片文字并翻译为目标语言，保留原图排版布局，适用于说明书、包装', theme: ['#e4d8ff','#b9a1f2','#7d5fc9'], icon: 'image3' },
       { name: '文本翻译',     desc: '输入或粘贴文本即译，支持10+通用语种，商贸术语库确保翻译精准',     theme: ['#c7e0ff','#8fb8f5','#5a83c9'], icon: 'doc' },
       { name: '视频音频翻译', desc: '识别视频或音频中的语音并翻译，生成多语种字幕和配音',            theme: ['#ffd9a8','#f5b06c','#c9853b'], icon: 'video' },
@@ -2804,7 +2894,7 @@ const FLOWS = {
     { type:'chips', label:'输出比例', options:['原图比例','1:1','4:3'], default:0, note:'默认保持原图比例，不裁切画面；需要平台主图时可切换为 1:1' },
   ]},
   'AI标尺图': { title:'AI 商品标尺图', intro:'尺寸自动标注，直观展示商品真实大小', cta:'开始标注',
-    pricing:{ price:8, unit:'张', source:'生成张数' },
+    pricing:{ price:8, unit:'张', count:()=>1 },
     fields:[
     { type:'upload', label:'商品图片', required:true, count:'（0/1张）', tall:true,
       hint:'支持上传 JPG/JPEG/PNG 格式图片，单张大小 25MB 以内，尺寸不小于 300px' },
@@ -2820,25 +2910,20 @@ const FLOWS = {
     { type:'dims', label:'参数数值（选填）', sub:true, cond:{ id:'rulerMode', is:'智能生成' },
       note:'参数输入框与单位随上方「标尺类型」自动调整；填写实测数值后 AI 会标在图上对应位置，留空则由 AI 按商品比例估算' },
     { type:'chips', label:'输出比例', numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, options:['原素材比例','1:1','4:3'], default:0, note:'默认保持原素材比例，不裁切画面；需要平台主图时可切换为 1:1' },
-    { type:'chips', label:'生成张数', numbered:true, cond:{ id:'rulerMode', is:'智能生成' }, options:['1张','2张','4张'], default:0, note:'按所选张数批量输出，每张 8 积分' },
   ]},
   /* ---- 多语言翻译 ---- */
   '多语言翻译': { intro:'将一份商品内容同时转换为多个目标语言版本，一键生成多语种商品文案', cta:'开始翻译', fields:[
     { type:'textarea', label:'商品内容', required:true, placeholder:'粘贴商品标题、详情、关键词等内容' },
     { type:'chips', label:'目标语种', required:true, options:['英语','日语','韩语','西班牙语','阿拉伯语'], default:0, multi:true },
   ]},
-  '在线翻译': { intro:'在线实时互译，输入或说出内容即刻得到目标语言译文，适用于外商洽谈、询盘回复与现场沟通', cta:'开始翻译',
+  /* 现场面对面实时传译：不是「提交表单」，而是常驻会话页
+     语音 / 文本输入 → 即时互译 → 译文大字展示给对方 + 语音朗读 */
+  '在线翻译': { title:'在线翻译', intro:'现场面对面实时传译：说话或打字即刻互译，译文大字给对方看，也可语音播报', cta:'开始传译',
     pricing:{ price:3, unit:'个语种', source:'目标语种' },
-    fields:[
-    { type:'textarea', label:'待翻译内容', required:true, placeholder:'输入或粘贴外商询盘、洽谈对话，例：这款保温杯最小起订量是多少？' },
-    { type:'chips', label:'源语种', options:['自动识别','中文','英语','阿拉伯语','俄语','西班牙语'], default:0, note:'默认自动识别；口音较重或小语种建议手动指定' },
-    { type:'chips', label:'目标语种', required:true, multi:true, default:0, options:['英语','阿拉伯语','俄语','西班牙语','法语','葡萄牙语','日语','韩语','印尼语','越南语','泰语'], note:'可多选，每个语种实时生成 1 版译文，按语种数计费' },
-    { type:'chips', label:'沟通场景', options:['商务洽谈','询盘报价','商品介绍','售后沟通'], default:0, note:'按场景调用对应商贸术语库，语气更贴合现场沟通' },
-    { type:'rows', label:'实时输出', items:[
-      { kind:'switch', label:'双语对照显示', desc:'译文下方保留原文，方便现场核对', on:true },
-      { kind:'switch', label:'译文朗读', desc:'生成目标语言语音，可直接播放给对方听', on:false },
-    ]},
-  ]},
+    live:true,
+    langs:['中文 ⇄ 英语','中文 ⇄ 阿拉伯语','中文 ⇄ 俄语','中文 ⇄ 西班牙语','中文 ⇄ 法语','中文 ⇄ 葡萄牙语','中文 ⇄ 日语','中文 ⇄ 韩语','中文 ⇄ 越南语','中文 ⇄ 泰语'],
+    scenes:['商务洽谈','询盘报价','商品介绍','售后沟通'],
+  },
   '图片翻译': { intro:'识别图片中的文字并翻译成目标语言，保留原排版与字体风格，适用于主图、详情页、包装与说明书', cta:'开始翻译',
     pricing:{ price:6, unit:'个语种', source:'目标语种' },
     fields:[
@@ -3010,6 +3095,8 @@ function showScreen(target){
   currentScreen.classList.remove('active');
   target.classList.add('active');
   currentScreen = target;
+  /* 切页时复位文档滚动，避免上一页的滚动位置把整机机身上移 */
+  window.scrollTo(0, 0);
 }
 function goHome(){
   closeHdMenu();
@@ -3560,9 +3647,9 @@ const HERO_STEPS_BY_FLOW = {
     { t:'生成播报视频', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="3" y="6" width="12" height="12" rx="2.4"/><path d="M15 11l6-3.4v8.8L15 13z"/>' },
   ],
   '在线翻译': [
-    { t:'输入待译内容', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="M13.8 6.8l3.4 3.4"/>' },
-    { t:'实时互译', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<path d="M4 5h8"/><path d="M8 3v2c0 4-2 7-5 8"/><path d="M5 9c1.5 3 4 5 7 5"/><path d="M13 21l4.5-11L22 21"/><path d="M14.8 17h5.4"/>' },
-    { t:'复制或朗读', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>' },
+    { t:'设置双方语言', c:'linear-gradient(135deg,#a78bfa,#7c6bf0)', i:'<path d="M4 5h8"/><path d="M8 3v2c0 4-2 7-5 8"/><path d="M5 9c1.5 3 4 5 7 5"/><path d="M13 21l4.5-11L22 21"/><path d="M14.8 17h5.4"/>' },
+    { t:'说话 / 输入实时传译', c:'linear-gradient(135deg,#818cf8,#5b8def)', i:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>' },
+    { t:'大字展示给对方', c:'linear-gradient(135deg,#60a5fa,#3b82f6)', i:'<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>' },
   ],
 };
 function heroHTML(f){
@@ -3660,6 +3747,182 @@ function bindFlowChips(){
   if (flowBody.querySelector('.dims-box')) syncRulerDims();
 }
 
+/* ============ 现场实时传译（在线翻译） ============
+   形态依据：Google 翻译对话模式 / Microsoft Translator 面对面视图
+   —— 双方轮流说话或打字、按语种即时互译、译文大字上屏给对方看并朗读。
+   原型中语音识别、机器翻译与 TTS 为模拟数据，接真实 ASR/MT/TTS 后替换 liveMockTrans。 */
+const LV_DEMO = {
+  me:   { src:'这款保温杯最小起订量是多少？', trans:'What is the minimum order quantity for this thermos cup?' },
+  them: { src:'Can you provide a sample before the bulk order?', trans:'大货之前能提供样品吗？' },
+};
+const LV_DICT = [
+  [/最小起订量|起订量|MOQ/i, 'What is the minimum order quantity?'],
+  [/样品|寄样|sample/i, 'Can you send us a sample first?'],
+  [/报价|价格|多少钱|price/i, 'Could you quote your best price?'],
+  [/交期|发货|交货|delivery/i, 'What is the lead time for delivery?'],
+  [/折扣|discount/i, 'Is there a discount for bulk orders?'],
+];
+const LV_DICT_BACK = [
+  [/sample/i, '可以先寄样品吗？'],
+  [/price|quote|cost/i, '请报一下最优价格。'],
+  [/moq|minimum/i, '最小起订量是多少？'],
+  [/delivery|lead time|ship/i, '交货周期是多久？'],
+];
+let lvMsgs = [], lvWho = 'me', lvSeq = 0, lvVoiceBusy = false;
+
+function liveTranslateHTML(f){
+  const p = f.pricing || { price:3, unit:'个语种' };
+  return `<div class="lv-wrap">
+    <div class="lv-panel">
+      <div class="lv-panel-t"><span>双方语言</span><span class="lv-cost">✦${p.price}/${p.unit}</span></div>
+      <div class="chips lv-chips" data-multi="0" data-label="目标语种">
+        ${f.langs.map((o, j) => `<span class="chip ${j === 0 ? 'on' : ''}">${o}</span>`).join('')}
+      </div>
+      <div class="lv-panel-t" style="margin-top:12px"><span>沟通场景 · 商贸术语库</span></div>
+      <div class="chips lv-chips" data-multi="0" data-label="沟通场景">
+        ${f.scenes.map((o, j) => `<span class="chip ${j === 0 ? 'on' : ''}">${o}</span>`).join('')}
+      </div>
+      <div class="lv-toggles">
+        <label><input type="checkbox" id="lvAutoSpeak" checked> 译文自动朗读</label>
+        <label><input type="checkbox" id="lvBilingual" checked onchange="liveRender()"> 双语对照</label>
+      </div>
+    </div>
+    <div class="lv-log" id="lvLog"></div>
+    <div class="lv-hint">说话或输入后译文即时生成；点「放大给对方」把译文全屏展示，或直接朗读给对方听。原型中语音识别与译文为模拟数据。</div>
+  </div>`;
+}
+function liveLangPair(){
+  const g = flowBody.querySelector('.chips[data-label="目标语种"]');
+  const on = g && g.querySelector('.chip.on');
+  return on ? on.textContent.trim() : '中文 ⇄ 英语';
+}
+function liveMyLang(){ return liveLangPair().split('⇄')[0].trim() || '中文'; }
+function liveTargetLang(){ return liveLangPair().split('⇄')[1].trim() || '英语'; }
+function liveMockTrans(who, src){
+  const dict = who === 'me' ? LV_DICT : LV_DICT_BACK;
+  const hit = dict.find(([re]) => re.test(src));
+  if (hit) return hit[1];
+  return who === 'me'
+    ? 'Please confirm the details with us at your convenience.'
+    : '请把关键信息再确认一遍。';
+}
+function liveInit(){
+  lvSeq = 0; lvWho = 'me'; lvVoiceBusy = false;
+  lvMsgs = [
+    { id: ++lvSeq, who:'me', src:LV_DEMO.me.src, trans:LV_DEMO.me.trans, time:'刚刚' },
+    { id: ++lvSeq, who:'them', src:LV_DEMO.them.src, trans:LV_DEMO.them.trans, time:'刚刚' },
+  ];
+  const who = document.getElementById('lvWho');
+  if (who){ who.textContent = '我说'; who.classList.remove('them'); }
+  const inp = document.getElementById('lvText');
+  if (inp){ inp.value = ''; inp.placeholder = '输入中文，译文即时给对方看'; }
+  /* 切换语言对时清空旧译文，避免语种与译文不一致 */
+  const g = flowBody.querySelector('.chips[data-label="目标语种"]');
+  if (g && g.dataset.liveBound !== '1'){
+    g.dataset.liveBound = '1';
+    g.addEventListener('click', () => {
+      lvMsgs = [];
+      liveRender();
+      toast('已切换语言对，可继续传译');
+    });
+  }
+  liveRender();
+}
+function liveRender(){
+  const log = document.getElementById('lvLog');
+  if (!log) return;
+  const bi = document.getElementById('lvBilingual');
+  log.classList.toggle('no-bilingual', !!bi && !bi.checked);
+  log.innerHTML = lvMsgs.length
+    ? lvMsgs.map(m => `<div class="lv-msg ${m.who}">
+        <div class="lv-meta">
+          <span>${m.who === 'me' ? '我 · ' + liveMyLang() : '对方 · ' + liveTargetLang()}</span>
+          <span>${m.time}</span>
+        </div>
+        <div class="lv-src">${rdEsc(m.src)}</div>
+        <div class="lv-trans">${rdEsc(m.trans)}</div>
+        <div class="lv-ops">
+          <button class="pri" onclick="liveShowMsg(${m.id})">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+            放大给对方
+          </button>
+          <button onclick="liveSpeak(${m.id})">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6l-5 4z"/><path d="M16.5 9a4 4 0 0 1 0 6"/></svg>
+            朗读
+          </button>
+          <button onclick="liveCopy(${m.id})">复制</button>
+        </div>
+      </div>`).join('')
+    : '<div class="rd-empty">说话或输入内容，译文会即时出现在这里</div>';
+}
+function liveToggleWho(){
+  lvWho = lvWho === 'me' ? 'them' : 'me';
+  const b = document.getElementById('lvWho');
+  if (b){
+    b.textContent = lvWho === 'me' ? '我说' : '对方说';
+    b.classList.toggle('them', lvWho === 'them');
+  }
+  const inp = document.getElementById('lvText');
+  if (inp){
+    inp.placeholder = lvWho === 'me'
+      ? `输入${liveMyLang()}，译文给对方看`
+      : `输入${liveTargetLang()}，译文给自己看`;
+    inp.focus();
+  }
+}
+function liveSend(){
+  const inp = document.getElementById('lvText');
+  const src = inp ? inp.value.trim() : '';
+  if (!src){ toast('请输入或说出要传译的内容'); return; }
+  inp.value = '';
+  livePush(lvWho, src, liveMockTrans(lvWho, src));
+}
+function liveVoice(){
+  if (lvVoiceBusy) return;
+  lvVoiceBusy = true;
+  const mic = document.getElementById('lvMic');
+  if (mic) mic.classList.add('listening');
+  toast('正在聆听…');
+  setTimeout(() => {
+    if (mic) mic.classList.remove('listening');
+    lvVoiceBusy = false;
+    const demo = LV_DEMO[lvWho];
+    livePush(lvWho, demo.src, demo.trans);
+    toast('已识别语音并生成译文（原型演示）');
+  }, 800);
+}
+function livePush(who, src, trans){
+  const id = ++lvSeq;
+  lvMsgs.push({ id, who, src, trans, time:'刚刚' });
+  liveRender();
+  const auto = document.getElementById('lvAutoSpeak');
+  if (auto && auto.checked) toast('译文已生成并朗读（原型演示）');
+  else toast('译文已生成，可放大给对方看');
+  /* 只滚动会话容器到底部，不触发整页滚动 */
+  const body = document.getElementById('flowBody');
+  if (body) body.scrollTo({ top: body.scrollHeight, behavior:'smooth' });
+}
+function liveShowMsg(id){
+  const m = lvMsgs.find(x => x.id === id) || lvMsgs[lvMsgs.length - 1];
+  if (!m){ toast('还没有可展示的译文'); return; }
+  document.getElementById('lsTrans').textContent = m.trans;
+  document.getElementById('lsSrc').textContent = m.src;
+  document.getElementById('lsLang').textContent = m.who === 'me'
+    ? liveMyLang() + ' → ' + liveTargetLang() : liveTargetLang() + ' → ' + liveMyLang();
+  document.getElementById('liveShow').classList.add('on');
+}
+function liveHideShow(){ document.getElementById('liveShow').classList.remove('on'); }
+function liveSpeak(id){
+  const m = lvMsgs.find(x => x.id === id);
+  toast(m ? '正在朗读译文（原型演示）' : '暂无译文');
+}
+function liveCopy(id){
+  const m = lvMsgs.find(x => x.id === id);
+  if (!m) return;
+  try { navigator.clipboard.writeText(m.trans); } catch (_) {}
+  toast('译文已复制');
+}
+
 /* ---- 打开表单 ---- */
 function openFlow(name){
   const f = FLOWS[name];
@@ -3668,12 +3931,21 @@ function openFlow(name){
   flowName = name; currentFlow = f; flowTabIdx = 0;
   document.getElementById('flowTitleTxt').textContent = f.title || name;
   flowTabs.style.display = f.tabs ? 'flex' : 'none';
+  /* 现场实时传译是常驻会话页：隐藏普通表单底栏，启用语音 / 文本输入条 */
+  flowScreen.classList.toggle('is-live', !!f.live);
+  document.getElementById('liveBar').classList.toggle('on', !!f.live);
+  document.getElementById('liveShow').classList.remove('on');
   if (f.tabs){
     flowTabs.innerHTML = f.tabs.map((t, i) =>
       `<div class="ed-tab ${i === 0 ? 'on' : ''}" onclick="switchFlowTab(${i})">${t.name}</div>`).join('');
   }
 
-  if (f.tabs){ renderEditor(); }
+  if (f.live){
+    /* 会话页没有「提交表单」计费，清掉上一个工具遗留的底栏刷新函数 */
+    updateFooter = null;
+    flowCost = f.cost || 5;
+    flowBody.innerHTML = heroHTML(f) + liveTranslateHTML(f);
+  } else if (f.tabs){ renderEditor(); }
   else {
     flowCost = f.cost || 5;
     flowBody.innerHTML = heroHTML(f)
@@ -3684,6 +3956,7 @@ function openFlow(name){
   }
 
   bindFlowChips();
+  if (f.live) liveInit();
   showScreen(flowScreen);
   flowBody.scrollTop = 0;
 }
@@ -3733,6 +4006,9 @@ function renderEditor(){
 }
 
 function backFromFlow(){
+  flowScreen.classList.remove('is-live');
+  document.getElementById('liveBar').classList.remove('on');
+  document.getElementById('liveShow').classList.remove('on');
   flowTabs.style.display = 'none';
   showScreen(homeScreen);
 }
@@ -3771,8 +4047,8 @@ function openRulerDraw(){
   if (!rdSeeded){
     rdSeeded = true;
     rdLines = [
-      { id: ++rdSeq, dir:'h', pos:34, text:'32' },
-      { id: ++rdSeq, dir:'v', pos:36, text:'24' },
+      { id: ++rdSeq, s:{x:16,y:30}, e:{x:84,y:30}, text:'32' },
+      { id: ++rdSeq, s:{x:24,y:20}, e:{x:24,y:82}, text:'24' },
     ];
   }
   bindRulerUnit();
@@ -3802,36 +4078,97 @@ function backFromDraw(){
   }
   showScreen(flowScreen);
 }
+/* 线段数据：s / e 为首尾端点（画布百分比坐标），text 为该段实测数值 */
+function rdEsc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function rdDirLabel(l){
+  const dx = Math.abs(l.e.x - l.s.x), dy = Math.abs(l.e.y - l.s.y);
+  return dy <= 4 ? '水平' : dx <= 4 ? '垂直' : '斜向';
+}
+function rdRenderGeometry(){
+  const svg = document.getElementById('rdSvg');
+  const canvas = document.getElementById('rdCanvas');
+  if (!svg || !canvas) return;
+  const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.innerHTML = rdLines.map(l => {
+    const x1 = l.s.x / 100 * w, y1 = l.s.y / 100 * h;
+    const x2 = l.e.x / 100 * w, y2 = l.e.y / 100 * h;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#2f6bff" stroke-width="2"/>
+      <circle cx="${x1}" cy="${y1}" r="4" fill="#fff" stroke="#2f6bff" stroke-width="2"/>
+      <circle cx="${x2}" cy="${y2}" r="4" fill="#fff" stroke="#2f6bff" stroke-width="2"/>`;
+  }).join('');
+}
+/* 拖动端点时只更新几何，不重建 DOM，避免打断 pointer capture */
+function rdUpdateGeometry(){
+  rdRenderGeometry();
+  rdLines.forEach(l => {
+    const seg = document.querySelector(`.rd-seg[data-id="${l.id}"]`);
+    if (!seg) return;
+    const hs = seg.querySelector('.rd-handle.s'), he = seg.querySelector('.rd-handle.e');
+    const lb = seg.querySelector('.rd-lb');
+    if (hs){ hs.style.left = l.s.x + '%'; hs.style.top = l.s.y + '%'; }
+    if (he){ he.style.left = l.e.x + '%'; he.style.top = l.e.y + '%'; }
+    if (lb){ lb.style.left = (l.s.x + l.e.x) / 2 + '%'; lb.style.top = (l.s.y + l.e.y) / 2 + '%'; }
+  });
+}
 function renderRulerDraw(){
   const unit = rdUnit();
-  document.getElementById('rdLines').innerHTML = rdLines.map(l => `
-    <div class="rd-line ${l.dir}" data-id="${l.id}" style="${l.dir === 'h' ? 'top' : 'left'}:${l.pos}%">
-      <span class="rd-lb">${(l.text || '—') + ' ' + unit}</span>
-    </div>`).join('');
+  document.getElementById('rdLines').innerHTML = rdLines.map(l => {
+    const t = String(l.text == null ? '' : l.text).trim();
+    const mx = (l.s.x + l.e.x) / 2, my = (l.s.y + l.e.y) / 2;
+    return `<div class="rd-seg" data-id="${l.id}">
+      <div class="rd-handle s" data-id="${l.id}" data-end="s" style="left:${l.s.x}%;top:${l.s.y}%" aria-label="拖动起点"></div>
+      <div class="rd-handle e" data-id="${l.id}" data-end="e" style="left:${l.e.x}%;top:${l.e.y}%" aria-label="拖动终点"></div>
+      <button class="rd-lb ${t ? '' : 'todo'}" data-id="${l.id}" style="left:${mx}%;top:${my}%"
+        onclick="rdFocusText(${l.id})">${t ? rdEsc(t) + ' ' + unit : '待标注'}</button>
+    </div>`;
+  }).join('');
   document.getElementById('rdList').innerHTML = rdLines.length
-    ? rdLines.map((l, i) => `
-      <div class="rd-item" data-id="${l.id}">
-        <span class="rd-ix">${String(i + 1).padStart(2, '0')}</span>
-        <span class="rd-dir">${l.dir === 'h' ? '水平' : '垂直'}</span>
-        <input class="rd-in" type="text" inputmode="decimal" value="${l.text}" placeholder="刻度数值"
-          oninput="rdSetText(${l.id}, this.value)" aria-label="标尺 ${i + 1} 刻度数值" />
-        <span class="rd-unit">${unit}</span>
-        <button class="rd-del" onclick="rdDel(${l.id})" aria-label="删除标尺 ${i + 1}">×</button>
-      </div>`).join('')
+    ? rdLines.map((l, i) => {
+        const t = String(l.text == null ? '' : l.text).trim();
+        return `<div class="rd-item" data-id="${l.id}">
+          <span class="rd-ix">${String(i + 1).padStart(2, '0')}</span>
+          <span class="rd-dir">${rdDirLabel(l)}</span>
+          <input class="rd-in ${t ? '' : 'is-todo'}" type="text" inputmode="decimal" value="${rdEsc(l.text)}"
+            placeholder="标注数值" oninput="rdSetText(${l.id}, this.value)" aria-label="标尺 ${i + 1} 数值" />
+          <span class="rd-unit">${unit}</span>
+          <button class="rd-del" onclick="rdDel(${l.id})" aria-label="删除标尺 ${i + 1}">×</button>
+        </div>`;
+      }).join('')
     : '<div class="rd-empty">还没有标尺线，点上方按钮添加一条</div>';
   const price = rdPrice();
   document.getElementById('rdCount').textContent = rdLines.length + ' 条';
   document.getElementById('rdInfo').innerHTML = `标尺线 <b>${rdLines.length} 条 · 输出 1 张 · 共 ${price} 积分</b>`;
   const cta = document.getElementById('rdCta');
   if (cta) cta.innerHTML = `生成标尺图<span class="cta-cost">✦${price}</span>`;
+  rdRenderGeometry();
   rdBindDrag();
 }
 function rdSetText(id, v){
   const l = rdLines.find(x => x.id === id);
   if (!l) return;
   l.text = v;
-  const lb = document.querySelector(`.rd-line[data-id="${id}"] .rd-lb`);
-  if (lb) lb.textContent = (v || '—') + ' ' + rdUnit();
+  const t = String(v).trim();
+  const lb = document.querySelector(`.rd-seg[data-id="${id}"] .rd-lb`);
+  if (lb){
+    lb.textContent = t ? t + ' ' + rdUnit() : '待标注';
+    lb.classList.toggle('todo', !t);
+  }
+  const inp = document.querySelector(`.rd-item[data-id="${id}"] .rd-in`);
+  if (inp) inp.classList.toggle('is-todo', !t);
+}
+/* 点画布上的数值标签 → 定位到下方列表，引导「先画线、再标数值」 */
+function rdFocusText(id){
+  const el = document.querySelector(`.rd-item[data-id="${id}"] .rd-in`);
+  if (!el) return;
+  /* 只在手绘页自己的滚动容器内定位，避免 scrollIntoView 连带滚动整个文档 */
+  const body = document.getElementById('rdBody');
+  const top = el.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop - 120;
+  body.scrollTo({ top: Math.max(0, top), behavior:'smooth' });
+  el.focus({ preventScroll: true });
 }
 function rdDel(id){
   rdLines = rdLines.filter(x => x.id !== id);
@@ -3839,35 +4176,46 @@ function rdDel(id){
 }
 function addRulerLine(dir){
   if (rdLines.length >= 6){ toast('最多添加 6 条标尺线'); return; }
-  const n = rdLines.filter(l => l.dir === dir).length;
-  const pos = dir === 'h' ? 26 + (n % 3) * 20 : 26 + (n % 3) * 22;
-  rdLines.push({ id: ++rdSeq, dir, pos, text: dir === 'h' ? '32' : '24' });
+  const n = rdLines.length, y = 26 + (n % 3) * 16, x = 26 + (n % 3) * 14;
+  const seg = dir === 'h' ? { s:{x:16,y}, e:{x:84,y} }
+    : dir === 'v' ? { s:{x,y:16}, e:{x,y:84} }
+    : { s:{x:24,y:30}, e:{x:76,y:72} };
+  const id = ++rdSeq;
+  rdLines.push({ id, ...seg, text:'' });
   renderRulerDraw();
+  rdFocusText(id);
+  toast('已添加标尺线：拖动首尾圆点对齐尺寸，再填写数值');
 }
 function resetRulerDraw(){
   rdLines = [];
   renderRulerDraw();
   toast('已清空，可重新添加标尺线');
 }
+/* 拖动首尾端点自定义线段起止位置 */
 function rdBindDrag(){
   const canvas = document.getElementById('rdCanvas');
-  document.querySelectorAll('#rdLines .rd-line').forEach(el => {
+  document.querySelectorAll('#rdLines .rd-handle').forEach(el => {
     el.addEventListener('pointerdown', e => {
       const line = rdLines.find(x => x.id === +el.dataset.id);
       if (!line) return;
+      const end = el.dataset.end;
       const rect = canvas.getBoundingClientRect();
       try { el.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
       const move = ev => {
-        const p = line.dir === 'h'
-          ? (ev.clientY - rect.top) / rect.height * 100
-          : (ev.clientX - rect.left) / rect.width * 100;
-        line.pos = Math.max(8, Math.min(92, Math.round(p * 10) / 10));
-        el.style[line.dir === 'h' ? 'top' : 'left'] = line.pos + '%';
+        const px = (ev.clientX - rect.left) / rect.width * 100;
+        const py = (ev.clientY - rect.top) / rect.height * 100;
+        line[end] = {
+          x: Math.max(4, Math.min(96, Math.round(px * 10) / 10)),
+          y: Math.max(4, Math.min(96, Math.round(py * 10) / 10)),
+        };
+        rdUpdateGeometry();
       };
       const up = () => {
         el.removeEventListener('pointermove', move);
         el.removeEventListener('pointerup', up);
         el.removeEventListener('pointercancel', up);
+        renderRulerDraw();
       };
       el.addEventListener('pointermove', move);
       el.addEventListener('pointerup', up);
@@ -3877,8 +4225,13 @@ function rdBindDrag(){
 }
 function submitRulerDraw(){
   if (!rdLines.length){ toast('请先添加至少 1 条标尺线'); return; }
+  const empty = rdLines.find(l => !String(l.text == null ? '' : l.text).trim());
+  if (empty){ toast('请先为标尺线标注数值'); rdFocusText(empty.id); return; }
   toast('手绘标尺任务已提交（原型演示）');
 }
+window.addEventListener('resize', () => {
+  if (currentScreen === drawScreen) rdRenderGeometry();
+});
 
 flowCta.addEventListener('click', () => {
   const c = document.getElementById('flowConsent');
@@ -5397,7 +5750,7 @@ function replyFor(q){
     return '视频创作有 5 项能力：产品宣传视频、数字人口播、真人口播视频、视频翻译（音频翻译 / 字幕翻译 / 口型对齐）、首尾帧生视频。\n常见做法：宣传视频 15~30 秒、竖版 9:16 更适合短视频平台。\n把商品图和卖点发我，我来配脚本和画面。';
   }
   if (/翻译|多语言|英文|阿拉伯/.test(t)) {
-    return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕；「在线翻译」还能做外商洽谈的实时互译。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
+    return '支持 9 种语种互译，带商贸术语库，可翻商品标题、详情、图片内文字和视频字幕；「在线翻译」是现场面对面的实时传译，说话或打字即译，译文能大字展示给对方看并语音朗读。\n告诉我要翻的内容和目标市场，我按当地表达习惯处理，不做直译。';
   }
   return '收到。我先按这个需求梳理一下思路，给出可执行的建议。\n你可以补充：目标市场、商品品类、期望产出（图/视频/数据报告），我就能直接调用对应工具开工。';
 }
