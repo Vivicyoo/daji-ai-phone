@@ -2922,7 +2922,6 @@ const FLOWS = {
     pricing:{ price:3, unit:'个语种', source:'目标语种' },
     live:true,
     langs:['中文 ⇄ 英语','中文 ⇄ 阿拉伯语','中文 ⇄ 俄语','中文 ⇄ 西班牙语','中文 ⇄ 法语','中文 ⇄ 葡萄牙语','中文 ⇄ 日语','中文 ⇄ 韩语','中文 ⇄ 越南语','中文 ⇄ 泰语'],
-    scenes:['商务洽谈','询盘报价','商品介绍','售后沟通'],
   },
   '图片翻译': { intro:'识别图片中的文字并翻译成目标语言，保留原排版与字体风格，适用于主图、详情页、包装与说明书', cta:'开始翻译',
     pricing:{ price:6, unit:'个语种', source:'目标语种' },
@@ -3777,10 +3776,6 @@ function liveTranslateHTML(f){
       <div class="lv-panel-t"><span>双方语言</span><span class="lv-cost">✦${p.price}/${p.unit}</span></div>
       <div class="chips lv-chips" data-multi="0" data-label="目标语种">
         ${f.langs.map((o, j) => `<span class="chip ${j === 0 ? 'on' : ''}">${o}</span>`).join('')}
-      </div>
-      <div class="lv-panel-t" style="margin-top:12px"><span>沟通场景 · 商贸术语库</span></div>
-      <div class="chips lv-chips" data-multi="0" data-label="沟通场景">
-        ${f.scenes.map((o, j) => `<span class="chip ${j === 0 ? 'on' : ''}">${o}</span>`).join('')}
       </div>
       <div class="lv-toggles">
         <label><input type="checkbox" id="lvAutoSpeak" checked> 译文自动朗读</label>
